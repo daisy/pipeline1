@@ -38,6 +38,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.ContextStack;
 
 /**
+ * Performs word detection.
  * @author Linus Ericson
  */
 public class XMLWordDetector extends XMLBreakDetector {
@@ -49,8 +50,15 @@ public class XMLWordDetector extends XMLBreakDetector {
     private Locale lastLocale = null;
     private boolean doctypeSeen = false;
 
-    /* *** CONSTRUCTORS *** */
     
+    /**
+     * Constructor.    
+     * @param inFile the input document
+     * @param outFile the output document
+     * @throws CatalogExceptionNotRecoverable
+     * @throws FileNotFoundException
+     * @throws XMLStreamException
+     */    
     public XMLWordDetector (File inFile, File outFile) throws CatalogExceptionNotRecoverable, FileNotFoundException, XMLStreamException{
         super(outFile);
         ContextAwareBreakSettings cabi = new ContextAwareBreakSettings(false); 
@@ -60,8 +68,9 @@ public class XMLWordDetector extends XMLBreakDetector {
         reader = inputFactory.createXMLEventReader(new FileInputStream(inFile));
     }
     
-    /* *** METHODS *** */
-    
+    /**
+     * Performs word detection.
+     */
     protected void detect() throws UnsupportedDocumentTypeException, FileNotFoundException, XMLStreamException {
         boolean skipContent = false;
         int skipContextStackLength = 0;
@@ -75,6 +84,9 @@ public class XMLWordDetector extends XMLBreakDetector {
             //printEvent(event);
                       
             if (skipContent) {
+            	// We are in a context that shouldn't have word breaks, e.g.
+            	// within an address element in DTBook. Skip until we reach the
+            	// end of this context
                 boolean isEnd = event.isEndElement();
                 writeEvent(event);
                 if (isEnd) {
@@ -87,6 +99,8 @@ public class XMLWordDetector extends XMLBreakDetector {
                 if (!rootElementSeen) {
                     rootElementSeen = true;                    
                     if (!doctypeSeen) {
+                    	// If we haven't seen a doctype declaration, we can use the namespace
+                    	// declaration to load a configuration file
                         StartElement se = event.asStartElement();
                         if (!parseNamespace(se.getName().getNamespaceURI())) {
                             throw new UnsupportedDocumentTypeException("Unsupported document type.");
@@ -144,12 +158,23 @@ public class XMLWordDetector extends XMLBreakDetector {
         reader.close();
     }
     
+    /**
+     * Find word breaks in the specified text and write the result
+     * @param data the text to handle
+     * @throws XMLStreamException
+     */
     protected void handleBreaks(String data) throws XMLStreamException {
         Vector breaks = breakFinder.findBreaks(data, null);
         //System.err.println(breaks);
         writeElements(data, breaks);
     }
     
+    /**
+     * Write the specified text, adding word breaks
+     * @param text the text to write
+     * @param breaks the indexes of the word breaks
+     * @throws XMLStreamException
+     */
     private void writeElements(String text, Vector breaks) throws XMLStreamException {
         if (breaks.size() == 0) {
             writeString(text);
@@ -184,14 +209,26 @@ public class XMLWordDetector extends XMLBreakDetector {
         return false;
     }
     
+    /**
+     * Opens a word element
+     * @throws XMLStreamException
+     */
     private void openWord() throws XMLStreamException {
         writeEvent(eventFactory.createStartElement(getBreakElement(), getBreakAttributes(), null));
     }
     
+    /**
+     * Closes a word element
+     * @throws XMLStreamException
+     */
     private void closeWord() throws XMLStreamException {
         writeEvent(eventFactory.createEndElement(getBreakElement(), null));
     }
     
+    /**
+     * Checks whether the current position (xpath path) in the document is allowed. 
+     * @return true if the current path is allowed, false otherwise
+     */
     private boolean isPathAllowed() {
         if (allowedPaths == null) {
             return true;
@@ -205,7 +242,12 @@ public class XMLWordDetector extends XMLBreakDetector {
         }
         return false;
     }
-        
+    
+    /**
+     * Should this context be processed?
+     * @param name the tag name
+     * @return true if the context should be processed, false otherwise
+     */
     private boolean shouldBeProcessed(QName name) {
         //System.err.println("first: " + firstName + " " + firstIsStart);
         //System.err.println("last: " + lastName + " " + lastIsStart);

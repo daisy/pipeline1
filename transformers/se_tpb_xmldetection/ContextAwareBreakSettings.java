@@ -38,6 +38,10 @@ import org.daisy.util.xml.settings.SettingsResolverException;
 import org.daisy.util.xml.stax.ContextStack;
 
 /**
+ * Implementation of the BreakSettings interface. This class loads the type
+ * specific (i.e. DTBook, XHTML) configuration file using either a public or system
+ * identifier or a namespace declaration, and is able to answer
+ * questions about its content.
  * @author Linus Ericson
  */
 /*package*/ class ContextAwareBreakSettings extends ContextStack implements BreakSettings {
@@ -71,6 +75,10 @@ import org.daisy.util.xml.stax.ContextStack;
     
     protected Set<String> defaultPaths = new HashSet<String>();
     
+    /**
+     * Constructor.
+     * @param sentence
+     */
     public ContextAwareBreakSettings(boolean sentence) {
         try {
             //resolver = BreakSettingsResolver.getInstance();
@@ -81,7 +89,11 @@ import org.daisy.util.xml.stax.ContextStack;
         }
         sentenceInstance = sentence;
     }
-       
+    
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#isSentenceBreaking(javax.xml.namespace.QName)
+     */
     public boolean isSentenceBreaking(QName elementName) {
         String local = elementName.getLocalPart();
         if (nonSentenceBreaking.contains(local)) {
@@ -90,6 +102,10 @@ import org.daisy.util.xml.stax.ContextStack;
         return true;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#skipContent(javax.xml.namespace.QName)
+     */
     public boolean skipContent(QName elementName) {
         Set<String> skipSet = wordSkip;
         if (sentenceInstance) {
@@ -101,7 +117,11 @@ import org.daisy.util.xml.stax.ContextStack;
         }
         return false;
     }
-        
+       
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#mayContainText(javax.xml.namespace.QName)
+     */
     public boolean mayContainText(QName elementName) {
         String local = elementName.getLocalPart();
         if (mayContainText.contains(local)) {
@@ -110,6 +130,10 @@ import org.daisy.util.xml.stax.ContextStack;
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#setup(java.lang.String, java.lang.String)
+     */
     public boolean setup(String publicId, String systemId) throws UnsupportedDocumentTypeException {
         try {
             URL url = resolver.resolve(publicId, systemId);            
@@ -127,6 +151,10 @@ import org.daisy.util.xml.stax.ContextStack;
         return false;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#setup(java.lang.String)
+     */
     public boolean setup(String namespaceURI) {        
         try {
             URL url = resolver.resolve(namespaceURI);
@@ -260,6 +288,10 @@ import org.daisy.util.xml.stax.ContextStack;
         return new QName(namespace==null?null:namespace.getValue(), name.getValue(), prefix.getValue());
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getBreakElement()
+     */
     public QName getBreakElement() {
         if (sentenceInstance) {
             return sentenceElement;  
@@ -267,6 +299,10 @@ import org.daisy.util.xml.stax.ContextStack;
         return wordElement;           
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getBreakAttributes()
+     */
     public Map<String, String> getBreakAttributes() {
         if (sentenceInstance) {
             return sentenceAttributes;  
@@ -274,59 +310,114 @@ import org.daisy.util.xml.stax.ContextStack;
         return wordAttributes;           
     }
 
-
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getDefaultPaths()
+     */
     public Set<String> getDefaultPaths() {
         return defaultPaths;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getAbbrElement()
+     */
     public QName getAbbrElement() {
         return abbrElement;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getAcronymElement()
+     */
     public QName getAcronymElement() {
         return acronymElement;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getInitialismElement()
+     */
     public QName getInitialismElement() {
         return initialismElement;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getFixElement()
+     */
     public QName getFixElement() {
         return fixElement;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getExpAttr()
+     */
     public QName getExpAttr() {
         return expAttribute;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getAbbrAttributes()
+     */
     public Map<String, String> getAbbrAttributes() {
         return abbrAttributes;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getAcronymAttributes()
+     */
     public Map<String, String> getAcronymAttributes() {
         return acronymAttributes;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getInitialismAttributes()
+     */
     public Map<String, String> getInitialismAttributes() {
         return initialismAttributes;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getFixAttributes()
+     */
     public Map<String, String> getFixAttributes() {
         return fixAttributes;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getInitialismExpandAttribute()
+     */
     public String getInitialismExpandAttribute() {
         return initialismExpand;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getAcronymExpandAttribute()
+     */
     public String getAcronymExpandAttribute() {
         return acronymExpand;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getAbbrExpandAttribute()
+     */
     public String getAbbrExpandAttribute() {
         return abbrExpand;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakSettings#getFixExpandAttribute()
+     */
     public String getFixExpandAttribute() {
         return fixExpand;
     }

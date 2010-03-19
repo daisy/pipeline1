@@ -46,6 +46,7 @@ import org.daisy.util.collection.MultiHashMap;
 import org.daisy.util.i18n.LocaleUtils;
 
 /**
+ * Holds the settings and the ability to query the settings about a specific language.
  * @author Linus Ericson
  */
 @SuppressWarnings("unchecked")
@@ -77,6 +78,11 @@ public class LangSettings {
     protected String initialismSuffixPattern = null;
     protected String acronymSuffixPattern = null;
     
+    /**
+     * Creates a new LangSettings using the same settings defined in the specified language settings.
+     * @param lang the language the settings apply to
+     * @param defaultSettings the settings to copy
+     */
     public LangSettings(String lang, LangSettings defaultSettings) {
         language = lang;
         this.setInitialisms(defaultSettings.getInitialisms());
@@ -95,6 +101,15 @@ public class LangSettings {
         this.setAcronymSuffixPattern(defaultSettings.acronymSuffixPattern);        
     }
     
+    /**
+     * Creates a new LangSettings by reading the settings defined in the specified
+     * language settings file.
+     * @param lang the language the settings apply to
+     * @param url the URL to the language settings file
+     * @param defaultAbbrFixSettings
+     * @throws XMLStreamException
+     * @throws IOException
+     */
     public LangSettings(String lang, URL url, LangSettings defaultAbbrFixSettings) throws XMLStreamException, IOException {
         language = lang;
         
@@ -164,6 +179,13 @@ public class LangSettings {
         this.setFixes(fixesMap);        
     }
     
+    /**
+     * Helper method for parsing a &lt;key&gt; element in the language settings file.
+     * @param lang the language
+     * @param er the XML event reader
+     * @return a MultiHashMap where each key points to a collection of expansions
+     * @throws XMLStreamException
+     */
     private MultiHashMap handleKey(String lang, XMLEventReader er) throws XMLStreamException {
         List<String> nameList = new ArrayList<String>();
         List<String> mayEndSentenceList = new ArrayList<String>();
@@ -247,10 +269,20 @@ public class LangSettings {
         throw new XMLStreamException("End </key> tag was never found!");
     }
     
-    
+    /**
+     * An initialism, acronym, abbreviation or fix was found between index 
+     * <code>start</code> and <code>end</code> in the string <code>text</code>.
+     * Is that <code>type</code> allowed in that context?
+     * @param text the text
+     * @param start the start index
+     * @param end the end index
+     * @param type the type (abbreviation/acronym/initialism/fix)
+     * @return true if allowed in in this context, false otherwise
+     */
     protected boolean allowedContext(String text, int start, int end, int type) {
         Pattern before = null;
         Pattern after = null;
+        // Get the correct patters depending on the type
         switch (type) {
         case Abbr.INITIALISM:
             before = getBeforeInitialism();
@@ -271,6 +303,7 @@ public class LangSettings {
         default:
             throw new IllegalArgumentException("Not a valid type: " + type);
         }
+        // Do the text before and after the specified region match the regexes?
         String b = text.substring(0, start);
         String a = text.substring(end);        
         if (before.matcher(b).matches()) {
@@ -281,6 +314,13 @@ public class LangSettings {
         return false;        
     }
     
+    /**
+     * Builds a regex pattern using all the keys in the specified map.
+     * @param map the map of fixes
+     * @param quote
+     * @param suffixPattern
+     * @return a regex pattern
+     */
     protected Pattern buildRegex(Map map, boolean quote, String suffixPattern) {
         StringBuffer pattern = new StringBuffer();
         for (Iterator it = map.keySet().iterator(); it.hasNext(); ) {
@@ -295,6 +335,13 @@ public class LangSettings {
         return Pattern.compile(pattern.toString(), Pattern.DOTALL);
     }
     
+    /**
+     * Removes the suffix (if any) from the <code>key</code>.
+     * @param key the key (i.e. the acronym/initialism/abbreviation/fix)
+     * @param expansion the expansion
+     * @param type the type
+     * @return the key without suffix
+     */
     public String removeSuffix(String key, String expansion, int type) {
         Collection coll = null;
         String suffix = "";
@@ -356,6 +403,13 @@ public class LangSettings {
         return null;
     }
     
+    /**
+     * Checks whether the specified key may end a sentence or not.
+     * @param key the key
+     * @param expansion the expansion
+     * @param type the type
+     * @return true if the specified key may <b>not</b> end a sentence, false otherwise
+     */
     public boolean mayNotEndSentence(String key, String expansion, int type) {
         Collection coll;
         String exp;
@@ -409,6 +463,14 @@ public class LangSettings {
         return false;
     }
     
+    /**
+     * Checks if all expansions in the specified collection have the same ID attribute.
+     * If there are several expansions matching a certain key (e.g. DAISY is defined
+     * in several different languages), this function returns true if all of them
+     * have the same ID.
+     * @param coll the collection of expansions
+     * @return true if all expansions refer to the same id, false otherwise
+     */
     private boolean sameId(Collection coll) {
         Iterator it = coll.iterator();
         Item firstItem = (Item)it.next();
@@ -428,6 +490,11 @@ public class LangSettings {
         return true;
     }
     
+    /**
+     * Gets the best matching expansion from the given collection.
+     * @param coll the collection of expansions
+     * @return the best matching expansion
+     */
     private Item getFromBestLanguage(Collection coll) {
         boolean foundParentLang = false;
         Item result = null;
@@ -455,6 +522,14 @@ public class LangSettings {
         return result;
     }
     
+    /**
+     * Expands an abbreviaion/acronym/initialism/fix. If several matching expansions
+     * are found the function will try to pick the best one (based on language
+     * information)
+     * @param key the key to expand
+     * @param type the type
+     * @return an item representing an expanded key
+     */
     public Item expand(String key, int type) {
         Collection coll;
         Item item;
@@ -506,7 +581,13 @@ public class LangSettings {
             throw new IllegalArgumentException("Not a valid type: " + type);
         }        
     }
-      
+    
+    /**
+     * Gets the type(s) of the specified key. If the key matches several different types,
+     * the types are OR:ed together.
+     * @param text the key
+     * @return the type(s) of the key
+     */
     public int getType(String text) {
         int type = 0;
         if (initialisms.containsKey(text)) {

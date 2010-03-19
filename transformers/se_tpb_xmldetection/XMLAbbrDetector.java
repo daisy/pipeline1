@@ -32,6 +32,7 @@ import javax.xml.stream.events.Attribute;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /**
+ * Performs abbreviation and acronym detection.
  * @author Linus Ericson
  */
 public class XMLAbbrDetector extends XMLWordDetector {
@@ -39,6 +40,7 @@ public class XMLAbbrDetector extends XMLWordDetector {
     private ContextAwareAbbrSettings caas = null;
     
     /**
+     * Constructor.
      * @param inFile
      * @param outFile
      * @throws CatalogExceptionNotRecoverable
@@ -50,8 +52,11 @@ public class XMLAbbrDetector extends XMLWordDetector {
     }
     
     /**
+     * Constructor.
      * @param inFile
      * @param outFile
+     * @param customLang
+     * @param override
      * @throws CatalogExceptionNotRecoverable
      * @throws XMLStreamException
      * @throws IOException
@@ -65,12 +70,23 @@ public class XMLAbbrDetector extends XMLWordDetector {
         setBreakFinder(new DefaultAbbrBreakFinder(xmllang, customLang, override));        
     }
 
+    /**
+     * Find abbreviation and acronym breaks in the specified text and write the result
+     * @param data the text to handle
+     * @throws XMLStreamException
+     */
     protected void handleBreaks(String data) throws XMLStreamException {
         Vector<?> breaks = breakFinder.findBreaks(data, null);
         //System.err.println(breaks);  
         writeElements(data, breaks);
     }
     
+    /**
+     * Write the specified text, adding abbr/acro breaks
+     * @param text the text to write
+     * @param breaks the indexes of the word breaks
+     * @throws XMLStreamException
+     */
     private void writeElements(String text, Vector<?> breaks) throws XMLStreamException {
         if (breaks.size() == 0) {
             writeString(text);

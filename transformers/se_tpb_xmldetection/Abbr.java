@@ -18,7 +18,8 @@
 package se_tpb_xmldetection;
 
 /**
- * Information about an initialism, acronym, abbreviation or fix. 
+ * Information about an initialism, acronym, abbreviation or fix
+ * and its position in the text.
  * @author Linus Ericson
  */
 /*package*/ class Abbr {
@@ -56,10 +57,18 @@ package se_tpb_xmldetection;
         expAttr = expAt;
     }
     
+    /**
+     * Gets the end index (position)
+     * @return the end index
+     */
     public int getEnd() {
         return end;
     }
     
+    /**
+     * Gets the expanded value
+     * @return the expanded value
+     */
     public String getExpansion() {
         return expansion;
     }
@@ -68,18 +77,34 @@ package se_tpb_xmldetection;
         return expAttr;
     }
     
+    /**
+     * Gets the name (key)
+     * @return the name
+     */
     public String getKey() {
         return key;
     }
     
+    /**
+     * Gets the start index (position)
+     * @return the start index
+     */
     public int getStart() {
         return start;
     }
     
+    /**
+     * Gets the type (acronym/abbreviation/initialism/fix) 
+     * @return the type
+     */
     public int getType() {
         return type;
     }    
     
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         String result = null;
         switch (type) {

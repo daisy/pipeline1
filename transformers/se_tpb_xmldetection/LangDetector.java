@@ -36,11 +36,18 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 
 /**
- * 
+ * Helper class for detecting languages in a document.
  * @author Linus Ericson
  */
 /*package*/ class LangDetector {
 
+	/**
+	 * Gets the set of languages defined (via xml:lang) in the file
+	 * @param file the file to search for languages in
+	 * @return the set of languages
+	 * @throws FileNotFoundException
+	 * @throws XMLStreamException
+	 */
     public static Set<String> getXMLLangSet(File file) throws FileNotFoundException, XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
         //factory.setProperty("javax.xml.stream.supportDTD", Boolean.FALSE);

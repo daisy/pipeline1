@@ -38,6 +38,7 @@ import org.daisy.util.i18n.LocaleUtils;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /**
+ * Default implementation of the sentence break finder.
  * @author Linus Ericson
  */
 @SuppressWarnings("unchecked")
@@ -59,9 +60,19 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
     
     private boolean override = false;
     
+    /**
+     * Constructor.
+     * @param xmllang the set of languages in the document
+     * @param customLang
+     * @param overrideLang
+     * @throws CatalogExceptionNotRecoverable
+     * @throws XMLStreamException
+     * @throws IOException
+     */
     public DefaultSentenceBreakFinder(Set xmllang, URL customLang, boolean overrideLang) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         resolver = LangSettingsResolver.getInstance();
         
+        // Load the common settings
         //logger.info("Loading language: common");
         LangSettings lscommon = new LangSettings(null, resolver.resolve("common"), null);
         langSettingsMap.put("common", lscommon);
@@ -77,6 +88,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
             override = overrideLang;
         }
         
+        // Load the settings for each language
         for (Iterator it = xmllang.iterator(); it.hasNext(); ) {
             String lang = (String)it.next();
             Locale loc = LocaleUtils.string2locale(lang);
@@ -93,6 +105,13 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         switchToLang("common");
     }
     
+    /**
+     * Loads a language
+     * @param locale
+     * @param defaultLS
+     * @throws XMLStreamException
+     * @throws IOException
+     */
     private void loadLanguage(String locale, LangSettings defaultLS) throws XMLStreamException, IOException {
         if (!langSettingsMap.containsKey(locale)) {
 	        URL langURL = resolver.resolve(locale);
@@ -121,6 +140,10 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         }
     }
     
+    /**
+     * Make the sentence break finder use a different language
+     * @param lang the language to switch to
+     */
     private void switchToLang(String lang) {
         langSettings = (LangSettings)langSettingsMap.get(lang);   
         MultiHashMap newInitialisms = new MultiHashMap(baseInitialisms);
@@ -149,6 +172,10 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         }
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakFinder#findBreaks(java.lang.String, java.util.ArrayList)
+     */
     public Vector findBreaks(String text, ArrayList al) {
         // Has the locale changed?
         if ((newLocale != null && !newLocale.equals(current)) ||

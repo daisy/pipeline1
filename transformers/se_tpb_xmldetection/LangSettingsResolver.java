@@ -29,6 +29,7 @@ import org.daisy.util.xml.catalog.CatalogFile;
 import org.xml.sax.SAXException;
 
 /**
+ * Resolves the paths to language settings files.
  * @author Linus Ericson
  */
 /*package*/ class LangSettingsResolver {
@@ -36,6 +37,10 @@ import org.xml.sax.SAXException;
     private static CatalogFile catalog = null;
     private static LangSettingsResolver instance = null;
     
+    /**
+     * Private constructor since this is a singleton.
+     * @throws CatalogExceptionNotRecoverable
+     */
     private LangSettingsResolver() throws CatalogExceptionNotRecoverable {
         try {
             ClassLoader cl = this.getClass().getClassLoader();
@@ -66,6 +71,11 @@ import org.xml.sax.SAXException;
         }
     }
     
+    /**
+     * Method for fetching the singleton instance
+     * @return a language settings resolver
+     * @throws CatalogExceptionNotRecoverable
+     */
     public static LangSettingsResolver getInstance() throws CatalogExceptionNotRecoverable {
         if (instance == null) {
             synchronized(LangSettingsResolver.class){
@@ -77,6 +87,11 @@ import org.xml.sax.SAXException;
         return instance;
     }
     
+    /**
+     * Resolves the given locale to a language settings URL
+     * @param locale the locale
+     * @return a URL to a language settings file
+     */
     public URL resolve(Locale locale) {
         try {
             return catalog.getEntityLocalURL(locale.toString());    
@@ -85,6 +100,11 @@ import org.xml.sax.SAXException;
         }
     }
     
+    /**
+     * Resolves the given locale to a language settings URL
+     * @param locale the locale
+     * @return a URL to a language settings file
+     */
     public URL resolve(String locale) {
         try {
             return catalog.getEntityLocalURL(locale);    

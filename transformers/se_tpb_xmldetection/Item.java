@@ -18,6 +18,7 @@
 package se_tpb_xmldetection;
 
 /**
+ * Information about an entry in a language settings file.
  * @author Linus Ericson
  */
 /*package*/ class Item {
@@ -30,6 +31,12 @@ package se_tpb_xmldetection;
     
     private int priority = -1;
     
+    /**
+     * Constructor.
+     * @param name the key name of the abbreviation/acronym/initialism 
+     * @param val the expanded value
+     * @param mayEndSentence true if the key may occur at the end of a sentence, false otherwise
+     */
     public Item(String name, String val, String mayEndSentence) {
         this.key = name;
         this.value = val;

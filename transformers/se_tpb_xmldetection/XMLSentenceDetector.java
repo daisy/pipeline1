@@ -46,6 +46,7 @@ import org.daisy.util.xml.stax.BookmarkedXMLEventReader;
 import org.daisy.util.xml.stax.ContextStack;
 
 /**
+ * Performs sentence detection.
  * @author Linus Ericson
  */
 @SuppressWarnings("unchecked")
@@ -69,12 +70,29 @@ public class XMLSentenceDetector extends XMLBreakDetector {
     //mg200805: whether to add single sents (e.g. <h1><sent>Text</sent></h1>). True is the original behavior.
     private boolean doSingleSentAdd = true;
     
-    /* *** CONSTRUCTORS *** */
-    
+    /**
+     * Constructor.    
+     * @param inFile the input document
+     * @param outFile the output document
+     * @throws CatalogExceptionNotRecoverable
+     * @throws XMLStreamException
+     * @throws IOException
+     */
     public XMLSentenceDetector (File inFile, File outFile) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         this(inFile, outFile, null, false, false);
     }
     
+    /**
+     * Constructor.
+     * @param inFile the input document
+     * @param outFile the output document
+     * @param customLang URL to a custom language file (or null)
+     * @param override override the language defined in the document with the custom language file
+     * @param singleSentAdd add sentence markup even for single sentences
+     * @throws CatalogExceptionNotRecoverable
+     * @throws XMLStreamException
+     * @throws IOException
+     */
     public XMLSentenceDetector (File inFile, File outFile, URL customLang, boolean override, boolean singleSentAdd) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException {
         super(outFile);
         ContextAwareBreakSettings cabi = new ContextAwareBreakSettings(true); 
@@ -86,8 +104,9 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         reader = new BookmarkedXMLEventReader(inputFactory.createXMLEventReader(new FileInputStream(inFile)));
     }
     
-    /* *** METHODS *** */
-        
+    /**
+     * Perform the sentence detection.    
+     */
 	protected void detect() throws UnsupportedDocumentTypeException, FileNotFoundException, XMLStreamException {
         // The buffer for the text to detect sentence breaks in
         StringBuffer buffer = new StringBuffer();
@@ -109,8 +128,11 @@ public class XMLSentenceDetector extends XMLBreakDetector {
             XMLEvent event = reader.nextEvent();
             contextStack.addEvent(event);
             //printEvent(event);
-                      
+            
             if (skipContent) {
+            	// We are in a context that shouldn't have sentence breaks, e.g.
+            	// within an address element in DTBook. Skip until we reach the
+            	// end of this context
                 boolean isEnd = event.isEndElement();
                 if (writeWhileSkipping) {
                     writeEvent(event);
@@ -129,6 +151,8 @@ public class XMLSentenceDetector extends XMLBreakDetector {
                 if (!rootElementSeen) {
                     rootElementSeen = true;                    
                     if (!doctypeSeen) {
+                    	// If we haven't seen a doctype declaration, we can use the namespace
+                    	// declaration to load a configuration file
                         StartElement se = event.asStartElement();
                         if (!parseNamespace(se.getName().getNamespaceURI())) {
                             throw new UnsupportedDocumentTypeException("Unsupported document type.");
@@ -290,7 +314,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
     }
     
     /**
-     * Check if atributes match.
+     * Check if attributes match.
      * For every key-value pair in attributes, check if the given start
      * element has the same attribute key-value pair.
      * @param se
@@ -316,6 +340,10 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         return result;
     }
     
+    /**
+     * Checks whether the current position (xpath path) in the document is allowed. 
+     * @return true if the current path is allowed, false otherwise
+     */
     private boolean isPathAllowed() {
         if (allowedPaths == null) {
             return true;
@@ -329,7 +357,14 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         }
         return false;
     }
-       
+    
+    /**
+     * Write the events from the latest breaking tag to the current position.
+     * Add sentence elements where needed.
+     * @param writeStartAndEndTag add sentence tags?
+     * @param breaks positions in the text where sentence breaks should be added 
+     * @throws XMLStreamException
+     */
     private void writeElements(boolean writeStartAndEndTag, Vector breaks) throws XMLStreamException {
         //reader.setBookmark("mark");
         if (writeStartAndEndTag) {
@@ -357,11 +392,14 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         while (!reader.atBookmark(LAST_EVENT)) {
             event = reader.nextEvent();
             if (event.isCharacters()) {
+            	// Write characters, possibly with some sentence breaks
                 offset = writeCharacters(event.asCharacters().getData(), breaks, offset);
             } else {
             	if (event.isStartElement() || event.isEndElement()) {
             		tagNumber++;
             		if (!matchingTags.hasMatchingTag(tagNumber) && sentenceOpen && writeStartAndEndTag) {
+            			// We need to create a sentence break around this tag in order to
+            			// keep the document well-formed.
             			closeSentence();
             			writeEvent(event);
             			openSentence();
@@ -374,6 +412,7 @@ public class XMLSentenceDetector extends XMLBreakDetector {
             }
         }
         
+        // Add the final closing tag
         if (writeStartAndEndTag) {
             closeSentence();
         }
@@ -382,6 +421,15 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         writeEvent(event);
     }
     
+    /**
+     * Write characters to the output, and break a sentence if there are
+     * sentence breaks within the text.
+     * @param text the text to write
+     * @param breaks the indexes of the sentence breaks
+     * @param offset the offset of the current text
+     * @return
+     * @throws XMLStreamException
+     */
     private int writeCharacters(String text, Vector breaks, int offset) throws XMLStreamException {
         if (breaks.size() == 0) {
             writeString(text);
@@ -418,16 +466,28 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         return offset;
     }
     
+    /**
+     * Open a sentence
+     * @throws XMLStreamException
+     */
     private void openSentence() throws XMLStreamException {
         writeEvent(eventFactory.createStartElement(getBreakElement(), getBreakAttributes(), null), true);
         sentenceOpen = true;
     }
     
+    /**
+     * Close a sentence
+     * @throws XMLStreamException
+     */
     private void closeSentence() throws XMLStreamException {
         writeEvent(eventFactory.createEndElement(getBreakElement(), null), true);
         sentenceOpen = false;
     }
     
+    /**
+     * Break (i.e. close and open) a sentence.
+     * @throws XMLStreamException
+     */
     private void breakSentence() throws XMLStreamException {
         EndElement ee = eventFactory.createEndElement(getBreakElement(), null);
         StartElement se = eventFactory.createStartElement(getBreakElement(), getBreakAttributes(), null); 
@@ -440,6 +500,14 @@ public class XMLSentenceDetector extends XMLBreakDetector {
         }
     }
     
+    /**
+     * Should we look for sentece breaks between these tags?
+     * @param firstName the first tag
+     * @param firstIsStart is the first tag a start tag?
+     * @param lastName the last tag
+     * @param lastIsStart is the first tag a start tag?
+     * @return true if the context should be processed, false otherwise
+     */
     private boolean shouldBeProcessed(QName firstName, boolean firstIsStart, QName lastName, boolean lastIsStart) {
         //System.err.println("first: " + firstName + " " + firstIsStart);
         //System.err.println("last: " + lastName + " " + lastIsStart);

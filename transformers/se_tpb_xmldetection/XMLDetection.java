@@ -42,6 +42,9 @@ import org.daisy.util.fileset.util.DefaultFilesetErrorHandlerImpl;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /**
+ * Main transformer class. Depending on the input parameters, this transformer
+ * can perform abbreviation and acronym detection, sentence detection and word
+ * detection.
  * @author Linus Ericson
  */
 public class XMLDetection extends Transformer {
@@ -54,6 +57,10 @@ public class XMLDetection extends Transformer {
         super(inListener, isInteractive);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.daisy.pipeline.core.transformer.Transformer#execute(java.util.Map)
+     */
     protected boolean execute(Map<String,String> parameters) throws TransformerRunException {
         String input = parameters.remove("input");
         String output = parameters.remove("output");
@@ -132,6 +139,7 @@ public class XMLDetection extends Transformer {
             this.sendMessage(i18n("STARTING_COPY"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
             FileUtils.copy(currentInput, finalOutput);
             
+            // Copy referred files
             if (Boolean.parseBoolean(copyReferredFiles)) {
                 this.sendMessage(i18n("COPYING_REFERRED_FILES"), MessageEvent.Type.INFO_FINER, MessageEvent.Cause.SYSTEM);
                 Collection<URI> filesToCopy = new HashSet<URI>();

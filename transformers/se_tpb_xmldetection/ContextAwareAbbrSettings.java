@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 /**
+ * BreakSettings implementation used for abbreviation/acronym/initialism detection.
  * @author Linus Ericson
  */
 

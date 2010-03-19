@@ -40,6 +40,7 @@ import org.daisy.util.text.TextMatcher;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 
 /**
+ * Break finder for abbreviations and acronyms.
  * @author Linus Ericson
  */
 /* Modified by jpritchett@rfbd.org, 26 June 2006
@@ -108,6 +109,13 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         switchToLang("common");
     }
     
+    /**
+     * Loads the language file for a specified language.
+     * @param locale
+     * @param defaultLS
+     * @throws XMLStreamException
+     * @throws IOException
+     */
     private void loadLanguage(String locale, LangSettings defaultLS) throws XMLStreamException, IOException {
         if (!langSettingsMap.containsKey(locale)) {
 	        URL langURL = resolver.resolve(locale);
@@ -169,6 +177,10 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         }
     }
     
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakFinder#findBreaks(java.lang.String, java.util.ArrayList)
+     */
     public Vector findBreaks(String text, ArrayList al) {
         // Has the locale changed?
         if ((newLocale != null && !newLocale.equals(current)) ||

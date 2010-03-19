@@ -22,13 +22,18 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 /**
+ * A break finder for words.
  * @author Linus Ericson
  */
 @SuppressWarnings("unchecked")
 /*package*/ class DefaultWordBreakFinder extends BreakFinder {
 
     protected BreakIterator iterator = BreakIterator.getWordInstance();
-        
+    
+    /*
+     * (non-Javadoc)
+     * @see se_tpb_xmldetection.BreakFinder#findBreaks(java.lang.String, java.util.ArrayList)
+     */
 	public Vector findBreaks(String text, ArrayList al) {
         // Has the locale changed?
         if ((newLocale != null && !newLocale.equals(current)) ||
@@ -51,6 +56,7 @@ import java.util.Vector;
         for (end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator.next()) {
             //System.err.println("start: " + start + ", end: " + end + ", word: " + text.substring(start, end));
             
+        	// Don't include word breaks found by the BreakIterator that only contains whitespace
             if (!text.substring(start, end).matches("\\p{javaWhitespace}")) {
                 result.add(new Integer(start));
                 result.add(new Integer(end));

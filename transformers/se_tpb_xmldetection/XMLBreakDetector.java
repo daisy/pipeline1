@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
@@ -47,6 +46,8 @@ import org.daisy.util.xml.stax.EventWriterCache;
 import org.daisy.util.xml.stax.StaxEntityResolver;
 
 /**
+ * Base class for break detectors.
+ * 
  * @author Linus Ericson
  */
 @SuppressWarnings("unchecked")
@@ -71,6 +72,13 @@ public abstract class XMLBreakDetector {
     private boolean rootElementSeen = false;
     private boolean alreadyCalled = false;
 
+    /**
+     * Constructor. This constructor instantiates the stax readers and writers to be used
+     * when processing the file. 
+     * @param outFile the output file
+     * @throws CatalogExceptionNotRecoverable
+     * @throws XMLStreamException
+     */
     public XMLBreakDetector (File outFile) throws CatalogExceptionNotRecoverable, XMLStreamException {
         inputFactory = XMLInputFactory.newInstance();
         eventFactory = XMLEventFactory.newInstance();
@@ -107,6 +115,13 @@ public abstract class XMLBreakDetector {
         outputFile = outFile;
     }
     
+    /**
+     * Template method for performing the detection.
+     * @param paths the set of allowed paths. 
+     * @throws UnsupportedDocumentTypeException
+     * @throws FileNotFoundException
+     * @throws XMLStreamException
+     */
     public void detect(Set<String> paths) throws UnsupportedDocumentTypeException, FileNotFoundException, XMLStreamException {
         if (alreadyCalled) {
             throw new IllegalStateException("This method may only be called once");
@@ -125,7 +140,11 @@ public abstract class XMLBreakDetector {
         
     protected abstract void detect() throws XMLStreamException, UnsupportedDocumentTypeException, FileNotFoundException;
     
-    
+    /**
+     * Parses the doctype declaration and loads the break settings file matching the public or system ID.
+     * @param doctype the doctype declaration
+     * @throws UnsupportedDocumentTypeException
+     */
     protected void parseDoctype(String doctype) throws UnsupportedDocumentTypeException {
     	//mg20080613: previous routine does grok internal subsets  
     	try{
@@ -155,19 +174,40 @@ public abstract class XMLBreakDetector {
 //        }
     }
     
+    /**
+     * Load the matching break settings file using a namespace declaration
+     * @param namespaceURI the namespace URI
+     * @return true if the load was successful, false otherwise
+     */
     protected boolean parseNamespace(String namespaceURI) {
         return breakSettings.setup(namespaceURI);
     }
     
+    /**
+     * Sets the xml event writer and sets up an event writer cache
+     * @param xew the xml event weriter to set
+     */
     protected void setXMLEventWriter(XMLEventWriter xew) {
     	writer = xew;
     	writerCache = new EmptyElementFilter(writer);
     }
     
+    /**
+     * Writes an xml event
+     * @param event the event to write
+     * @throws XMLStreamException
+     */
     protected void writeEvent(XMLEvent event) throws XMLStreamException {
     	this.writeEvent(event, false);
     }
     
+    /**
+     * Writes an xml event. If the event is the root element, add the
+     * namespace declaration for the break element (if needed) as well.
+     * @param event the event to write
+     * @param filter
+     * @throws XMLStreamException
+     */
     protected void writeEvent(XMLEvent event, boolean filter) throws XMLStreamException {        
         if (event.isStartElement()) {
             if (!rootElementSeen) {
@@ -211,6 +251,12 @@ public abstract class XMLBreakDetector {
         writerCache.writeEvent(event, filter);
     }
     
+    /**
+     * Adds the namespace of <code>expAttrName</code> to the <code>namespaces</code> vector
+     * @param namespaces the namespaces vector
+     * @param expAttrName the QName
+     * @throws XMLStreamException
+     */
     private void maybeAddExpAttrNS(Vector<Namespace> namespaces, QName expAttrName) throws XMLStreamException {
         if (expAttrName != null) {
             boolean alreadyExists = false;
@@ -238,10 +284,19 @@ public abstract class XMLBreakDetector {
         }
     }
     
+    /**
+     * Writes a characters event
+     * @param text the text to write
+     * @throws XMLStreamException
+     */
     protected void writeString(String text) throws XMLStreamException {
         writeEvent(eventFactory.createCharacters(text));        
     }
     
+    /**
+     * Used for debug only. Print an event to STDERR.
+     * @param event the event to print
+     */
     protected void printEvent(XMLEvent event) {
         if (event.isStartElement()) {
             StartElement se = event.asStartElement();
