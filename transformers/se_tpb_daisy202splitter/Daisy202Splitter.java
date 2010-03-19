@@ -127,6 +127,21 @@ public class Daisy202Splitter extends Transformer implements FilesetErrorHandler
 			String dcIdentifier = nccFile.getDcIdentifier();
 			boolean useIdSubdir = "true".equals(paramAlwaysIdSubdir);			
 			
+			// Do we need to split the book?
+			long inputDirSize = FileUtils.getSize(input.getParentFile());
+			if (inputDirSize < maxVolumeSize) {
+				this.sendMessage("Book is smaller than " + paramVolumeSizeInMB + ". No splitting needed.", MessageEvent.Type.INFO_FINER);
+				
+				// No need to split anything, just copy to output
+				if (useIdSubdir) {
+					outputDir = new Directory(outputDir, dcIdentifier);
+				}
+				outputDir.addFileset(fileset, true);
+				
+				// Nothing more to do here. We're done.
+				return true;
+			}
+			
 			// Not needed anymore
 			fileset = null;
 						
