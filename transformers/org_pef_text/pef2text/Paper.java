@@ -11,12 +11,20 @@ public class Paper {
 		FA44_LEGACY};
 	public static final double INCH_IN_MM = 25.4;
 	
-	private double width;
-	private double height;
+	private final double width;
+	private final double height;
+	private final String name;
 	
+	/**
+	 * 
+	 * @param width paper width, in millimeters
+	 * @param height paper height, in millimeters
+	 * @param name name of the paper
+	 */
 	public Paper(double width, double height, String name) {
 		this.width = width;
 		this.height = height;
+		this.name = name;
 	}
 	
 	public Paper(double width, double height) {
@@ -75,6 +83,56 @@ public class Paper {
 	 */
 	public int getHeight(double unit) {
 		return (int)Math.floor(height / unit);
+	}
+	
+	/**
+	 * Get the display name for this paper.
+	 * @return returns the display name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(height);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		temp = Double.doubleToLongBits(width);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Paper other = (Paper) obj;
+		if (Double.doubleToLongBits(height) != Double
+				.doubleToLongBits(other.height))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (Double.doubleToLongBits(width) != Double
+				.doubleToLongBits(other.width))
+			return false;
+		return true;
 	}
 
 }

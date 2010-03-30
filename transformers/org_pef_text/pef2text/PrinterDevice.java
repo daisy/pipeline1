@@ -28,7 +28,7 @@ import javax.print.attribute.DocAttributeSet;
 public class PrinterDevice {
 	//private final static DocFlavor FLAVOR = DocFlavor.BYTE_ARRAY.AUTOSENSE;
 	private final static DocFlavor FLAVOR = DocFlavor.INPUT_STREAM.AUTOSENSE;
-	private DocPrintJob dpj;
+	private PrintService service;
 	
 	/**
 	 * Create a device with the provided name.
@@ -41,7 +41,7 @@ public class PrinterDevice {
 		PrintService[] printers = PrintServiceLookup.lookupPrintServices(FLAVOR, null);
 		for (PrintService p : printers) {
 			if (p.getName().equals(deviceName)) {
-				dpj = p.createPrintJob();
+				service = p;
 				return;
 			}
 		}
@@ -58,7 +58,7 @@ public class PrinterDevice {
 				}
 			}
 			if (match != null) {
-				dpj = match.createPrintJob();
+				service = match;
 				return;
 			}			
 		}
@@ -81,12 +81,16 @@ public class PrinterDevice {
 	 * @throws PrintException
 	 */
 	public void transmit(File file) throws FileNotFoundException, PrintException {
-		InputStreamDoc doc = new InputStreamDoc(file);
-		dpj.print(doc, null);
+		transmit(new FileInputStream(file));
 	}
 	
+	public void transmit(InputStream is)  throws FileNotFoundException, PrintException {
+		InputStreamDoc doc = new InputStreamDoc(is);
+		DocPrintJob dpj = service.createPrintJob();
+		dpj.print(doc, null);
+	}
+
 	private class InputStreamDoc implements Doc {
-		private File file;
 		private InputStream stream;
 		
 		/**
@@ -94,8 +98,8 @@ public class PrinterDevice {
 		 * @param file
 		 * @throws FileNotFoundException
 		 */
-		public InputStreamDoc(File file) throws FileNotFoundException {
-			this.file = file;
+		public InputStreamDoc(InputStream stream) throws FileNotFoundException {
+			this.stream = stream;
 		}
 
 		public DocAttributeSet getAttributes() {
@@ -115,12 +119,7 @@ public class PrinterDevice {
 		}
 
 		public InputStream getStreamForBytes() throws IOException {
-			synchronized (this) {
-				if (stream==null) {
-					stream = new FileInputStream(file);
-				}
-				return stream;
-			}
+			return stream;
 		}
 	}
 }

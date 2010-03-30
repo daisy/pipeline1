@@ -38,6 +38,9 @@
 				<value>BRAILLO_200</value>
 				<value>BRAILLO_400_S</value>
 				<value>BRAILLO_400_SR</value>
+				<value>BRAILLO_440_SW_2P</value>
+				<value>BRAILLO_440_SW_4P</value>
+				<value>BRAILLO_440_SWSF</value>
 				<value>INDEX_EVEREST</value>
 				<value>INDEX_BASIC</value>
 				<value>INDEX_EVEREST_V3</value>
@@ -153,6 +156,13 @@
 			<description>Set cell height in mm</description>
 			<example>10</example>
 			<default>10</default>
+		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>copies</name>
+			<description>Set the number of copies when embossing</description>
+			<example>4</example>
+			<default>1</default>
 		</parameter>
 
 	</parameters>

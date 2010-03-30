@@ -27,6 +27,14 @@
 		</datatype>
 	</parameter>
 
+	<parameter name="copies" value="1" required="false">
+		<nicename>Copies</nicename>
+		<description>Set the number of copies</description>
+		<datatype>
+			<string regex="[1-9][0-9]*"/>
+		</datatype>
+	</parameter>
+
 	<parameter name="pageRange" value="" required="false">
 		<nicename>Page range</nicename>
 		<description>Emboss a selection of pages</description>
@@ -94,6 +102,11 @@
 		<parameter>
 			<name>pageRange</name>
 			<value>${pageRange}</value>
+		</parameter>
+		
+		<parameter>
+			<name>copies</name>
+			<value>${copies}</value>
 		</parameter>
 
 	</task>

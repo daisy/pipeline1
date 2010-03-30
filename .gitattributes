@@ -1333,10 +1333,15 @@ transformers/org_pef_text/PipelineMessageOutputStream.java -text
 transformers/org_pef_text/SimpleTable.java -text
 transformers/org_pef_text/TableFactory.java -text
 transformers/org_pef_text/pef2text/AbstractEmbosser.java -text
+transformers/org_pef_text/pef2text/BaseEmbosser.java -text
+transformers/org_pef_text/pef2text/Braillo440VolumeWriter.java -text
+transformers/org_pef_text/pef2text/BrailloVolumeWriter.java -text
+transformers/org_pef_text/pef2text/BufferedVolumeEmbosser.java -text
 transformers/org_pef_text/pef2text/ConfigurableEmbosser.java -text
 transformers/org_pef_text/pef2text/Element.java -text
 transformers/org_pef_text/pef2text/EmbosserFactory.java -text
 transformers/org_pef_text/pef2text/EmbosserFactoryException.java -text
+transformers/org_pef_text/pef2text/EmbosserProperties.java -text
 transformers/org_pef_text/pef2text/LineBreaks.java -text
 transformers/org_pef_text/pef2text/PEF2Text.java -text
 transformers/org_pef_text/pef2text/PEFHandler.java -text
@@ -1344,8 +1349,10 @@ transformers/org_pef_text/pef2text/PEFParser.java -text
 transformers/org_pef_text/pef2text/Paper.java -text
 transformers/org_pef_text/pef2text/PrinterDevice.java -text
 transformers/org_pef_text/pef2text/Range.java -text
+transformers/org_pef_text/pef2text/SimpleEmbosserProperties.java -text
 transformers/org_pef_text/pef2text/UnsupportedPaperException.java -text
 transformers/org_pef_text/pef2text/UnsupportedWidthException.java -text
+transformers/org_pef_text/pef2text/VolumeWriter.java -text
 transformers/org_pef_text/pef2text/pef2text.xsl -text
 transformers/org_pef_text/pef2text/transformer.tdf -text
 transformers/org_pef_text/text2pef/Text2PEF.java -text

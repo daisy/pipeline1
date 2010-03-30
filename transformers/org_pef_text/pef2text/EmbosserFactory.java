@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 
 import org_pef_text.TableFactory;
+import org_pef_text.pef2text.Braillo440VolumeWriter.Mode;
 import org_pef_text.pef2text.Paper.PaperSize;
 
 /**
@@ -24,7 +25,11 @@ public class EmbosserFactory {
 		INDEX_BASIC_D_V3,
 		BRAILLO_200,
 		BRAILLO_400_S, 
-		BRAILLO_400_SR};
+		BRAILLO_400_SR,
+		BRAILLO_440_SW_2P,
+		BRAILLO_440_SW_4P,
+		BRAILLO_440_SWSF
+	};
 
 	private HashMap<String, String> settings;
 	private EmbosserType t;
@@ -64,9 +69,7 @@ public class EmbosserFactory {
 		return t;
 	}
 	
-	public AbstractEmbosser newEmbosser(OutputStream os) throws UnsupportedPaperException, EmbosserFactoryException {
-		ConfigurableEmbosser.Builder b;
-		TableFactory btb;
+	private void normalizeProperties() throws EmbosserFactoryException {
 		if (getProperty("cellWidth")!=null && getProperty("cellWidth")!="") { 
 			if (!getProperty("cellWidth").equals("6")) {
 				throw new EmbosserFactoryException("Changing cell width has not been implemented.");
@@ -80,8 +83,49 @@ public class EmbosserFactory {
 			}
 		} else {
 			setProperty("cellHeight", "10");
+		}		
+	}
+	
+	public AbstractEmbosser newEmbosser(PrinterDevice printer) throws EmbosserFactoryException {
+		BufferedVolumeEmbosser.Builder b;
+		TableFactory btb;
+		
+		normalizeProperties();
+		
+		Paper paper = Paper.newPaper(s);
+		String unsupportedPaperFormat = "Unsupported paper size for " + t;
+		
+		switch (t) {
+			case BRAILLO_440_SW_2P:	case BRAILLO_440_SW_4P:	case BRAILLO_440_SWSF: {
+				btb = new TableFactory();
+				btb.setTable(settings.get("table"));
+				btb.setFallback(settings.get("fallback"));
+				btb.setReplacement(settings.get("replacement"));
+				Braillo440VolumeWriter bvw;
+				if (t==EmbosserType.BRAILLO_440_SW_4P) {
+					bvw = new Braillo440VolumeWriter(paper, Mode.SW_FOUR_PAGE);
+				} else if (t==EmbosserType.BRAILLO_440_SW_2P) {
+					bvw = new Braillo440VolumeWriter(paper, Mode.SW_TWO_PAGE);
+				} else if (t==EmbosserType.BRAILLO_440_SWSF) {
+					bvw = new Braillo440VolumeWriter(paper, Mode.SWSF);
+				} else {
+					throw new RuntimeException("Unexpected error.");
+				}
+				b = new BufferedVolumeEmbosser.Builder(printer, btb.newTable(), bvw)
+					.breaks(LineBreaks.Type.DOS)
+					.padNewline(BufferedVolumeEmbosser.Padding.BEFORE);
+				return b.build();
+			}
 		}
+		throw new EmbosserFactoryException("Embosser " + t + " does not support this feature.");
+	}
+	
+	public AbstractEmbosser newEmbosser(OutputStream os) throws UnsupportedPaperException, EmbosserFactoryException {
+		ConfigurableEmbosser.Builder b;
+		TableFactory btb;
 
+		normalizeProperties();
+		
 		Paper paper = Paper.newPaper(s);
 		String unsupportedPaperFormat = "Unsupported paper size for " + t;
 		switch (t) {
@@ -93,28 +137,33 @@ public class EmbosserFactory {
 				b = new ConfigurableEmbosser.Builder(os, btb.newTable());
 				b.breaks(settings.get("breaks"));
 				b.padNewline(settings.get("padNewline"));
-				b.supports8dot(true);
-				b.supportsDuplex(true);
-				b.supportsAligning(false);
-				// All paper sizes are supported
-				b.setPaper(paper);
+				b.embosserProperties(
+						new SimpleEmbosserProperties()
+						.supports8dot(true)
+						.supportsDuplex(true)
+						.supportsAligning(false)
+						// All paper sizes are supported
+						.paper(paper));
 				return b.build();
 			case INDEX_BASIC:
-			case INDEX_EVEREST:
+			case INDEX_EVEREST: {
 				btb = new TableFactory();
 				btb.setTable(TableFactory.TableType.EN_US);
 				btb.setFallback(settings.get("fallback"));
 				btb.setReplacement(settings.get("replacement"));
 				b = new ConfigurableEmbosser.Builder(os, btb.newTable());
+				EmbosserProperties ep = new SimpleEmbosserProperties()
+					.supportsDuplex(true)
+					.supportsAligning(true)
+					.paper(paper);
 				b.breaks(LineBreaks.Type.DOS);
 				b.padNewline(ConfigurableEmbosser.Padding.NONE);
-				b.supportsDuplex(true);
-				b.supportsAligning(true);
+				b.embosserProperties(ep);
     			b.footer(new byte[]{0x1a});
-    			b.setPaper(paper);
 				// Supports paper formats smaller than 100 cells wide
-				b.header(getIndexV2Header(b.getWidth(), b.getHeight()));
+				b.header(getIndexV2Header(ep.getMaxWidth(), ep.getMaxHeight()));
     			return b.build();
+    		}
 			case INDEX_EVEREST_V3:
 				btb = new TableFactory();
 				btb.setTable(TableFactory.TableType.EN_US);
@@ -123,10 +172,12 @@ public class EmbosserFactory {
 				b = new ConfigurableEmbosser.Builder(os, btb.newTable())
 					.breaks(LineBreaks.Type.DOS)
 					.padNewline(ConfigurableEmbosser.Padding.NONE)
-					.supportsDuplex(true)
-					.supportsAligning(true)
 					.footer(new byte[]{0x1a})
-					.setPaper(paper);
+					.embosserProperties(
+							new SimpleEmbosserProperties()
+							.supportsDuplex(true)
+							.supportsAligning(true)
+							.paper(paper));
 				// Supports paper formats smaller than 100 cm in either direction
 				b.header(getEverestV3Header(paper));
     			return b.build();
@@ -138,10 +189,12 @@ public class EmbosserFactory {
 				b = new ConfigurableEmbosser.Builder(os, btb.newTable())
 					.breaks(LineBreaks.Type.DOS)
 					.padNewline(ConfigurableEmbosser.Padding.NONE)
-					.supportsDuplex(true)
-					.supportsAligning(true)
 					.footer(new byte[]{0x1a})
-					.setPaper(paper);
+					.embosserProperties(
+							new SimpleEmbosserProperties()
+							.supportsDuplex(true)
+							.supportsAligning(true)
+							.paper(paper));
 				switch (s) {
 					case W210MM_X_H10INCH:
 						b.header(new byte[]{
@@ -171,19 +224,25 @@ public class EmbosserFactory {
 						throw new UnsupportedPaperException(unsupportedPaperFormat);
 				}
     			return b.build();
-			case BRAILLO_200: case BRAILLO_400_S: case BRAILLO_400_SR:
+			case BRAILLO_200: case BRAILLO_400_S: case BRAILLO_400_SR: {
 				btb = new TableFactory();
 				btb.setTable(settings.get("table"));
 				btb.setFallback(settings.get("fallback"));
 				btb.setReplacement(settings.get("replacement"));
+				EmbosserProperties ep = new SimpleEmbosserProperties()
+					.supportsDuplex(true)
+					.supportsAligning(true)
+					.paper(paper);
 				b = new ConfigurableEmbosser.Builder(os, btb.newTable())
 					.breaks(LineBreaks.Type.DOS)
 					.padNewline(ConfigurableEmbosser.Padding.BEFORE)
-					.supportsDuplex(true)
-					.supportsAligning(true)
-					.setPaper(paper);
-				b.header(getBrailloHeader(b.getWidth(), paper));
+					.embosserProperties(ep)
+					.header(getBrailloHeader(ep.getMaxWidth(), paper));
     			return b.build();
+			}
+			case BRAILLO_440_SW_2P:	case BRAILLO_440_SW_4P:	case BRAILLO_440_SWSF: {
+				throw new EmbosserFactoryException(t + " does not support writing to file.");
+			}
 		}
 		throw new IllegalArgumentException("Cannot find embosser type " + t);
 	}
@@ -249,7 +308,7 @@ public class EmbosserFactory {
 			};
 	}
 	
-	private static byte[] toBytes(int val, int size) {
+	protected static byte[] toBytes(int val, int size) {
 		StringBuffer sb = new StringBuffer();
 		String s = "" + val;
 		if (s.length()>size) {

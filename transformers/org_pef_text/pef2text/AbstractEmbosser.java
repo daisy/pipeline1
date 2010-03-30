@@ -1,20 +1,25 @@
 package org_pef_text.pef2text;
 
+import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * PEF oriented embosser interface.
+ * Provides an embosser communication interface. Communication is 
+ * flat. For example, only one of these should be called when
+ * starting a new page:
+ * <ul>
+ * <li>newPage</li>
+ * <li>newSectionAndPage</li>
+ * <li>newVolumeSectionAndPage</li>
+ * </ul>
  * 
- * Note! Interface is a draft. Contact author 
- * before implementing an embosser based on this
- * interface
- *  
  * @author  Joel Hakansson, TPB
  * @version 10 okt 2008
- * @since 1.0
  */
-public interface AbstractEmbosser {
+public interface AbstractEmbosser extends EmbosserProperties, Closeable {
 
+	// TODO: naming convention: class is not abstract, it is an interface
+	
 	/**
 	 * Write a string of braille to the embosser.
 	 * Values must be between 0x2800 and 0x28FF
@@ -40,25 +45,23 @@ public interface AbstractEmbosser {
 	 */
 	public void newSectionAndPage(boolean duplex) throws IOException;
 	/**
-	 * Start a new volume
+	 * Starts a new page on a blank sheet of paper in a new volume
+	 * with the specified duplex settings.
+	 * @param duplex
 	 * @throws IOException
 	 */
-	public void newVolume() throws IOException;
+	public void newVolumeSectionAndPage(boolean duplex) throws IOException;
 	/**
-	 * Open for writing
+	 * Opens for writing
 	 * @throws IOException
 	 */
 	public void open(boolean duplex) throws IOException;
 	/**
-	 * Test if embosser has been open
-	 * @return returns true if 
+	 * Returns true if embosser is open
+	 * @return returns true if embosser is open, false otherwise
 	 */
 	public boolean isOpen();
-	/**
-	 * Finish up and close the output stream.
-	 * @throws IOException
-	 */
-	public void close() throws IOException;
+
 	/**
 	 * Test if embosser has been closed
 	 * @return returns true if the embosser has been open, but is now closed, false otherwise
@@ -77,41 +80,5 @@ public interface AbstractEmbosser {
 	 * @return
 	 */
 	public int getRowGap();
-	
-	/**
-	 * Does this embosser support volumes?
-	 * @return
-	 */
-	public boolean supportsVolumes();
 
-	/**
-	 * Does this embosser support 8-dot mode?
-	 * @return
-	 */
-	public boolean supports8dot();
-	
-	/**
-	 * Does this embosser support duplex printing?
-	 * @return
-	 */
-	public boolean supportsDuplex();
-	
-	/**
-	 * Does this embosser support page alignment adjustment?
-	 * @return
-	 */
-	public boolean supportsAligning();
-	
-	/**
-	 * Get the maximum row width for this embosser  
-	 * @return
-	 */
-	public int getMaxWidth();
-	
-	/**
-	 * Get the maximum number of rows that the embosser can produce on a page
-	 * @return
-	 */
-	public int getMaxHeight();
-	
 }

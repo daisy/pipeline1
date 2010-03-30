@@ -29,8 +29,9 @@ public class PEFHandler extends DefaultHandler {
 	private final int offset;
 
 	private Stack<Element> elements;
-	private Element rowParent;
-	private Element pageParent;
+	private Element currentPage;
+	private Element currentSection;
+	private Element currentVolume;
 	//private int inputPages;
 	private int pageCount;
 	private int alignmentPadding;
@@ -38,6 +39,7 @@ public class PEFHandler extends DefaultHandler {
 	private boolean verso;
 	private boolean isDuplex;
 	private boolean widthError;
+	private boolean newVolume;
 
 	
 	public static class Builder {
@@ -91,13 +93,15 @@ public class PEFHandler extends DefaultHandler {
 		this.mirrorAlign = builder.mirrorAlign;
 		this.offset = builder.offset;
         this.elements = new Stack<Element>();
-        this.rowParent = null;
-        this.pageParent = null;
+        this.currentPage = null;
+        this.currentSection = null;
+        this.currentVolume = null;
         //this.inputPages = 0;
         this.pageCount = 0;
         this.alignmentPadding = 0;
         this.versoAlignmentPadding = 0;
         this.widthError = false;
+        this.newVolume = false;
 	}
 
 	
@@ -122,7 +126,7 @@ public class PEFHandler extends DefaultHandler {
 			} else if ("row".equals(localName)) {
 				if (range.inRange(pageCount)) {
 					try {
-						if (rowParent==elements.peek()) {
+						if (currentPage==elements.peek()) {
 							embosser.newLine();
 						}
 						if (mirrorAlign && verso && isDuplex) {
@@ -147,13 +151,17 @@ public class PEFHandler extends DefaultHandler {
 				pageCount++;
 				//inputPages++;
 				try {
-					if (pageParent==elements.peek()) { // same section
+					if (currentSection==elements.peek()) { // same section
 						if (range.inRange(pageCount)) {
 							embosser.newPage();
 						}
-					} else if (pageParent!=null) { // not the same section as the previous page
+					} else if (currentSection!=null) { // not the same section as the previous page
 						if (range.inRange(pageCount)) {
-							embosser.newSectionAndPage(isDuplex);
+							if (newVolume) {
+								newVolume = false;
+							} else {
+								embosser.newSectionAndPage(isDuplex);
+							}
 						}
 					} else { // nothing has been written yet
 						if (range.inRange(pageCount)) {
@@ -166,12 +174,27 @@ public class PEFHandler extends DefaultHandler {
 					//System.out.println("page:" + pageCount);
 				} catch (IOException e) { throw new SAXException(e); }
 			} else if ("section".equals(localName)) {
+				int currentWidth = Integer.parseInt(getKey(atts, "", "cols"));
+				isDuplex = "true".equals(getKey(atts, "", "duplex"));
+				
+				if (currentVolume==elements.peek()) { // same volume
+					
+				} else if (currentVolume!=null) { // not the same volume as the previous section
+					if (range.inRange(pageCount)) {
+						try {
+							embosser.newVolumeSectionAndPage(isDuplex);
+							newVolume = true;
+						} catch (IOException e) {
+							throw new SAXException("Could not create new volume", e);
+						}
+					}
+				} else {
+					
+				}
 				verso = true;
 				if (pageCount % 2 == 1) {
 					pageCount++;
 				}
-				int currentWidth = Integer.parseInt(getKey(atts, "", "cols"));
-				isDuplex = "true".equals(getKey(atts, "", "duplex"));
 				if (!embosser.supportsAligning() || currentWidth==embosser.getMaxWidth()) {
 					alignmentPadding = 0;
 					versoAlignmentPadding = 0;
@@ -197,7 +220,11 @@ public class PEFHandler extends DefaultHandler {
 					versoAlignmentPadding = embosser.getMaxWidth() - currentWidth - alignmentPadding;
 					if (alignmentPadding<0 || versoAlignmentPadding<0) {
 						widthError = true;
-						throw new SAXException("Cannot fit page on paper with offset " + offset);
+						if (offset==0) {
+							throw new SAXException("Cannot fit page on paper");
+						} else {
+							throw new SAXException("Cannot fit page on paper with offset " + offset);
+						}
 					}
 					
 				}
@@ -240,10 +267,12 @@ public class PEFHandler extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		elements.pop();
 		if (PEF_NS.equals(uri)) {
-			if ("page".equals(localName) && range.inRange(pageCount)) {
-				pageParent = elements.peek();
+			if ("section".equals(localName) && range.inRange(pageCount)) {
+				currentVolume = elements.peek();
+			} else if ("page".equals(localName) && range.inRange(pageCount)) {
+				currentSection = elements.peek();
 			} else if ("row".equals(localName) && range.inRange(pageCount)) {
-				rowParent = elements.peek();
+				currentPage = elements.peek();
 			}
 		}
 	}

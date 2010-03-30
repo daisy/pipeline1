@@ -35,9 +35,7 @@ configured for "USA 6 DOT 001.00" or "ENGLAND 6 DOT 044.00".</p>
 Braille and dual-sided embossing.</p>
 
 <p>Note that, when using "Emboss PEF (generic embosser)" some features will not
-be available.</p>
-
-<p>Sections marked by * only applies to "Emboss PEF (specific embosser)"</p>
+be available. These are marked with * below.</p>
 
 <h4>What is PEF?</h4>
 
@@ -53,6 +51,66 @@ PEF</a>.</p>
 
 <p>The scripts only support embossers that produce braille cells that are 6 mm
 wide and 10 mm high.</p>
+
+<h4>FAQ</h4>
+
+<p><em>I get an error message saying "Cannot fit page on paper"...</em></p>
+<ul>
+  <li><em>What does it mean?<br />
+    </em>It means that the page is too wide for the selected paper/embosser
+    combination.<br />
+    Note that the maximum width for a particular paper depends on the physical
+    properties of the selected embosser. For example, the maximum width on an
+    A4 paper range from 30 to 35 cells, depending on embosser model.</li>
+  <li><em>What should I do?<br />
+    </em>Use a wider paper.</li>
+</ul>
+
+<p><em>I get an error message saying "Cannot fit page on paper with offset
+[x]"...</em></p>
+<ul>
+  <li><em>What does it mean?<br />
+    </em>It means that the offset setting is pushing the page off the
+  paper.</li>
+  <li><em>What should I do?<br />
+    </em>Reduce the offset setting and adjust the embosser's paper guide
+    instead.</li>
+</ul>
+
+<p><em>I get an error message saying "Could not find embosser". What should I
+do?</em></p>
+
+<p>Check the device name parameter for typos. Note that the device name is case
+sensitive.</p>
+
+<p><em>I don't know what device name is. How do I find it?</em></p>
+
+<p>On windows:</p>
+<ul>
+  <li>Go to Start/Printers and Faxes</li>
+  <li>The value in the "Name" column is the device name</li>
+</ul>
+
+<p><em>I have a Braillo embosser and everything comes out wrong...</em></p>
+<ul>
+  <li><em>Why is that?<br />
+    </em>The braille table used by the embosser is not the same as the one used
+    in the script.</li>
+  <li><em>Why doesn't the script take care of this?</em><em></em><br />
+    The script cannot tell the embosser which table to use because Braillo
+    embossers do not support dynamic table select.</li>
+  <li><em>What should I do?</em><br />
+    Manually set the embosser's braille table to match the value used in the
+    script.</li>
+</ul>
+
+<p><em>My document contains more than 100 pages but my Braillo 440 embosser
+cannot handle that amount of pages in one go. What should I do?</em></p>
+
+<p>If the document has been organized into volumes, there is nothing to worry
+about since each volume will be sent separately to the embosser. If a single
+volume happens to contain more than 99 pages, the script will report an error
+and abort.</p>
 <!-- brief summary of purpose and whats going on. What does this script do really? -->
 
 <h2 id="inputReqs">Input Requirements</h2>
@@ -62,7 +120,9 @@ wide and 10 mm high.</p>
 
 <h2 id="output">Output</h2>
 
-<p>The output is an embossed document.</p>
+<p>The output is an embossed document. Each volume in the input document will
+result in a separate physical unit if embossed using an embosser that supports
+volume assembly (e.g. Braillo 440SW and Braillo 440SWSF).</p>
 
 <h2 id="config">Configuration</h2>
 <!-- description on params exposed in script -->
@@ -75,15 +135,25 @@ wide and 10 mm high.</p>
   <dt>Input file</dt>
     <dd>Select input PEF document.</dd>
   <dt>Embosser *</dt>
-    <dd>Select the make and model of target embosser.</dd>
+    <dd>Select the make and model of the target embosser.</dd>
   <dt>Paper size</dt>
     <dd>Set the size of the paper in the embosser.</dd>
   <dt>Device name</dt>
     <dd>Type in the name of the embosser as labelled by the computer OS. The
       device name is case sensitive, but Emboss PEF will try to find the
       embosser even if only a part of the device name is entered.</dd>
+  <dt>Copies</dt>
+    <dd>Set the number of document copies.</dd>
   <dt>Page range</dt>
     <dd>Select a range of pages to emboss.</dd>
+    <dd>Note for Braillo 440 SW (using four page mode) and Braillo 440 SWSF
+      embossers: Embossing the whole file at once will not equal the combined
+      result of embossing the same set of pages in arbitrary page range chunks
+      (unless each range spans a number of complete volumes). This is due to
+      the physical properties of these prints. For example, if a book whose
+      first volume spans pages 1-96 is embossed in two chunks, first pages 1-4
+      and then pages 5-96, the result will not equal embossing once using page
+      range 1-96.</dd>
   <dt>Paper width error handling *</dt>
     <dd>Select a fallback action to use when the selected paper is wider than
       specified in the file.</dd>
@@ -104,6 +174,8 @@ wide and 10 mm high.</p>
     </dd>
   <dt>Keep output file</dt>
     <dd>Select a destination for the file that is sent to the embosser.</dd>
+    <dd><em>Note that this feature is not compatible with some embosser
+      models.</em></dd>
 </dl>
 
 <h2 id="transformers">Appendix: List of Transformers used</h2>
