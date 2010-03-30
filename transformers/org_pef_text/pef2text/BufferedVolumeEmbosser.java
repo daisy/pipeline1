@@ -118,7 +118,9 @@ public class BufferedVolumeEmbosser extends BaseEmbosser {
 		try {
 			pd.transmit(out);
 		} catch (PrintException e) {
-			throw new IOException(e);
+			IOException e2 = new IOException();
+			e2.initCause(e);
+			throw e2;
 		} finally {
 			out.deleteOnExit();
 		}
