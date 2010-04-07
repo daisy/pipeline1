@@ -90,8 +90,8 @@ public class PEF2Text extends Transformer {
 			try {
 				if ("".equals(outFileName)) {
 					try {
+						AbstractEmbosser embosserObj = ef.newEmbosser(bd);
 						for (int j=0; j<copies; j++) {
-							AbstractEmbosser embosserObj = ef.newEmbosser(bd);
 							convert(input, embosserObj, rangeObj, paperWidthFallback, align, offset);
 						}
 					} catch (EmbosserFactoryException e) {
@@ -171,12 +171,12 @@ public class PEF2Text extends Transformer {
 	
 	private void convert(File input, AbstractEmbosser embosserObj, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException {
 		try {
-			PEFHandler.Builder builder = new PEFHandler.Builder(embosserObj)
+			PEFHandler ph = new PEFHandler.Builder(embosserObj)
 				.range(rangeObj)
 				.alignmentFallback(paperWidthFallback)
-				.mirrorAlignment(align).
-				offset(offset);
-			PEFHandler ph = builder.build();
+				.mirrorAlignment(align)
+				.offset(offset)
+				.build();
 			PEFParser.parse(input, ph);
 		} catch (ParserConfigurationException e) {
 			throw new TransformerRunException(e.getMessage(), e);

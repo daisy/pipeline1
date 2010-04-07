@@ -69,6 +69,10 @@ public class BufferedVolumeEmbosser extends BaseEmbosser {
 		padNewline = builder.padNewline;
 		pd = builder.pd;
 		init(builder.vw);
+	}
+	
+	public void open(boolean duplex) throws IOException {
+		super.open(duplex);
 		initVolume();
 	}
 	

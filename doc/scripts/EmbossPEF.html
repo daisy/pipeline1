@@ -49,8 +49,14 @@ PEF</a>.</p>
 
 <h4>Limitations</h4>
 
-<p>The scripts only support embossers that produce braille cells that are 6 mm
-wide and 10 mm high.</p>
+<p>The scripts assumes that the <a
+href="http://www.blista.de/download/druckerei/braille-dimensions.pdf">Marburg
+Medium spacing</a> measurments can be used when calculating space reqirements
+etc. In other words, to achieve correct result, braille cells must be 6 mm wide
+and lines must be 10 mm high once embossed.</p>
+
+<p>This script does not support files containing braille patterns specific for
+8 dot braille.</p>
 
 <h4>FAQ</h4>
 
@@ -70,8 +76,8 @@ wide and 10 mm high.</p>
 [x]"...</em></p>
 <ul>
   <li><em>What does it mean?<br />
-    </em>It means that the offset setting is pushing the page off the
-  paper.</li>
+    </em>It means that the current offset setting is pushing the page off the
+    paper.</li>
   <li><em>What should I do?<br />
     </em>Reduce the offset setting and adjust the embosser's paper guide
     instead.</li>
@@ -83,11 +89,12 @@ do?</em></p>
 <p>Check the device name parameter for typos. Note that the device name is case
 sensitive.</p>
 
-<p><em>I don't know what device name is. How do I find it?</em></p>
+<p><em>I don't know what "device name" is. How do I find it?</em></p>
 
-<p>On windows:</p>
+<p>On windows, do the following:</p>
 <ul>
-  <li>Go to Start/Printers and Faxes</li>
+  <li>Go to Start/Printers and Faxes (or Start/Control panel/Printers and
+  Faxes)</li>
   <li>The value in the "Name" column is the device name</li>
 </ul>
 
@@ -98,7 +105,7 @@ sensitive.</p>
     in the script.</li>
   <li><em>Why doesn't the script take care of this?</em><em></em><br />
     The script cannot tell the embosser which table to use because Braillo
-    embossers do not support dynamic table select.</li>
+    embossers do not support this feature.</li>
   <li><em>What should I do?</em><br />
     Manually set the embosser's braille table to match the value used in the
     script.</li>
@@ -115,14 +122,17 @@ and abort.</p>
 
 <h2 id="inputReqs">Input Requirements</h2>
 
-<p>This script accepts PEF 2008-1 documents (6 dot only).</p>
+<p>This script accepts PEF 2008-1 documents (containing 6 dot braille patterns
+only).</p>
 <!-- detailed requirements on input nature -->
 
 <h2 id="output">Output</h2>
 
-<p>The output is an embossed document. Each volume in the input document will
-result in a separate physical unit if embossed using an embosser that supports
-volume assembly (e.g. Braillo 440SW and Braillo 440SWSF).</p>
+<p>The output is an embossed document.</p>
+
+<p>Each volume in the input document will result in a separate physical unit if
+embossed using an embosser that supports volume assembly (e.g. Braillo 440SW
+and Braillo 440SWSF).</p>
 
 <h2 id="config">Configuration</h2>
 <!-- description on params exposed in script -->

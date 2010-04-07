@@ -34,10 +34,6 @@ public abstract class BaseEmbosser implements AbstractEmbosser {
 	
 	protected void init(EmbosserProperties props) {
 		this.props = props;
-		charsOnRow = 0;
-		rowsOnPage = 0;
-		rowgap = 0;
-		currentPage = 1;
 		isOpen = false;
 		isClosed = false;
 	}
@@ -61,6 +57,10 @@ public abstract class BaseEmbosser implements AbstractEmbosser {
 	}
 	
 	public void open(boolean duplex) throws IOException {
+		charsOnRow = 0;
+		rowsOnPage = 0;
+		rowgap = 0;
+		currentPage = 1;
 		isOpen=true;
 		currentDuplex = duplex;
 	}
