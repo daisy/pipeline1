@@ -39,12 +39,14 @@
 	<entry key="ȩ">&#x2808;&#x2811;</entry>						<!-- LATIN SMALL LETTER E WITH CEDILLA, 0229 -->
 	<entry key="f">&#x280B;</entry>
 	<entry key="g">&#x281B;</entry>
+	<entry key="ğ">&#x2808;&#x281B;</entry>						<!-- LATIN SMALL LETTER G WITH BREVE, U+011F -->
 	<entry key="h">&#x2813;</entry>
 	<entry key="i">&#x280A;</entry>
 	<entry key="í">&#x2808;&#x280A;</entry>
 	<entry key="ì">&#x2808;&#x280A;</entry>
 	<entry key="î">&#x2808;&#x280A;</entry>
 	<entry key="ï">&#x2808;&#x280A;</entry>
+	<entry key="ı">&#x2808;&#x280A;</entry>						<!-- LATIN SMALL LETTER DOTLESS I', U+0131 -->
 	<entry key="j">&#x281A;</entry>
 	<entry key="k">&#x2805;</entry>
 	<entry key="l">&#x2807;</entry>
