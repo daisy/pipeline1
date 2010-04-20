@@ -136,7 +136,7 @@ public class TTSUtils {
 	 */
 	public void parseRomanNumerals(Document doc) {
 		// parse all roman numerals
-		NodeList frontNums = XPathUtils.selectNodes(doc.getDocumentElement(), "//pagenum[@page='front']");
+		NodeList frontNums = XPathUtils.selectNodes(doc.getDocumentElement(), "//pagenum[@page='front' or @page='special']");
 		for (int i = 0; i < frontNums.getLength(); i++) {	
 			Element elem = (Element) frontNums.item(i);
 			String str = elem.getTextContent().trim();
