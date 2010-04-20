@@ -55,10 +55,9 @@ not(ancestor::dtb:h1|ancestor::dtb:h2|ancestor::dtb:h3|ancestor::dtb:h4|ancestor
                      Se XSLT programmers reference, second edition, Michael Kay, sidan 541
       -->
 			<!-- 
-         Om föregående textnod slutar med mellanslag eller om nästkommande textnod börjar med mellanslag
-         så ska denna tagg inte flyttas.
+				If the previous text node ends with a space or the next text node starts with a space, the pagenum is not moved.
       -->
-			<xsl:when test="starts-with($A1, ' ') or substring($A2, string-length($A2))=' '">
+			<xsl:when test="matches($A1, '^\s') or matches($A2,'\s$')">
 				<xsl:call-template name="copy"/>
 				<xsl:value-of select="$A1"/>
 			</xsl:when>
