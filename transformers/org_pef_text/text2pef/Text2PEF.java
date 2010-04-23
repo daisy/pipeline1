@@ -50,7 +50,7 @@ public class Text2PEF extends Transformer {
 		if (identifier==null) identifier="";
 		progress(0);
 		try {
-			TextParser.Builder builder = new TextParser.Builder(input, output);
+			TextHandler.Builder builder = new TextHandler.Builder(input, output);
 			if (mode!=null && !"".equals(mode) && !"detect".equals(mode)) {
 				builder.mode(TableFactory.TableType.valueOf(mode.toUpperCase()));
 			}
@@ -66,7 +66,7 @@ public class Text2PEF extends Transformer {
 			if (language!=null && !"".equals(language)) {
 				builder.language(language);
 			}
-			TextParser tp = builder.build();
+			TextHandler tp = builder.build();
 			tp.parse();
 		} catch (UnsupportedEncodingException e) {
 			throw new TransformerRunException(e.getMessage(), e);

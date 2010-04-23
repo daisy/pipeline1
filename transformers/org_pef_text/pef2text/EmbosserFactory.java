@@ -113,14 +113,15 @@ public class EmbosserFactory {
 				}
 				b = new BufferedVolumeEmbosser.Builder(printer, btb.newTable(), bvw)
 					.breaks(LineBreaks.Type.DOS)
-					.padNewline(BufferedVolumeEmbosser.Padding.BEFORE);
+					.padNewline(BufferedVolumeEmbosser.Padding.NONE) // JH100408: changed from BEFORE
+					.autoLineFeedOnEmptyPage(true);
 				return b.build();
 			}
 		}
 		throw new EmbosserFactoryException("Embosser " + t + " does not support this feature.");
 	}
 	
-	public AbstractEmbosser newEmbosser(OutputStream os) throws UnsupportedPaperException, EmbosserFactoryException {
+	public AbstractEmbosser newEmbosser(OutputStream os) throws EmbosserFactoryException {
 		ConfigurableEmbosser.Builder b;
 		TableFactory btb;
 
@@ -235,9 +236,11 @@ public class EmbosserFactory {
 					.paper(paper);
 				b = new ConfigurableEmbosser.Builder(os, btb.newTable())
 					.breaks(LineBreaks.Type.DOS)
-					.padNewline(ConfigurableEmbosser.Padding.BEFORE)
+					.padNewline(ConfigurableEmbosser.Padding.NONE) // JH100408: changed from BEFORE
 					.embosserProperties(ep)
-					.header(getBrailloHeader(ep.getMaxWidth(), paper));
+					.header(getBrailloHeader(ep.getMaxWidth(), paper))
+					.fillSheet(true)
+					.autoLineFeedOnEmptyPage(true);
     			return b.build();
 			}
 			case BRAILLO_440_SW_2P:	case BRAILLO_440_SW_4P:	case BRAILLO_440_SWSF: {

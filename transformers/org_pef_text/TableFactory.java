@@ -16,6 +16,7 @@ public class TableFactory {
 							BRAILLO_6DOT_046_01, // compatible with "Braillo SWEDEN 6 DOT 046.01"
 							BRAILLO_6DOT_047_01 // compatible with "Braillo NORWAY 6 DOT 047.01"
 							};
+
 	public enum EightDotFallbackMethod {MASK, REPLACE, REMOVE}; //, FAIL
 	private TableFactory.TableType tableType;
 	private EightDotFallbackMethod fallback;
@@ -62,7 +63,7 @@ public class TableFactory {
 	 * Get a new table instance based on the factory's current settings.
 	 * @return returns a new table instance.
 	 */
-	public AbstractTable newTable() {
+	public BrailleTable newTable() {
 		return newTable(tableType);
 	}
 	
@@ -71,7 +72,7 @@ public class TableFactory {
 	 * @param t the type of table to return, this will override the factory's default table type.
 	 * @return returns a new table instance.
 	 */
-	public AbstractTable newTable(TableType t) {
+	public BrailleTable newTable(TableType t) {
 		switch (t) {
 			case EN_US:
 				return new SimpleTable(new String(" A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)="), Charset.forName("UTF-8"), fallback, replacement, true);
@@ -100,11 +101,7 @@ public class TableFactory {
 				}
 				return new SimpleTable(sb.toString(), Charset.forName("UTF-8"), fallback, replacement, true);
 			case UNICODE_BRAILLE:
-				StringBuffer tmp = new StringBuffer();
-				for (int i=0; i<256; i++) {
-					tmp.append((char)(0x2800+i));
-				}
-				return new SimpleTable(tmp.toString(), Charset.forName("UTF-8"), fallback, replacement, true);
+				return new SimpleTable(BrailleConstants.BRAILLE_PATTERNS_256, Charset.forName("UTF-8"), fallback, replacement, true);
 			default:
 				throw new IllegalArgumentException("Cannot find table type " + tableType);
 		}

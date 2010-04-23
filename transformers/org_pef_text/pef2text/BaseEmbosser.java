@@ -2,7 +2,7 @@ package org_pef_text.pef2text;
 
 import java.io.IOException;
 
-import org_pef_text.AbstractTable;
+import org_pef_text.BrailleTable;
 
 /**
  * Provides an abstract base for embossers. 
@@ -28,7 +28,7 @@ public abstract class BaseEmbosser implements AbstractEmbosser {
 
 	public abstract LineBreaks getLinebreakStyle();
 	public abstract Padding getPaddingStyle();
-	public abstract AbstractTable getTable();
+	public abstract BrailleTable getTable();
 	protected abstract void add(byte b) throws IOException;
 	protected abstract void addAll(byte[] b) throws IOException;
 	
@@ -63,6 +63,14 @@ public abstract class BaseEmbosser implements AbstractEmbosser {
 		currentPage = 1;
 		isOpen=true;
 		currentDuplex = duplex;
+	}
+	
+	public int currentPage() {
+		return currentPage;
+	}
+	
+	public boolean pageIsEmpty() {
+		return (charsOnRow+rowsOnPage)==0;
 	}
 	
 	public void close() throws IOException {
@@ -115,7 +123,7 @@ public abstract class BaseEmbosser implements AbstractEmbosser {
 	}
 
 	public void newSectionAndPage(boolean duplex) throws IOException {
-		if (props.supportsDuplex() && (currentPage %2 )==1) {
+		if (props.supportsDuplex() && (currentPage % 2)==1) {
 			formFeed();
 		}
 		newPage();

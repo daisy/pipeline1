@@ -1328,7 +1328,8 @@ transformers/org_pef_pefFileMerger/PEFFileMerger.java -text
 transformers/org_pef_pefFileMerger/transformer.tdf -text
 transformers/org_pef_pefFileSplitter/PEFFileSplitter.java -text
 transformers/org_pef_pefFileSplitter/transformer.tdf -text
-transformers/org_pef_text/AbstractTable.java -text
+transformers/org_pef_text/BrailleConstants.java -text
+transformers/org_pef_text/BrailleTable.java -text
 transformers/org_pef_text/PipelineMessageOutputStream.java -text
 transformers/org_pef_text/SimpleTable.java -text
 transformers/org_pef_text/TableFactory.java -text
@@ -1356,6 +1357,7 @@ transformers/org_pef_text/pef2text/VolumeWriter.java -text
 transformers/org_pef_text/pef2text/pef2text.xsl -text
 transformers/org_pef_text/pef2text/transformer.tdf -text
 transformers/org_pef_text/text2pef/Text2PEF.java -text
+transformers/org_pef_text/text2pef/TextHandler.java -text
 transformers/org_pef_text/text2pef/TextParser.java -text
 transformers/org_pef_text/text2pef/transformer.tdf -text
 transformers/pipeline_system_copyer/Copyer.java -text

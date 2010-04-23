@@ -3,7 +3,7 @@ package org_pef_text.pef2text;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org_pef_text.AbstractTable;
+import org_pef_text.BrailleTable;
 
 /**
  * 
@@ -15,26 +15,30 @@ import org_pef_text.AbstractTable;
  */
 public class ConfigurableEmbosser extends BaseEmbosser {
 
-	private LineBreaks breaks;
-	private Padding padNewline;
-	private OutputStream os;
-	private AbstractTable bf;
-	private byte[] header;
-	private byte[] footer;
+	private final LineBreaks breaks;
+	private final Padding padNewline;
+	private final OutputStream os;
+	private final BrailleTable bf;
+	private final byte[] header;
+	private final byte[] footer;
+	private final boolean fillSheet;
+	private final boolean lineFeedOnEmptySheet;
 	
 	public static class Builder {
 		// required params
 		private OutputStream os;
-		private AbstractTable bt;
+		private BrailleTable bt;
 		
 		// optional params
 		private LineBreaks.Type breaks = LineBreaks.Type.DEFAULT;
 		private Padding padNewline = Padding.values()[0];
 		private byte[] header = new byte[0];
 		private byte[] footer = new byte[0];
+		private boolean fillSheet = false;
+		private boolean lineFeedOnEmptySheet = false;
 		EmbosserProperties props = new SimpleEmbosserProperties();
 		
-		public Builder(OutputStream os, AbstractTable bt) {
+		public Builder(OutputStream os, BrailleTable bt) {
 			this.os = os;
 			this.bt = bt;
 		}
@@ -62,10 +66,19 @@ public class ConfigurableEmbosser extends BaseEmbosser {
 		public Builder padNewline(Padding value) { padNewline = value; return this; }
 		public Builder header(byte[] value) { header = value; return this; }
 		public Builder footer(byte[] value) { footer = value; return this; }
+		public Builder fillSheet(boolean value) { fillSheet = value; return this; }
+		public Builder autoLineFeedOnEmptyPage(boolean value) { lineFeedOnEmptySheet = value; return this; }
 
 		public ConfigurableEmbosser build() {
 			return new ConfigurableEmbosser(this);
 		}
+	}
+	
+	protected void formFeed() throws IOException {
+		if (lineFeedOnEmptySheet && pageIsEmpty()) {
+			lineFeed();
+		}
+		super.formFeed();
 	}
 
 	private ConfigurableEmbosser(Builder builder) {
@@ -75,6 +88,8 @@ public class ConfigurableEmbosser extends BaseEmbosser {
 		header = builder.header;
 		footer = builder.footer;
 		os = builder.os;
+		fillSheet = builder.fillSheet;
+		lineFeedOnEmptySheet = builder.lineFeedOnEmptySheet;
 		init(builder.props);
 	}
 
@@ -86,7 +101,7 @@ public class ConfigurableEmbosser extends BaseEmbosser {
 		os.write(bytes);
 	}
 
-	public AbstractTable getTable() {
+	public BrailleTable getTable() {
 		return bf;
 	}
 
@@ -104,6 +119,9 @@ public class ConfigurableEmbosser extends BaseEmbosser {
 	}
 	
 	public void close() throws IOException {
+		if (fillSheet && supportsDuplex() && currentPage() % 2 == 0) {
+			formFeed();
+		}
 		os.write(footer);
 		os.close();
 		super.close();

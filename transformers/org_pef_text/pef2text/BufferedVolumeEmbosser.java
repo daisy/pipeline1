@@ -7,7 +7,8 @@ import java.util.Stack;
 
 import javax.print.PrintException;
 
-import org_pef_text.AbstractTable;
+import org_pef_text.BrailleTable;
+import org_pef_text.pef2text.ConfigurableEmbosser.Builder;
 
 /**
  * Provides a buffered volume embossers. This is similar to {@link ConfigurableEmbosser},
@@ -21,21 +22,23 @@ public class BufferedVolumeEmbosser extends BaseEmbosser {
 	private LineBreaks breaks;
 	private Padding padNewline;
 	private PrinterDevice pd;
-	private AbstractTable bf;
+	private BrailleTable bf;
 	private Stack<ArrayList<Byte>> pages;
 	private VolumeWriter vw;
+	private final boolean lineFeedOnEmptySheet;
 	
 	public static class Builder {
 		// required params
 		private PrinterDevice pd;
-		private AbstractTable bt;
+		private BrailleTable bt;
 		private VolumeWriter vw;
 		
 		// optional params
 		private LineBreaks.Type breaks = LineBreaks.Type.DEFAULT;
 		private Padding padNewline = Padding.values()[0];
+		private boolean lineFeedOnEmptySheet = false;
 
-		public Builder(PrinterDevice pd, AbstractTable bt, VolumeWriter vw) {
+		public Builder(PrinterDevice pd, BrailleTable bt, VolumeWriter vw) {
 			this.pd = pd;
 			this.bt = bt;
 			this.vw = vw;
@@ -56,7 +59,8 @@ public class BufferedVolumeEmbosser extends BaseEmbosser {
 			return this;
 		}
 		public Builder padNewline(Padding value) { padNewline = value; return this; }
-
+		public Builder autoLineFeedOnEmptyPage(boolean value) { lineFeedOnEmptySheet = value; return this; }
+		
 		public BufferedVolumeEmbosser build() {
 			return new BufferedVolumeEmbosser(this);
 		}
@@ -67,6 +71,7 @@ public class BufferedVolumeEmbosser extends BaseEmbosser {
 		bf = builder.bt;
 		breaks = new LineBreaks(builder.breaks);
 		padNewline = builder.padNewline;
+		lineFeedOnEmptySheet = builder.lineFeedOnEmptySheet;
 		pd = builder.pd;
 		init(builder.vw);
 	}
@@ -81,7 +86,7 @@ public class BufferedVolumeEmbosser extends BaseEmbosser {
 		pages.add(new ArrayList<Byte>());
 	}
 	
-	public AbstractTable getTable() {
+	public BrailleTable getTable() {
 		return bf;
 	}
 	
@@ -105,6 +110,9 @@ public class BufferedVolumeEmbosser extends BaseEmbosser {
 	}
 
 	protected void formFeed() throws IOException {
+		if (lineFeedOnEmptySheet && pageIsEmpty()) {
+			lineFeed();
+		}
 		super.formFeed(); // form feed characters belong to the current page
         pages.add(new ArrayList<Byte>()); // start a new page
 	}

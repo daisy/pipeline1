@@ -5,7 +5,13 @@ import java.util.HashMap;
 
 import org_pef_text.TableFactory.EightDotFallbackMethod;
 
-public class SimpleTable implements AbstractTable {
+/**
+ * Provides a simple BrailleTable implementation. It 
+ * provides a one-to-one mapping between braille and
+ * text and vice versa.
+ * @author Joel Håkansson
+ */
+public class SimpleTable implements BrailleTable {
 	private HashMap<Character, Character> b2t;
 	private HashMap<Character, Character> t2b;
 	private String tableDef;
