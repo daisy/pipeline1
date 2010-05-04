@@ -167,10 +167,10 @@ class PreCalc {
         
         // NCX stuff
         coll = new ArrayList<Attribute>();
-        coll.add(ef.createAttribute("src", ncxClipSrc));
-        coll.add(ef.createAttribute("clipBegin", ncxClipBegin));
-        coll.add(ef.createAttribute("clipEnd", ncxClipEnd));
-        coll.add(ef.createAttribute("title", ncxTitle));
+        if (ncxClipSrc!=null) coll.add(ef.createAttribute("src", ncxClipSrc));
+        if (ncxClipBegin!=null) coll.add(ef.createAttribute("clipBegin", ncxClipBegin));
+        if (ncxClipEnd!=null) coll.add(ef.createAttribute("clipEnd", ncxClipEnd));
+        if (ncxTitle!=null) coll.add(ef.createAttribute("title", ncxTitle));
         xew.add(ef.createStartElement("", null, "ncx", coll.iterator(), null));
         for (Iterator<String> it = smilCustomTests.keySet().iterator(); it.hasNext(); ) {
             String id = it.next();

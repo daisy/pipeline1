@@ -73,7 +73,9 @@
                     <xsl:call-template name="find_doctitle"/>
                   </xsl:attribute>
                 </text>
+              	<xsl:if test="@src">
                 <audio id="doctitleAudio" clip-begin="{@clipBegin}" clip-end="{@clipEnd}" src="{@src}"/>
+              	</xsl:if>
               </par>
             </xsl:for-each>
           </xsl:if>          
