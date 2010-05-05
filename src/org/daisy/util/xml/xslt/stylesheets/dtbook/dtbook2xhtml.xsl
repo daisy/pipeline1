@@ -1231,6 +1231,9 @@
 		<xsl:variable name="fragment" select="substring-after($smilref, '#')"/>
 		<xsl:variable name="smilElem" select="document(concat($baseDir, $url))//*[@id=$fragment]"/>
 	  	<xsl:choose>
+	  		<xsl:when test="$smilElem[self::s:seq]">
+				<xsl:value-of select="concat(concat($smilPrefix,$url),'#',$smilElem/s:par/s:text/@id)"/>
+	  		</xsl:when>
 	  		<xsl:when test="$smilElem[self::s:par] and $hrefTarget='TEXT'">
 				<xsl:value-of select="concat(concat($smilPrefix,$url),'#',$smilElem/s:text/@id)"/>
 	  		</xsl:when>
