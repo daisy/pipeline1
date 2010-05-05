@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<xsl:transform version="1.0" 
+<xsl:transform version="2.0" 
                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                xmlns:n="http://www.daisy.org/z3986/2005/ncx/"
                xmlns:s="http://www.w3.org/2001/SMIL20/"
@@ -187,33 +187,17 @@
 		      <xsl:apply-templates mode="inPar"/>
 	      </par>
   		</xsl:when>
-  		<!-- does a parent have a customTest attribute? -->
-  		<xsl:when test="ancestor::s:seq/@customTest">
-  			<xsl:variable name="systemRequired">
-	      	<xsl:call-template name="get_system_required">
-	      		<xsl:with-param name="customTest" select="(ancestor::s:seq/@customTest)[1]"/>
-	      	</xsl:call-template>
-	      </xsl:variable>
-	      <par endsync="last">
-	      	<xsl:copy-of select="@id"/>
-		      <xsl:if test="$systemRequired!=''">
-		       	<xsl:attribute name="system-required">
-		       		<xsl:value-of select="$systemRequired"/>
-		       	</xsl:attribute>
-		      </xsl:if>
-		      <xsl:apply-templates mode="inPar"/>
-	      </par>
-  		</xsl:when>
-  		<!-- does this element have a customTest attribute? -->
-  		<xsl:when test="@customTest">
+  		<!-- does this element or a parent have a customTest attribute? -->
+  		<xsl:when test="@customTest or ancestor::s:seq/@customTest">
+  			<xsl:variable name="customTest" select="if(@customTest) then @customTest else ancestor::s:seq/@customTest"/>
   			<xsl:variable name="systemRequired">
       		<xsl:call-template name="get_system_required">
-      			<xsl:with-param name="customTest" select="@customTest"/>
+      			<xsl:with-param name="customTest" select="$customTest"/>
       		</xsl:call-template>
       	</xsl:variable>
       	<xsl:variable name="isNoteref">
       		<xsl:call-template name="is_noteref">
-      			<xsl:with-param name="customTest" select="@customTest"/>
+      			<xsl:with-param name="customTest" select="$customTest"/>
       		</xsl:call-template>
       	</xsl:variable>
       	<xsl:choose>
@@ -230,6 +214,10 @@
 	        <!-- is it a noteref? is so, wrap note reference and note body in a seq -->
 	        <xsl:when test="$isNoteref='yes'">
 	        	<seq>
+					<!-- if the customTest is on the parent seq, copy this parent ID -->
+	        		<xsl:if test="not(@customTest)">
+	        			<xsl:copy-of select="ancestor::s:seq[@customTest]/@id"/>
+	        		</xsl:if>
 	        		<xsl:comment>Note reference</xsl:comment>
 	        		<par endsync="last">
 	        			<xsl:copy-of select="@id"/>
@@ -346,7 +334,7 @@
   			<!-- yes, a note. sibling(child) a noteref? -->
   			<xsl:variable name="isSiblingNoteref">
   				<xsl:call-template name="is_noteref">
-  					<xsl:with-param name="customTest" select="preceding-sibling::*[1][self::s:par]/@customTest"/>
+  					<xsl:with-param name="customTest" select="preceding-sibling::*[1][self::s:par or self::s:seq]/@customTest"/>
   				</xsl:call-template>
   			</xsl:variable>
   			<xsl:variable name="isSiblingChildNoteref">
@@ -500,6 +488,4 @@
   	</xsl:choose>
   </xsl:template>
 	
-
 </xsl:transform>
-
