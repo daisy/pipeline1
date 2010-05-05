@@ -125,7 +125,7 @@
 
   <sch:pattern name="dtbook_MetaTitle" id="dtbook_MetaTitle">
     <sch:rule context="dtbk:head">
-      <sch:assert test="count(dtbk:meta[@name='dc:Title'])=1"> 
+      <sch:assert test="count(dtbk:meta[@name='dc:Title'])>0"> 
         [sch][zedid::dtbook_MetaTitle]
       </sch:assert>  
     </sch:rule>
