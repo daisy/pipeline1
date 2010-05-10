@@ -20,6 +20,9 @@
 		<xsl:value-of select="string-join(for $c in string-to-codepoints(.) return codepoints-to-string($c),' ')"></xsl:value-of>
 	</xsl:template>
 	
+	<xsl:template match="abbr">
+		<xsl:value-of select="if (@title) then @title else ."/>
+	</xsl:template>
 	
 	<xsl:template match="pagenum[@page='front' and matches(string(.),'[MmDdCcLlVvIi]*')]">
 		<xsl:choose>
