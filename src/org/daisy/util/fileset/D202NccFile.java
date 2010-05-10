@@ -41,6 +41,11 @@ public interface D202NccFile extends Xhtml10File, ManifestFile {
 	public String getDcTitle();
 	
 	/**
+	 *returns the value of meta dc:creator if set, null otherwise
+	 */
+	public String getDcCreator();
+	
+	/**
 	 *returns true if this ncc contains indications that it is
 	 *a part of a multivolume DTB. The two indicators 
 	 *that must present to return true are:

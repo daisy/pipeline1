@@ -63,6 +63,7 @@ public class FilesetLabelProvider {
 	private Document mNavigationDOM = null;
 	private Map<URI,String> mDtbSmilLabelMap = null;  	//A map of labels of smil files in a DTB spine. <URI>,<String> where the key is that files URI and the value is the label
 	private String mFilesetTitle =  null;
+	private String mFilesetCreator = null;
 	private String mFilesetIdentifier =  null;
 		
 	/**
@@ -126,8 +127,20 @@ public class FilesetLabelProvider {
 	 * Fileset registered with this instance, or null if none can be found.
 	 */
 	public String getFilesetCreator() {
-		//TODO
-		return null;
+		if(mFilesetCreator==null){
+	        if(mFileset.getFilesetType() == FilesetType.Z3986) {
+	        	Z3986OpfFile opf = (Z3986OpfFile) mFileset.getManifestMember();
+	        	mFilesetCreator = opf.getMetaDcCreator();       
+	        }else if(mFileset.getFilesetType()== FilesetType.DAISY_202) {
+	        	D202NccFile ncc = (D202NccFile) mFileset.getManifestMember();
+	        	mFilesetCreator = ncc.getDcCreator();        	
+	        }else if(mFileset.getFilesetType()== FilesetType.XHTML_DOCUMENT) {
+	        	//Xhtml10File xht = (Xhtml10File) mFileset.getManifestMember();
+	        	//mFilesetCreator = xht.getCreator();   
+	        }
+		}
+
+		return mFilesetCreator;
 	}
 	
 	/**
@@ -258,7 +271,7 @@ public class FilesetLabelProvider {
 		 * different types of DTBs and specs. For zed DTBs this might however
 		 * break, since there is no assumed smilfile resolution as in 2.02.
 		 */
-		
+				
 		if(mNavigationDOM==null) {
 			XmlFile nav = getDTBNavigationMember();
 			mNavigationDOM = nav.asDocument(false);  //namespace aware off
@@ -268,15 +281,20 @@ public class FilesetLabelProvider {
 		if(mFileset.getFilesetType() == FilesetType.DAISY_202) {			
 			node = XPathUtils.selectSingleNode(mNavigationDOM.getDocumentElement(), "./body/*/a[contains(@href,'"+ sf.getName() +"')]");			
 		}else if(mFileset.getFilesetType() == FilesetType.Z3986) {
-			Node contentElem = XPathUtils.selectSingleNode(mNavigationDOM.getDocumentElement(), "./navMap/navPoint/content[contains(@src,'"+ sf.getName() +"')]");
+			Node contentElem = XPathUtils.selectSingleNode(mNavigationDOM.getDocumentElement(), "//navPoint/content[contains(@src,'"+ sf.getName() +"')][1]");	
 			if(contentElem!=null){
 				Node navPoint = contentElem.getParentNode(); 
 				node = XPathUtils.selectSingleNode(navPoint, "./navLabel/text");
+			} else {
+				Node titleElem = XPathUtils.selectSingleNode(mNavigationDOM.getDocumentElement(), "//docTitle[1]");
+				if(titleElem!=null){
+					//node = XPathUtils.selectSingleNode(titleElem, "./text");
+				}
 			}
 		}	 	
 				
-		if(node!=null) return node.getTextContent();
-		return null;
+		if(node==null || node.getTextContent().trim().length()<1) return null;		
+		return node.getTextContent().trim();
 	}
 
 	

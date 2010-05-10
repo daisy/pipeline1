@@ -47,6 +47,11 @@ public interface OpfFile extends XmlFile, ManifestFile {
 	 * @return the value of the Dc:Title metadata item; null if not existing
 	 */
 	public String getMetaDcTitle();
+
+	/**
+	 * @return the value of the Dc:Creator metadata item; null if not existing
+	 */
+	public String getMetaDcCreator();
 	
 	/**
 	 * @return the value of the Dc:Identifier metadata item set as UID; null if not existing

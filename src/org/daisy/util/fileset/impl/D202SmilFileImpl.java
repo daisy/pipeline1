@@ -62,7 +62,7 @@ final class D202SmilFileImpl extends SmilFileImpl implements D202SmilFile {
 	 */
 	public String getMetaTitle() {
 		if (myMetaTitle == null || myMetaTitle.trim().length()<1) return null; 
-		return myMetaTitle;
+		return myMetaTitle.trim();
 	}
 	
 	private static final long serialVersionUID = -4124499324926116684L;

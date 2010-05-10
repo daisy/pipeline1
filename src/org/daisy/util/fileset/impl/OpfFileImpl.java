@@ -50,6 +50,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 	private boolean inSpine = false;
 	private boolean inDcFormat = false;
 	private boolean inDcTitle = false;
+	private boolean inDcCreator = false;
 	private boolean inUidDcIdentifier = false;
 	private HashMap<String,URI> manifestItems = new HashMap<String,URI>();
 	private LinkedHashMap<URI,FilesetFile> spineMap= new LinkedHashMap<URI,FilesetFile>();
@@ -58,6 +59,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 	protected String statedMultiMediaType = null;
 	private	String statedDcFormat = null;
 	private	String statedDcTitle = null;
+	private	String statedDcCreator = null;
 	private String uidRootIdRef = null;  //the idref at root element
 	private String statedUid = null;		//the actul uid
 	
@@ -82,6 +84,8 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 			inDcFormat = true;
 		}else if (qName.toLowerCase().equals("dc:title")){
 			inDcTitle = true;
+		}else if (qName.toLowerCase().equals("dc:creator")){
+			inDcCreator = true;
 		}
 		
 		//assumes that spine always comes after manifest (which is a rule in the DTD)
@@ -150,6 +154,8 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 			inDcFormat = false;
 		}else if (qName.toLowerCase().equals("dc:title")) {
 			inDcTitle = false;
+		}else if (qName.toLowerCase().equals("dc:creator")) {
+			inDcCreator = false;
 		}else if(qName.toLowerCase().equals("dc:identifier") && (inUidDcIdentifier) ){
 			inUidDcIdentifier = false;
 		}	
@@ -162,6 +168,8 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
     		statedDcFormat = String.copyValueOf(ch,start,length);
     	}else if(inDcTitle){    	
     		statedDcTitle += String.copyValueOf(ch,start,length);
+    	}else if(inDcCreator){    	
+    		statedDcCreator += String.copyValueOf(ch,start,length);
     	}else if(inUidDcIdentifier){
     		statedUid += String.copyValueOf(ch,start,length);
     	}
@@ -196,7 +204,11 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 	}	
 	
 	public String getMetaDcTitle() {
-		return statedDcTitle;		
+		return statedDcTitle;
+	}
+
+	public String getMetaDcCreator() {
+		return statedDcCreator;		
 	}
 		
 	private static final long serialVersionUID = 5561960060601196098L;

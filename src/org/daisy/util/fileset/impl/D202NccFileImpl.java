@@ -46,6 +46,7 @@ final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile, UIDC
 	private SmilClock myStatedDuration = null;
 	private String myDcIdentifier = null;
 	private String myDcTitle = null;	
+	private String myDcCreator = null;
 	private boolean hasNccSetInfo = false;
 	private boolean hasRelAttrsInBody = false;
 	private LinkedHashMap<URI,D202SmilFile> spineMap= new LinkedHashMap<URI,D202SmilFile>();
@@ -80,6 +81,8 @@ final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile, UIDC
 						myDcIdentifier = attrs.getValue("content");
 					}else if (attrValue=="dc:title") {
 						myDcTitle = attrs.getValue("content");
+					}else if (attrValue=="dc:creator") {
+							myDcCreator = attrs.getValue("content");
 					}else if (attrValue=="ncc:setInfo"||attrValue=="ncc:setinfo") {
 						String setinfovalue = attrs.getValue("content");
 						if (!setinfovalue.equals("1 of 1")){
@@ -119,6 +122,10 @@ final class D202NccFileImpl extends Xhtml10FileImpl implements D202NccFile, UIDC
 		return myDcTitle;
 	}
 
+	public String getDcCreator() {
+		return myDcCreator;
+	}
+	
 	public boolean hasMultiVolumeIndicators() {
 		if(this.hasRelAttrsInBody && this.hasNccSetInfo) {
 			return true;
