@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Braillo440VolumeWriter extends BrailloVolumeWriter {
-	private final static double cellWidth = 6;
+	private final static double cellWidth = 19*Paper.INCH_IN_MM/80d; //6;
 	private final static double cellHeight = 10;
+	private final static double constant = 11*Paper.INCH_IN_MM/80d;
 
 	public enum Mode {SW_TWO_PAGE, SW_FOUR_PAGE, SWSF};
 	private final int width;
@@ -25,7 +26,7 @@ public class Braillo440VolumeWriter extends BrailloVolumeWriter {
 		this.width = paper.getWidth(cellWidth)-margin;*/
 		
 		// Paper.INCH_IN_MM = the smallest possible margins (0.5 inch + 0.5 inch)
-		this.width = (int)Math.floor((paper.getWidth()-Paper.INCH_IN_MM) / cellWidth);
+		this.width = (int)Math.floor((paper.getWidth()+constant-Paper.INCH_IN_MM) / cellWidth);
 		this.height = paper.getHeight(cellHeight);
 		this.paper = paper;
 		this.mode = mode;
@@ -123,7 +124,7 @@ public class Braillo440VolumeWriter extends BrailloVolumeWriter {
 		byte[] p;
 		int pi = 0;
 		byte m;
-		double columnWidthMM = getMaxWidth() * cellWidth;
+		double columnWidthMM = getMaxWidth() * cellWidth - constant;
 		double m1 = Math.round(((paper.getWidth() - columnWidthMM) / (2 * Paper.INCH_IN_MM)) * 10) / 10d;
 		double m2 = Math.round(((paper.getWidth() - m1 * Paper.INCH_IN_MM - columnWidthMM) / Paper.INCH_IN_MM) * 10) / 10d;
 		byte[] mb1 = EmbosserFactory.toBytes((int)(m1 * 10), 2);
