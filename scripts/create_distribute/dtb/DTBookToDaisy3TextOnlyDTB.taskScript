@@ -112,7 +112,7 @@
     <!--
         3.  Normalize synch points
     -->
-    <task name="se_tpb_syncPointNormalizer" interactive="false">
+    <task name="int_daisy_mixedContentNormalizer" interactive="false">
         <parameter>
             <name>input</name>
             <value>${outputPath}/temp/dtbookSentence.xml</value>
