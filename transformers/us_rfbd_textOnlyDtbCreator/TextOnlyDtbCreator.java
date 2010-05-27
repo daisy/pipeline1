@@ -68,6 +68,8 @@ import org.daisy.util.xml.stax.StaxFilter;
  * TextOnlyDtbCreator:  Creates a Z39.86-2005 text-only fileset from an input dtbook file
  * @author jpritchett@rfbd.org
  * @version 0.9 (beta)
+ * 27 May 2010
+ *   - Can now identify synch points via an attribute (e.g., as provided by int_daisy_mixedContentNormalizer)
  * 24 December 2009 (Ho Ho Ho!)
  * 
  * This transformer just collects data for the "Builder" classes in
@@ -96,6 +98,7 @@ public class TextOnlyDtbCreator extends Transformer {
 	// These are lists of the elements that can be synchronizable, skippable, escapable, 
 	// and represented as containers
 	private ArrayList<QName> synchItems;
+	private QName synchAttr;		// Alternatively, we can name an attribute that identifies synch items
 	private ArrayList<QName> skippableItems;
 	private ArrayList<QName> escapableItems;
     private ArrayList<QName> containerItems;
@@ -255,6 +258,11 @@ public class TextOnlyDtbCreator extends Transformer {
 				// Element name and (optional) namespace that generates a synch event (SMIL structure)
 				if (name.equals("synchElement")) {
 					parseConfigElement(se, synchItems);
+				}
+				// <synchAttribute name="foo" ns="http://www.example.com/ns/" />
+				// Attribute name and (optional) namespace that generates a synch event (SMIL structure)
+				else if (name.equals("synchAttribute")) {
+					synchAttr = parseConfigElement(se, null);
 				}
 				// <skippableElement name="foo" ns="http://www.example.com/ns/" />
 				// Element name and (optional) namespace that generates a skippable structure in SMIL
@@ -592,7 +600,9 @@ public class TextOnlyDtbCreator extends Transformer {
 		}
 		// Add to the list for use when parsing
 		QName itemName = new QName(synchNSURI, synchLocalName);
-		list.add(itemName);
+		if (list != null) {
+			list.add(itemName);
+		}
 		return itemName;
 	}
 	
@@ -873,7 +883,7 @@ public class TextOnlyDtbCreator extends Transformer {
 			// ========================================
 			// PART 5:  Synchronization:  text elements
 			// ========================================
-			if (synchItems.contains(se.getName())) {
+			if (synchItems.contains(se.getName()) || se.getAttributeByName(synchAttr) != null) {
 				// Collect or create the id of this element
 				String textID;
 				boolean needsID = false;
@@ -901,13 +911,17 @@ public class TextOnlyDtbCreator extends Transformer {
 
                 // Create a new attribute collection that adds @smilref (and @id, if necessary) 
 				// to existing ones
+				// AND removes the synchAttribute
                 Collection<Attribute> coll = new ArrayList<Attribute>();
                 coll.add(this.getEventFactory().createAttribute(smilrefQname, smilRef));
                 if (needsID) {
                 	coll.add(this.getEventFactory().createAttribute(idQname, textID));
                 }
                 for (Iterator<Attribute> ai = se.getAttributes(); ai.hasNext(); ) {
-                	coll.add(ai.next());
+                	Attribute a = ai.next();
+                	if (!a.getName().equals(synchAttr)) {
+                		coll.add(a);
+                	}
                 }
                 
                 // If we have a current navigation item, set the content if necessary
@@ -1000,7 +1014,7 @@ public class TextOnlyDtbCreator extends Transformer {
 				// If this is a pagenum, and if we can parse the content as a number, set the value
 				if (curNavItemElementName.equals(new QName(Namespaces.Z2005_DTBOOK_NS_URI, "pagenum"))) {
 					try {
-						long value = Long.valueOf(curNavLabel.getText());
+						long value = Long.valueOf(curNavLabel.getText().trim());
 						((NavigationItemPage)curNavItem).setValue(value);
 						if (value > maxPageValue) { maxPageValue = value; }
 					} catch (NumberFormatException e) {
