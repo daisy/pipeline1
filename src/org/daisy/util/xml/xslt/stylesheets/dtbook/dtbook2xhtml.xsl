@@ -92,6 +92,7 @@
 
 
 <xsl:template name="write_doctype">
+	<xsl:text>&#xa;</xsl:text><!--line break-->
 	<xsl:choose>
 		<xsl:when test="$svg_mathml='true'">
 			<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd"</xsl:text>
@@ -106,6 +107,7 @@
 ]</xsl:text>
 	</xsl:if>
 	<xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+	<xsl:text>&#xa;</xsl:text><!--line break-->
 </xsl:template>
 
 
