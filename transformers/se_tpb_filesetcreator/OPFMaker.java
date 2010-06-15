@@ -22,6 +22,7 @@ package se_tpb_filesetcreator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -82,6 +83,18 @@ public class OPFMaker {
 	private static final String opfNamespaceURI = "http://openebook.org/namespaces/oeb-package/1.0/";
 	private static final String dcNamespaceURI = "http://purl.org/dc/elements/1.1/";
 	private SimpleNamespaceContext mNsc;			// custom namespace contex for xpath queries
+	
+
+	// list of metadata with 'dtb' prefix allowed in the x-metadata section
+	private Set<String> allowedDtbMetadata = new HashSet<String>(
+			Arrays.asList(new String[] { "dtb:sourceDate",
+					"dtb:sourceEdition", "dtb:sourcePublisher",
+					"dtb:sourceRights", "dtb:sourceTitle",
+					"dtb:multimediaType", "dtb:multimediaContent",
+					"dtb:narrator", "dtb:producer", "dtb:producedDate",
+					"dtb:revision", "dtb:revisionDate",
+					"dtb:revisionDescription", "dtb:totalTime",
+					"dtb:audioFormat" }));
 
 	/**
 	 * 
@@ -319,8 +332,9 @@ public class OPFMaker {
 		
 		for(MetadataItem item : xMetaData) {
 			Element newMeta = opf.createElementNS(opfNamespaceURI, "meta");
-			if (!toIgnore.contains(item.getQName().getLocalPart())){
-				newMeta.setAttribute("name", item.getQName().getLocalPart());
+			String metaName = item.getQName().getLocalPart();
+			if (!toIgnore.contains(metaName) && (!metaName.startsWith("dtb:") ||  allowedDtbMetadata.contains(metaName))){
+				newMeta.setAttribute("name", metaName);
 				newMeta.setAttribute("content", item.getValue());
 				Iterator<Attribute> iter = item.getAttributes();
 				while(iter.hasNext()) {
