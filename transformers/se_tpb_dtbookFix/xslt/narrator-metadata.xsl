@@ -14,6 +14,8 @@
     
     Removes dc:description and dc:subject if not valued
     
+    Removes dc:Format (will be added by the fileset generator)
+    
     Nodes
     dtbook/head
     
@@ -174,5 +176,10 @@
 	        </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+	
+	<xsl:template match="dtb:meta[lower-case(@name)='dc:format']"/>
+    
+	
+	
      
 </xsl:stylesheet>
