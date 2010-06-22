@@ -3,6 +3,18 @@
 <properties>		
 	<comment>Braille translation table for Swedish (1st pas).</comment>
 
+	<!--
+		CYRILLIC transliteration using ISO 9:1995. See:
+		  http://www.russki-mat.net/trans.htm
+		  http://sv.wikipedia.org/wiki/ISO_9
+	-->
+	<!-- CYRILLIC SMALL LETTER BE, U+0431 -->
+	<entry key="б">b</entry>
+	<!-- CYRILLIC SMALL LETTER IE, U+0435 -->
+	<entry key="0435">e</entry>
+	<!-- CYRILLIC SMALL LETTER EF, U+0444 -->
+	<entry key="ф">f</entry>
+
 	<!-- ARABIC FIVE POINTED STAR, 066d -->
 	<entry key="066d">&#x2818;&#x2826;stjärna&#x2818;&#x2834;</entry>
 
