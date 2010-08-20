@@ -128,7 +128,6 @@
 				xUID: <xsl:value-of select="$xUID" />
 			</xsl:comment> -->
 			<meta name="dtb:uid" content="{$xUID}" />
-			<meta name="dtb:title" content="{$xTitle}" />
 			<meta name="dc:Title" content="{$xTitle}" />
 			<xsl:choose>
 				<xsl:when test="
