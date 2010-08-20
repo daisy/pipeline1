@@ -131,6 +131,7 @@ public class NCXMaker implements BusListener {
 	private int playorder;									// the playorder counter
 	private int ncxId;										// ncx id making use of a simple counter
 	private int depth;										// keeps track of the deepest (xml-wise) structure in this book
+	private int maxdepth = 0;								// keeps track of the deepest (xml-wise) structure in this book
 	private Node depthHolder; 								// the latest parsed element in the maximum depth branch (start or end parsing)
 	private int pageCount;									// the number of pages
 	private int pageMax = 0;								// the value of the greatest page number seen so far
@@ -1202,7 +1203,7 @@ public class NCXMaker implements BusListener {
 	 * @return the depth of the ncx level structure.
 	 */
 	private int getDepth() {
-		return depth;
+		return maxdepth;
 	}
 
 	
@@ -1339,6 +1340,7 @@ public class NCXMaker implements BusListener {
 				depth--;
 			}
 		}
+		maxdepth = Math.max(depth, maxdepth); 
 		// Update the depth holder
 		if (depthHolder == navPoint) {
 			depthHolder = parent;
