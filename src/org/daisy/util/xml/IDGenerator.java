@@ -17,6 +17,8 @@
  */
 package org.daisy.util.xml;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.daisy.util.i18n.CharUtils;
@@ -29,6 +31,7 @@ import org.daisy.util.i18n.CharUtils;
  */
 public class IDGenerator {
 	private String prefix = "id_";
+	private Set<String> avoidIds=null;
 	private int counter = 0;
 	
 	public IDGenerator () {
@@ -36,31 +39,40 @@ public class IDGenerator {
 	}
 	
 	public IDGenerator (String prefix) {
-		
+		this(prefix,null);
+	}
+	
+	public IDGenerator(String prefix, Set<String> avoidIds) {
 		for (int i = 0; i < prefix.length(); i++) {
 			if(i==0) {
 				if(!CharUtils.isXMLNameFirstCharacter(prefix.charAt(i))){
-					  throw new IllegalArgumentException("first character is not valid in an xml name");	
+					throw new IllegalArgumentException("first character is not valid in an xml name");	
 				}
 			}else{
 				if(!CharUtils.isXMLNameCharacter(prefix.charAt(i))){
-					  throw new IllegalArgumentException("character is not valid in an xml name");	
+					throw new IllegalArgumentException("character is not valid in an xml name");	
 				}				
 			}
 		}
 		
 		this.prefix = prefix;
+		this.avoidIds=avoidIds;
 	}
-	
-	public String generateId(){
-		counter++;		
-		return this.prefix + counter;
+
+	public String generateId() {
+		if (avoidIds != null) {
+			return generateId(new HashSet<String>());
+		} else {
+			counter++;
+			return this.prefix + counter;
+		}
 	}
 
 	/**
 	 * Generate an ID that will not clash with a name in the inparam set.
 	 */
 	public String generateId(Set<String> avoid) {
+		if (avoidIds!=null) avoid.addAll(avoidIds);
 		String id;
 		do {
 			counter++;
