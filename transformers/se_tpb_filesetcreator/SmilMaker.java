@@ -69,6 +69,7 @@ import org.daisy.util.execution.AbortListener;
 import org.daisy.util.execution.ProgressObserver;
 import org.daisy.util.file.Directory;
 import org.daisy.util.xml.IDGenProvider;
+import org.daisy.util.xml.IDGenerator;
 import org.daisy.util.xml.Namespaces;
 import org.daisy.util.xml.SimpleNamespaceContext;
 import org.daisy.util.xml.SmilClock;
@@ -106,6 +107,7 @@ import org.xml.sax.SAXException;
 public class SmilMaker implements AbortListener, BusListener {
 	
 	public static String DEBUG_PROPERTY = "org.daisy.debug";	// the system property used to determine if we're in debug mode or not
+	private static QName QNAME_ID = new QName("id");
 	
 	private BookmarkedXMLEventReader reader;		// reader pointed to the input document
 	private XMLEventWriter writer;					// writes the (possibly) modified input document
@@ -164,7 +166,8 @@ public class SmilMaker implements AbortListener, BusListener {
 
 	private static final QName mathmlMathElement = new QName(Namespaces.MATHML_NS_URI,"math");
 
-	private IDGenProvider idGen = new IDGenProvider();
+	private IDGenProvider smilIdGen = new IDGenProvider();
+	private IDGenerator dtbIdGen;
 	
 	/**
 	 * @param inputManuscript the input file to read
@@ -197,6 +200,11 @@ public class SmilMaker implements AbortListener, BusListener {
 		// prepare for progress reports:
 		reader = getBookmarkedXMLEventReader(inputManuscript);
 		numSmilFiles = countAudioFiles(reader);
+		reader.close();
+		
+		// create an ID generator (aware of the existing IDs)
+		reader = getBookmarkedXMLEventReader(inputManuscript);
+		dtbIdGen = new IDGenerator("dtb",getIDs(reader));
 		reader.close();
 		
 		reader = getBookmarkedXMLEventReader(inputManuscript);
@@ -245,7 +253,23 @@ public class SmilMaker implements AbortListener, BusListener {
 
 
 	
-	
+	/**
+	 * Returns the set of IDs used in the XML document read by the reader
+	 * @param reader a reader for the manuscript file.
+	 * @return the set of IDs used in the XML document read by the reader
+	 * @throws XMLStreamException
+	 */
+	private Set<String> getIDs(XMLEventReader reader) throws XMLStreamException {
+		Set<String> ids= new HashSet<String>();
+		while (reader.hasNext()) {
+			XMLEvent event = reader.nextEvent();
+			if (event.isStartElement()) {
+				Attribute idAtt = event.asStartElement().getAttributeByName(QNAME_ID);
+				if (idAtt!=null) ids.add(idAtt.getValue());
+			}
+		}
+		return ids;
+	}
 	
 	/**
 	 * Returns a <code>BookmarkedXMLEventReader</code> for the file <code>inputFile</code>.
@@ -736,7 +760,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	private void updateSubtreeIds(Node subtree) {
 		Element elem = (Element) subtree;
 		if (elem.hasAttribute("id")) {
-			elem.setAttribute("id", idGen.generateId("forcelinkstruct"));
+			elem.setAttribute("id", smilIdGen.generateId("forcelinkstruct"));
 		}
 		
 		NodeList children = elem.getChildNodes();
@@ -922,7 +946,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		Element parentSeqElement = openSeqs.peek();
 		Element parElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "par");
 		
-		String parId = idGen.generateId("tcp");
+		String parId = smilIdGen.generateId("tcp");
 		if (null == dtbId) {
 			dtbId = getNextDTBId();
 		}
@@ -941,7 +965,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		parentSeqElement.appendChild(parElement);
 		
 		// create the right <text> element and a ref to the dtbook
-		String textId = idGen.generateId("text");
+		String textId = smilIdGen.generateId("text");
 		Element textElement = parentSeqElement.getOwnerDocument().createElementNS(smilNamespaceURI, "text");
 		textElement.setAttribute("src", finalDTBookFilename + "#" + dtbId);
 		textElement.setAttribute("id",textId);
@@ -1019,7 +1043,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @throws XMLStreamException 
 	 */
 	private StartElement newSeq(BookmarkedXMLEventReader reader, StartElement se) throws XMLStreamException {		
-		String tcsId = idGen.generateId("tcs");
+		String tcsId = smilIdGen.generateId("tcs");
 		Attribute dtbIdAtt = AttributeByName.get(new QName("id"),se); 
 		String dtbId = null == dtbIdAtt ? this.getNextDTBId() : dtbIdAtt.getValue();
 		
@@ -1400,7 +1424,7 @@ public class SmilMaker implements AbortListener, BusListener {
 		if (at != null) {
 			linkTargetId = at.getValue();
 		} else {
-			linkTargetId = idGen.generateId("tcs");
+			linkTargetId = smilIdGen.generateId("tcs");
 		}
 		
 		Element parentSeq = openSeqs.peek();
@@ -1473,7 +1497,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * to represent x.
 	 */
 	private String getNextDTBId() {
-		return "dtb" + (++dtbid);
+		return dtbIdGen.generateId();
 	}
 	
 	
