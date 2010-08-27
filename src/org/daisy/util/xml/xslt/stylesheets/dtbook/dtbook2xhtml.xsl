@@ -585,7 +585,6 @@
      <div class="epigraph">
        <xsl:call-template name="copyCncatts"/>
        <xsl:call-template name="maybeSmilref"/>
-       <xsl:apply-templates/>
      </div>
    </xsl:template>
 
