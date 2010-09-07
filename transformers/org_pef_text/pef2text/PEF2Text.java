@@ -107,9 +107,9 @@ public class PEF2Text extends Transformer {
 								}
 							}
 						} catch (EmbosserFactoryException e2) {
-							throw new TransformerRunException(e.getMessage(), e2);
+							throw new TransformerRunException(e2.getMessage(), e2);
 						} catch (FileNotFoundException e2) {
-							throw new TransformerRunException(e.getMessage(), e2);
+							throw new TransformerRunException(e2.getMessage(), e2);
 						} finally {
 							os.close();
 						}
