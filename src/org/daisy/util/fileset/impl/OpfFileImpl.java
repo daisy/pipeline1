@@ -84,8 +84,10 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 			inDcFormat = true;
 		}else if (qName.toLowerCase().equals("dc:title")){
 			inDcTitle = true;
+			statedDcTitle="";
 		}else if (qName.toLowerCase().equals("dc:creator")){
 			inDcCreator = true;
+			statedDcCreator="";
 		}
 		
 		//assumes that spine always comes after manifest (which is a rule in the DTD)
@@ -116,6 +118,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
 				this.putIdAndQName(attrValue,q);	
 				if(qName.toLowerCase().equals("dc:identifier") && attrValue == uidRootIdRef){
 					inUidDcIdentifier = true;
+					statedUid = "";
 				}
 			}
 			
@@ -167,7 +170,7 @@ class OpfFileImpl extends XmlFileImpl implements OpfFile, UIDCarrier {
     	if(inDcFormat){    	
     		statedDcFormat = String.copyValueOf(ch,start,length);
     	}else if(inDcTitle){    	
-    		statedDcTitle += String.copyValueOf(ch,start,length);
+			statedDcTitle += String.copyValueOf(ch, start, length);
     	}else if(inDcCreator){    	
     		statedDcCreator += String.copyValueOf(ch,start,length);
     	}else if(inUidDcIdentifier){
