@@ -195,6 +195,8 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         }
         
         Vector result = new Vector();
+
+		Pattern punctuation = Pattern.compile("\\p{Punct}*");
         iterator.setText(text);
         int start = iterator.first();
         // Don't add the first break.
@@ -202,6 +204,10 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         boolean noBreak = false;
         for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator.next()) {
             noBreak = false;
+            // If the break is punctuation-only, include it in the previous sentence...
+    		if (punctuation.matcher(text.substring(start, end)).matches()) {
+    			noBreak=true;
+    		}
             for (Iterator it = al.iterator(); it.hasNext(); ) {
                 Abbr abbr = (Abbr)it.next();                
                 if (abbr.getStart() >= start && abbr.getEnd() <= end) {
