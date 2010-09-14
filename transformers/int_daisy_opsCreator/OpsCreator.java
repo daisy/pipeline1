@@ -105,6 +105,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 	private MetadataList mOpsMetaData = null;	
 	private String mFirstXmlLangValue = null;
 	private QName mXmlLangQName = null;
+	private Boolean mForceXhtml = false;
 		
 	static public final String OPF_NS = "http://www.idpf.org/2007/opf";
 	static public final String DC_NS = "http://purl.org/dc/elements/1.1/"; 
@@ -156,6 +157,8 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 			 */			
 			mOutputDir = (Directory)FileUtils.createDirectory(outputDir);
 			mOutputFilesets = new LinkedList<Fileset>();
+			
+			mForceXhtml = Boolean.valueOf(parameters.get("forceXhtml"));
 			
 			/*
 			 * Get all satellite files of the input filesets over to output
@@ -292,10 +295,21 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 			}
 			
 			String token = getVersionToken(result);
-			
+
 			if(result.getRootElementLocalName().equals("dtbook")) {								
-				if(token!=null) {					
-					if(!(token.contains("2005-2"))) {
+				if(token!=null) {
+					if (mForceXhtml){
+						try{
+							URL out = createXHTML11(url, result);
+							if(out!=null) {
+								this.sendMessage(i18n("CONVERTED_TO_XHTML11"), MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
+								url = out;
+							}
+						}catch (Exception e) {
+							//failure, leave inparam URL
+							this.sendMessage(i18n("ERROR",e.getMessage()), MessageEvent.Type.ERROR, MessageEvent.Cause.SYSTEM);
+						}
+					} else if(!(token.contains("2005-2"))) {
 						this.sendMessage(i18n("DISALLOWED_DOCUMENT_VERSION",result.getRootElementLocalName(),token),
 								MessageEvent.Type.WARNING, MessageEvent.Cause.INPUT);
 						//If !2005-2, do a dynamic transform to 1.1
@@ -364,11 +378,12 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 			URL xsl = Stylesheets.get("dtbook2xhtml.xsl");
 			InputStream xslis = xsl.openStream();
 			StreamSource xslss = new StreamSource(xslis);
+			xslss.setSystemId(xsl.toString());
 			
 			File doc = TempFile.create();
 			
 			try {
-				Stylesheet.apply(iss,xslss,new StreamResult(doc),TransformerFactoryConstants.SAXON8,null,null);
+				Stylesheet.apply(iss,xslss,new StreamResult(doc));
 			}finally{
 				iis.close();
 				xslis.close();

@@ -29,7 +29,7 @@
 
 <div class="alert">
 	<p>The OPS Specification is quite picky about what kind of text documents can be used within an EPUB. You can only use XHTML 1.1 (not 1.0) documents, or DTBook 2005-2 (not 2005-1 or 2005-3) documents.</p>
-	<p>If you add a document of a type not supported by the specification, this script will issue a warning and then <em>attempt</em> to convert the document into an allowed version.</p>
+	<p>If you add a document of a type not supported by the specification, this script will issue a warning and then <em>attempt</em> to convert the document into an allowed version, preferrably XHTML 1.1.</p>
 </div>
 
 <h2 id="output">Output</h2>
@@ -58,6 +58,9 @@ a rather complex endeavour that requires XML knowledge.</p>
 		
 		<dt>Output OCF</dt>
 		<dd><strong>Required.</strong> Output OCF (*.epub) file</dd>
+		
+		<dt>forceXhtml</dt>			
+		<dd><strong>Optional.</strong> Force XHTML-based EPUB (even with DTBook 2005-2 input). Defaults to <code>true</code>.</dd>
 		
 		<dt>dc:title</dt>			
 		<dd><strong>Optional.</strong> Dublin Core Title (OPS required)</dd>

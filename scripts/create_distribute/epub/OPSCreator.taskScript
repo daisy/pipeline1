@@ -14,13 +14,21 @@
 	</parameter>
 	
 	<parameter name="output" value="" required="true">
-		<nicename>Output OCF</nicename>
+		<nicename>Output</nicename>
 		<description>Select the output .epub file</description>
 		<datatype>
 			<file mime="application/epub+zip" type="output"/>
 		</datatype>
 	</parameter>		
 
+	<parameter name="forceXhtml" value="true" required="false">
+		<nicename>Force XHTML-based EPUB</nicename>
+		<description>Whether to always create an XHTML-based EPUB, even if the input is DTBook 2005-2</description>
+		<datatype>
+			<boolean/>
+		</datatype>
+	</parameter>
+	
 	<parameter name="customNCXConfig" value="" required="false">
 		<nicename>NCX configuration</nicename>
 		<description>Select a custom NCX configuration file</description>
@@ -96,6 +104,11 @@
 		<parameter>
 			<name>ncxConfig</name>
 			<value>${customNCXConfig}</value>
+		</parameter>
+		
+		<parameter>
+			<name>forceXhtml</name>
+			<value>${forceXhtml}</value>
 		</parameter>		
 				
 		<parameter>

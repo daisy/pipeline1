@@ -27,6 +27,13 @@
 			<example>D:/path/to/myNcxConfig.xml</example>
 			<default/>
 		</parameter>
+		
+		<parameter required="false" type="string">
+			<name>forceXhtml</name>			
+			<description>Whether to always create an XHTML-based EPUB, even if the input is DTBook 2005-2</description>
+			<example>true</example>
+			<default>true</default>
+		</parameter>
 														
 		<!-- optional metadata (else retrieved from input docs) -->
 		
