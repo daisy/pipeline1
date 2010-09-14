@@ -33,7 +33,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Namespace;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.pipeline.Version;
+import org.daisy.util.Version;
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.dtb.ncxonly.model.Model;

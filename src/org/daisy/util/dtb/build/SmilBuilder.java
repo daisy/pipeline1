@@ -1,7 +1,6 @@
 package org.daisy.util.dtb.build;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
@@ -17,7 +15,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Namespace;
 
-import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.dtb.meta.MetadataItem;
 import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.xml.Namespaces;
@@ -106,21 +103,13 @@ public class SmilBuilder {
 	 * @throws XMLStreamException
 	 * @throws TransformerRunException
 	 */
-	public void render(URL destination) throws IOException, XMLStreamException, TransformerRunException {
+	public void render(URL destination) throws IOException, XMLStreamException {
 		
 		// Create the output writer
 		File outputFile = new File(destination.getPath());
 		XMLEventWriter writer;
 
-        try {
-			writer = XMLOutputFactory.newInstance().createXMLEventWriter(new FileOutputStream(outputFile), "utf-8");
-		} catch (FileNotFoundException e) {
-			throw new TransformerRunException("Can't open output SMIL file " + outputFile.getName() + " (file not found)");
-		} catch (XMLStreamException e) {
-			throw new TransformerRunException("Can't open output SMIL file", e);
-		} catch (FactoryConfigurationError e) {
-			throw new TransformerRunException("Can't open output SMIL file", e);
-		}
+		writer = XMLOutputFactory.newInstance().createXMLEventWriter(new FileOutputStream(outputFile), "utf-8");
 		PrettyEventWriter pew = new PrettyEventWriter(writer, "  ");
 
 		// Render the prolog		
@@ -160,27 +149,24 @@ public class SmilBuilder {
 		
 		
 		// Body and all SMIL structures
-		try {
-			// Write the body and master seq
-			// TODO:  Make this general purpose (currently hard-wired for text-only books)
-			pew.writeEvent(xef.createStartElement("", "", "body"));
-			pew.writeEvent(xef.createStartElement("", "", "seq"));
-			pew.writeEvent(xef.createAttribute("dur", "0:00:00.000"));
-			pew.writeEvent(xef.createAttribute("fill", "remove"));
-			pew.writeEvent(xef.createAttribute("id", "mseq"));
-			
-			// Write out all the SMIL structures
-			for (SmilStructure ss : structures) {
-				pew.writeEvents(ss.asEventIterator());
-			}
-			
-			// Close out the seq and body
-			pew.writeEvent(xef.createEndElement("", "", "seq"));
-			pew.writeEvent(xef.createEndElement("", "", "body"));
-			
-		} catch (XMLStreamException e) {
-			throw new TransformerRunException("Error writing SMIL output stream", e);
+		// Write the body and master seq
+		// TODO: Make this general purpose (currently hard-wired for text-only
+		// books)
+		pew.writeEvent(xef.createStartElement("", "", "body"));
+		pew.writeEvent(xef.createStartElement("", "", "seq"));
+		pew.writeEvent(xef.createAttribute("dur", "0:00:00.000"));
+		pew.writeEvent(xef.createAttribute("fill", "remove"));
+		pew.writeEvent(xef.createAttribute("id", "mseq"));
+
+		// Write out all the SMIL structures
+		for (SmilStructure ss : structures) {
+			pew.writeEvents(ss.asEventIterator());
 		}
+
+		// Close out the seq and body
+		pew.writeEvent(xef.createEndElement("", "", "seq"));
+		pew.writeEvent(xef.createEndElement("", "", "body"));
+			
 		
 		// And close it all up
 		pew.writeEvent(xef.createEndElement("", Namespaces.SMIL_20_NS_URI ,"smil"));

@@ -38,7 +38,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
-import org.daisy.pipeline.Version;
+import org.daisy.util.Version;
 import org.daisy.util.dtb.meta.MetadataList;
 import org.daisy.util.dtb.ncxonly.model.AudioClip;
 import org.daisy.util.dtb.ncxonly.model.Item;
