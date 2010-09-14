@@ -2,9 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DAISY Pipeline
 Bundle-SymbolicName: org.daisy.pipeline
-Bundle-Version: 1.0.9
+Bundle-Version: 1.0.10
 Bundle-Vendor: DAISY Consortium
-Require-Bundle: system.bundle
 Bundle-NativeCode:  transformers/se_tpb_speechgen2/lib/com4j.dll; osname=win32; processor=x86,*
 Bundle-ClassPath: 
  daisy-pipeline.jar,
@@ -315,6 +314,7 @@ Export-Package:
  org.codehaus.stax2.io,
  org.codehaus.stax2.ri,
  org.codehaus.stax2.validation,
+ org.daisy,
  org.daisy.pipeline,
  org.daisy.pipeline.core,
  org.daisy.pipeline.core.event,
@@ -402,6 +402,7 @@ Export-Package:
  org.daisy.util.xml.xslt.stylesheets,
  org.daisy.util.xml.xslt.stylesheets.dsdl,
  org.daisy.util.xml.xslt.stylesheets.dtbook,
+ org.daisy.util.xml.xslt.stylesheets.l10n,
  org.daisy.util.xml.xslt.stylesheets.misc,
  org.daisy.util.xml.xslt.stylesheets.xhtml,
  org.daisy.zedval,
