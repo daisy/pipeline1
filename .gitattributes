@@ -1673,6 +1673,8 @@ transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/SimpleCommandLineTT
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/SimpleCommandLineTTS.exe.manifest -text
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/SimpleCommandLineTTS.pdb -text
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/doc.xml -text
+transformers/se_tpb_speechgen2/external/dummy/DummyTTS.java -text svneol=unset#text/plain
+transformers/se_tpb_speechgen2/external/dummy/hello.wav -text
 transformers/se_tpb_speechgen2/external/linux/ATTNaturalVoicesTTS.java -text
 transformers/se_tpb_speechgen2/external/linux/ESpeakTTS.java -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/external/win/DefaultSapiTTS.java -text svneol=unset#text/plain
