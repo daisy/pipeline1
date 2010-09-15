@@ -348,11 +348,11 @@ public class AnnonsatorXSLTBuilder {
 			    
 			    
 			    /* get the first xsl:when inside the rule template */
-			    Element when = (Element)XPathUtils.selectSingleNode(templateRuleClone, "//*[@id='whenLang']");		    	
+			    Element when = (Element)XPathUtils.selectSingleNode(templateRuleClone, "descendant::*[@id='whenLang']");		    	
 			    constructWhenElements(attribBefore, attribAfter, rule, when, "lang('", "')");
 			    when.getParentNode().removeChild(when);
 			    
-			    when = (Element)XPathUtils.selectSingleNode(templateRuleClone, "//*[@id='whenOverride']");	
+			    when = (Element)XPathUtils.selectSingleNode(templateRuleClone, "descendant::*[@id='whenOverride']");	
 			    constructWhenElements(attribBefore, attribAfter, rule, when, "$overrideLang='", "'");		    	
 			    when.getParentNode().removeChild(when);
 			    
