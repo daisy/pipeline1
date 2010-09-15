@@ -81,6 +81,7 @@ transformers/org_pef_dtbook2pef/system/tasks/cover/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/flow/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/impl/*.class
+transformers/org_pef_dtbook2pef/system/tasks/layout/impl/field/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/page/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/text/brailleFilters/*.class
@@ -88,6 +89,7 @@ transformers/org_pef_dtbook2pef/system/tasks/layout/text/brailleFilters/sv_SE/*.
 transformers/org_pef_dtbook2pef/system/tasks/layout/utils/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/writers/*.class
 transformers/org_pef_dtbook2pef/system/tasks/textnode/*.class
+transformers/org_pef_dtbook2pef/system/utils/*.class
 transformers/org_pef_pefFileMerger/*.class
 transformers/org_pef_pefFileSplitter/*.class
 transformers/org_pef_text/*.class
@@ -148,6 +150,7 @@ transformers/se_tpb_speechgen2/conf/*.class
 transformers/se_tpb_speechgen2/external/*.class
 transformers/se_tpb_speechgen2/external/MacOS/*.class
 transformers/se_tpb_speechgen2/external/SimpleCommandLineTTS/*.class
+transformers/se_tpb_speechgen2/external/dummy/*.class
 transformers/se_tpb_speechgen2/external/linux/*.class
 transformers/se_tpb_speechgen2/external/win/*.class
 transformers/se_tpb_speechgen2/external/win/sapi5/*.class
