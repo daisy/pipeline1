@@ -20,5 +20,8 @@
 
 	<entry key="fr">rules/frhyph_x.tex</entry>
 	<entry key="fr-FR">rules/frhyph_x.tex</entry>
+	
+	<entry key="fi">rules/fihyph.tex</entry>
+	<entry key="fi-FI">rules/fihyph.tex</entry>
 
 </properties>

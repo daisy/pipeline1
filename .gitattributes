@@ -1622,6 +1622,7 @@ transformers/se_tpb_hyphenator/HyphenatorErrorHandler.java -text
 transformers/se_tpb_hyphenator/hyphenation_tables.xml -text
 transformers/se_tpb_hyphenator/lib/texhyphj.jar -text
 transformers/se_tpb_hyphenator/rules/dehyph_x.tex -text
+transformers/se_tpb_hyphenator/rules/fihyph.tex -text
 transformers/se_tpb_hyphenator/rules/frhyph_x.tex -text
 transformers/se_tpb_hyphenator/rules/nohyphbx.tex -text
 transformers/se_tpb_hyphenator/rules/sehyph.tex -text
