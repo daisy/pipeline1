@@ -28,7 +28,7 @@
 
 <!-- inparams: -->
 <xsl:param name="uid" />					<!-- uid of publication -->
-<xsl:param name="smilCustomTests" as="xs:string" select="'[none]'" /> 			<!-- space separated list of .... forund in D202 SMIL files -->
+<xsl:param name="smilCustomTests" as="xs:string" select="''" /> 			<!-- space separated list of .... forund in D202 SMIL files -->
 <xsl:param name="defaultStatePagenumbers" as="xs:string" select="'true'" />		<!-- value for head/smilCustomTest/@defaultState -->
 <xsl:param name="defaultStateSidebars" as="xs:string" select="'true'" /> 		<!-- value for head/smilCustomTest/@defaultState -->
 <xsl:param name="defaultStateFootnotes" as="xs:string" select="'true'" />		<!-- value for head/smilCustomTest/@defaultState -->
