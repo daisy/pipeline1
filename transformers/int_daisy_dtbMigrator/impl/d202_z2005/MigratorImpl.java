@@ -418,7 +418,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				
 				for(URL u : resources) {												
 					InputStream is = u.openStream();
-					String localName = new File(u.toURI()).getName();
+					String localName = new File(u.getPath()).getName();
 					EFile out = new EFile(mOutputDir.writeToFile(localName, is));
 					is.close();
 					if(out.getExtension().equals("res")) res = out;					
