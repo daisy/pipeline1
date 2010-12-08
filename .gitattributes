@@ -1331,6 +1331,7 @@ transformers/org_pef_pefFileSplitter/transformer.tdf -text
 transformers/org_pef_text/BrailleConstants.java -text
 transformers/org_pef_text/BrailleTable.java -text
 transformers/org_pef_text/PipelineMessageOutputStream.java -text
+transformers/org_pef_text/READTHIS.txt -text svneol=unset#text/plain
 transformers/org_pef_text/SimpleTable.java -text
 transformers/org_pef_text/TableFactory.java -text
 transformers/org_pef_text/pef2text/AbstractEmbosser.java -text
