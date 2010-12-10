@@ -257,9 +257,18 @@
 				then 2																			(: use both of them :)
 				else 1 																			(: if not; use the first one only :)
 				" />
-		<xsl:for-each select="$audioElements[position() = 1 to $numberOfAudioElementsToUse]">
-			<audio src="{@src}" clipBegin="{pfunc:createZedClipValue(@clip-begin)}" clipEnd="{pfunc:createZedClipValue(@clip-end)}" />
-		</xsl:for-each>
+		<xsl:choose>
+			<xsl:when test="($numberOfAudioElementsToUse gt 1) 
+				and (count(distinct-values($audioElements[position() le $numberOfAudioElementsToUse]/@src)) eq 1)">
+				<!-- If there are several audio elements and they point to the same audio file,
+					concatenate them in one unique audio element -->
+				<audio src="{$audioElements[1]/@src}" clipBegin="{pfunc:createZedClipValue($audioElements[1]/@clip-begin)}" clipEnd="{pfunc:createZedClipValue($audioElements[$numberOfAudioElementsToUse]/@clip-end)}" />
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- Otherwise, just pick the first audio element -->
+				<audio src="{$audioElements[1]/@src}" clipBegin="{pfunc:createZedClipValue($audioElements[1]/@clip-begin)}" clipEnd="{pfunc:createZedClipValue($audioElements[1]/@clip-end)}" />
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:if>
 </xsl:template>
 
