@@ -97,34 +97,26 @@
 </xsl:template>
 
 <xsl:template match="par">
-	<par>
-		<xsl:attribute name="id">
-			<xsl:choose>
-				<xsl:when test="@id and not(text/@id)">		<!-- Case 1: keep @id as it is  -->
-					<xsl:value-of select="@id" />
-				</xsl:when>
-				<xsl:when test="not(@id) and text/@id">		<!-- Case 2: use text/@id on the par -->
-					<xsl:value-of select="text/@id" />
-				</xsl:when>
-				<xsl:otherwise>								<!-- Case 3: @id on both elements, value of $NCCPtoP decides what to do -->
-					<xsl:choose>
-						<xsl:when test="$NCCPtoP">
-							<xsl:value-of select="@id" />
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="text/@id" />
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:attribute>
-		<xsl:if test="@system-required">
-			<xsl:attribute name="customTest">
-				<xsl:value-of select="substring-before(@system-required,'-on')" />
-			</xsl:attribute>
-		</xsl:if>
-		<xsl:apply-templates select="node()" />
-	</par>
+	<xsl:if test="($isNcxOnly ne 'true') or descendant-or-self::audio">
+			<!-- 
+			ID value:
+		  	- Case 1: keep @id as it is
+		  	- Case 2: use text/@id on the par
+		  	- Case 3: @id on both elements, value of $NCCPtoP decides what to do
+			-->
+			<par
+				id="{if (@id and not(text/@id)) then @id
+				else if (not(@id) and text/@id) then text/@id
+				else if ($NCCPtoP) then @id
+				else text/@id}">
+				<xsl:if test="@system-required">
+					<xsl:attribute name="customTest">
+						<xsl:value-of select="substring-before(@system-required,'-on')"/>
+					</xsl:attribute>
+				</xsl:if>
+				<xsl:apply-templates select="node()"/>
+			</par>
+	</xsl:if>
 </xsl:template>
 
 <xsl:template match="text">
