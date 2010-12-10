@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
@@ -351,7 +352,11 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 		parameters.put("minNavLabelAudioLength", params.get("ncxMinNavLabelAudioLength"));
 		
 		// The location of the ncc folder, assumed in the style sheet to also be the location of the SMIL files. A bit risky?
-		parameters.put("nccFolder",ncc.getFile().getParent());
+		try {
+			parameters.put("nccFolderURI",ncc.getFile().getParentFile().toURI().toURL());
+		} catch (MalformedURLException e) {
+			throw new IllegalStateException("Could not get the URI of the NCC directory");
+		}
 		
 		Stylesheet.apply(ncc.getFile().getAbsolutePath(), xsltURL, ncxOut.getAbsolutePath(), 
 				TransformerFactoryConstants.SAXON8, parameters, CatalogEntityResolver.getInstance());

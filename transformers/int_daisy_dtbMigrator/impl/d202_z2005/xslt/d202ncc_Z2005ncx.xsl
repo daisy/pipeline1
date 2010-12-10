@@ -33,11 +33,9 @@
 <xsl:param name="defaultStateSidebars" as="xs:string" select="'true'" /> 		<!-- value for head/smilCustomTest/@defaultState -->
 <xsl:param name="defaultStateFootnotes" as="xs:string" select="'true'" />		<!-- value for head/smilCustomTest/@defaultState -->
 <xsl:param name="defaultStateProdnotes" as="xs:string" select="'true'" /> 		<!-- value for head/smilCustomTest/@defaultState -->
-<xsl:param name="nccFolder" as="xs:string" select="'[path]'" /> 				<!-- path to D202 DTB folder -->
+<xsl:param name="nccFolderURI" as="xs:string" select="'[path]'" /> 				<!-- path to D202 DTB folder -->
 <xsl:param name="addNavLabelAudio" as="xs:string" select="'false'" /> 			<!-- add audio element to NavLabel elements -->
 <xsl:param name="minNavLabelAudioLength" as="xs:integer" select="1000" /> 		<!-- minimum length for audio clips in NavLabel elements -->
-
-<xsl:variable name="dtbFolder" as="xs:string" select="translate($nccFolder,'\','/')" />
 
 <xsl:template match="/html:html">
 	<ncx version="2005-1">
@@ -226,7 +224,7 @@
 
 <xsl:template name="navLabelAudio">
 	<xsl:variable name="SMIL.filename" as="xs:string"
-		select="concat($dtbFolder,'/',substring-before(html:a/@href,'#'))" />
+		select="concat($nccFolderURI,'/',substring-before(html:a/@href,'#'))" />
 	<xsl:variable name="SMIL.id" as="xs:string" select="substring-after(html:a/@href,'#')" />
 	<xsl:variable name="SMIL" select="doc($SMIL.filename)/id($SMIL.id)" />
 	<xsl:variable name="audioElements" as="element()*">
