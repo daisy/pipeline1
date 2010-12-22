@@ -26,8 +26,14 @@
 
 	<!-- WHITE SMILING FACE, 263a -->
 	<entry key="263a">&#x2818;&#x2826;:)&#x2818;&#x2834;</entry>
-	
+
+	<!-- ♣ BLACK CLUB SUIT, 2663 -->
+	<entry key="2663">&#x2818;&#x2826;klöver&#x2818;&#x2834;</entry>
+
 	<!-- BLACK HEART SUIT, 2665 -->
-	<entry key="2665">&#x2818;&#x2826;hjärta&#x2818;&#x2834;</entry>
-	
+	<entry key="2665">&#x2818;&#x2826;hjärter&#x2818;&#x2834;</entry>
+
+	<!-- ♦ BLACK DIAMOND SUIT, 2666 -->
+	<entry key="2666">&#x2818;&#x2826;ruter&#x2818;&#x2834;</entry>
+
 </properties>
