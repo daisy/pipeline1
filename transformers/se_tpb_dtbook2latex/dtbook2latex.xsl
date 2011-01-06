@@ -11,13 +11,16 @@ hyperlänkar
 -->
 
 <xsl:stylesheet version="2.0"
-				xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-				xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"	
-				exclude-result-prefixes="dtb">
-
-	<xsl:output method="text" encoding="utf-8" indent="no"/>
-	<xsl:strip-space elements="*"/>
-	<xsl:preserve-space elements="code samp"/>
+		xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"	
+		xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		xmlns:my="http://my-functions"
+		extension-element-prefixes="my"
+		exclude-result-prefixes="dtb my">
+  
+  <xsl:output method="text" encoding="utf-8" indent="no"/>
+  <xsl:strip-space elements="*"/>
+  <xsl:preserve-space elements="code samp"/>
 	
   <!-- Possible values are 12pt, 14pt, 17pt and 20pt -->
   <xsl:param name="fontsize">17pt</xsl:param>
@@ -38,6 +41,11 @@ hyperlänkar
          and uses the normal latex page style for the document class book.
     -->
   <xsl:param name="pageStyle">plain</xsl:param>
+
+  <xsl:function name="my:quoteSpecialChars" as="xs:string">
+    <xsl:param name="text"/>
+    <xsl:value-of select="replace(replace($text, '\s+', ' '), '(\$|&amp;|%|#|_|\{|\}|\\)', '\\$1')"/>
+  </xsl:function>
 
    <xsl:template match="/">
       <xsl:apply-templates/>
@@ -154,23 +162,23 @@ hyperlänkar
    	<xsl:message>skip!</xsl:message>
    </xsl:template>
 
-	<xsl:template match="dtb:meta[@name='dc:title' or @name='dc:Title']" mode="titlePage">
-		<xsl:text>\title{</xsl:text>
-		<xsl:value-of select="@content"/>
-		<xsl:text>}&#10;</xsl:text>
-	</xsl:template>
+   <xsl:template match="dtb:meta[@name='dc:title' or @name='dc:Title']" mode="titlePage">
+     <xsl:text>\title{</xsl:text>
+     <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
+     <xsl:text>}&#10;</xsl:text>
+   </xsl:template>
 
-	<xsl:template match="dtb:meta[@name='dc:creator' or @name='dc:Creator']" mode="titlePage">
-		<xsl:text>\author{</xsl:text>
-		<xsl:value-of select="@content"/>
-		<xsl:text>}&#10;</xsl:text>
-	</xsl:template>
+   <xsl:template match="dtb:meta[@name='dc:creator' or @name='dc:Creator']" mode="titlePage">
+     <xsl:text>\author{</xsl:text>
+     <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
+     <xsl:text>}&#10;</xsl:text>
+   </xsl:template>
 
-	<xsl:template match="dtb:meta[@name='dc:date' or @name='dc:Date']" mode="titlePage">
-		<xsl:text>\date{</xsl:text>
-		<xsl:value-of select="@content"/>
-		<xsl:text>}&#10;</xsl:text>
-	</xsl:template>
+   <xsl:template match="dtb:meta[@name='dc:date' or @name='dc:Date']" mode="titlePage">
+     <xsl:text>\date{</xsl:text>
+     <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
+     <xsl:text>}&#10;</xsl:text>
+   </xsl:template>
 
    <xsl:template match="dtb:level1">
    	<xsl:apply-templates/>
@@ -303,11 +311,7 @@ hyperlänkar
    	<xsl:variable name="refText">
    		<xsl:value-of select="normalize-space(//*[@id=current()/@idref])"/>
    	</xsl:variable>
-	<xsl:call-template name="replace">
-		<xsl:with-param name="text">
-			<xsl:value-of select="$refText"/>
-		</xsl:with-param>
-	</xsl:call-template>
+	<xsl:value-of select="my:quoteSpecialChars(string($refText))"/>
    	<xsl:text>}</xsl:text>
    </xsl:template>
 
@@ -661,21 +665,14 @@ hyperlänkar
    	<xsl:apply-templates/>
    </xsl:template>
 
-	<xsl:template match="text()">
-		<xsl:value-of select="replace(replace(current(), '\s+', ' '), '(\$|&amp;|%|#|_|\{|\}|\\)', '\\$1')"/>
-		<!--<xsl:value-of select="."/>-->
-   	</xsl:template>
+   <xsl:template match="text()">
+     <xsl:value-of select="my:quoteSpecialChars(string(current()))"/>
+   </xsl:template>
    	
-   	<xsl:template match="text()" mode="textOnly">
-		<xsl:value-of select="replace(replace(current(), '\s+', ' '), '(\$|&amp;|%|#|_|\{|\}|\\)', '\\$1')"/>
-		<!--<xsl:value-of select="."/>-->
-   	</xsl:template>
-   	
-   	<xsl:template name="replace">
-   		<xsl:param name="text"/>
-   		<xsl:value-of select="replace(replace($text, '\s+', ' '), '(\$|&amp;|%|#|_|\{|\}|\\)', '\\$1')"/>
-   	</xsl:template>
-   	
+   <xsl:template match="text()" mode="textOnly">
+     <xsl:value-of select="my:quoteSpecialChars(string(current()))"/>
+   </xsl:template>
+   
    <xsl:template match="dtb:*">
      <xsl:message>
   *****<xsl:value-of select="name(..)"/>/{<xsl:value-of select="namespace-uri()"/>}<xsl:value-of select="name()"/>******
