@@ -309,7 +309,7 @@ hyperlänkar
    <xsl:template match="dtb:noteref">
    	<xsl:text>\footnote{</xsl:text>
    	<xsl:variable name="refText">
-   		<xsl:value-of select="normalize-space(//*[@id=current()/@idref])"/>
+	  <xsl:value-of select="normalize-space(//*[@id=translate(current()/@idref,'#','')])"/>
    	</xsl:variable>
 	<xsl:value-of select="my:quoteSpecialChars(string($refText))"/>
    	<xsl:text>}</xsl:text>

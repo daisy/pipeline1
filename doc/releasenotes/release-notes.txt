@@ -12,6 +12,13 @@ The GUI is hosted on a separate sourceforge project
 Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
+***************************************
+Pipeline Release, ????-??-??
+***************************************
+
+- Fixed some problems in the DTbook to LaTeX transformer namely
+  - handle special chars in title, author and date
+  - Fix a problem with noteref lookup
 
 ***************************************
 Pipeline Release, 2010-01-25
