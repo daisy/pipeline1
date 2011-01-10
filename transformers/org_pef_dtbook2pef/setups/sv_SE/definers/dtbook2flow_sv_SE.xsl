@@ -271,7 +271,7 @@
 			</xsl:if>
 			<xsl:choose>
 				<xsl:when test="$tokens='indented'"><xsl:attribute name="first-line-indent">2</xsl:attribute></xsl:when>
-				<xsl:when test="not($tokens='precedingemptyline' or $tokens='precedingseparator')">
+				<xsl:when test="not($tokens='precedingemptyline' or $tokens='precedingseparator' or $tokens='no-indent')">
 					<xsl:if test="(preceding-sibling::*[1])[self::dtb:p or self::dtb:pagenum[(preceding-sibling::*[1])[self::dtb:p]]]">
 						<xsl:attribute name="first-line-indent">2</xsl:attribute>
 					</xsl:if>
