@@ -1201,6 +1201,8 @@ transformers/org_pef_dtbook2pef/doc-files/setups.common.splitters.simple-splitte
 transformers/org_pef_dtbook2pef/doc-files/setups.sv_SE.definers.dtbook2flow_sv_SE.html -text
 transformers/org_pef_dtbook2pef/doc-files/setups.sv_SE.definers.dtbook2flow_sv_SE_braille.html -text
 transformers/org_pef_dtbook2pef/doc-files/setups.sv_SE.definers.dtbook2flow_sv_SE_text.html -text
+transformers/org_pef_dtbook2pef/javadoc.xml -text
+transformers/org_pef_dtbook2pef/javase-6/package-list -text
 transformers/org_pef_dtbook2pef/lib/default_renderer.xsl -text
 transformers/org_pef_dtbook2pef/lib/pef2xhtml.xsl -text
 transformers/org_pef_dtbook2pef/package.html -text

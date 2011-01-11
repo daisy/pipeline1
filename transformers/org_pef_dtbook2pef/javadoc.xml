@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+	
+	<property name="test.reports" value="${basedir}/report"/>
+	<property name="classes" value="${basedir}/bin"/>
+	
+	<path id="path.lib">
+		<fileset dir="../../lib">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	
+    <target name="javadoc">
+    	<delete dir="${basedir}/apidoc"/>
+        <javadoc access="public" author="true"
+        	classpathref="path.lib"
+
+        	destdir="${basedir}/apidoc" 
+        	nodeprecated="false" 
+        	nodeprecatedlist="false" 
+        	noindex="false" 
+        	nonavbar="false" 
+        	notree="false" 
+        	packagenames="
+        		org_pef_dtbook2pef,
+	        	org_pef_dtbook2pef.system.*,
+        		org_pef_dtbook2pef.setups.*"
+        	source="1.6" 
+        	sourcepath="
+        		../../src;
+	        	../../test;
+	        	../../transformers" 
+        	splitindex="true" 
+        	use="true" 
+        	version="true"
+        	encoding="UTF-8"
+        	charset="UTF-8">
+        	<link offline="true" href="http://java.sun.com/javase/6/docs/api/" packagelistLoc="javase-6"/>
+        </javadoc>
+    </target>
+</project>
