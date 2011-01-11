@@ -8,6 +8,46 @@ package org_pef_dtbook2pef.system.tasks.layout.utils;
  * @author Joel Håkansson, TPB
  */
 public class BreakPoint {
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (hardBreak ? 1231 : 1237);
+		result = prime * result + ((head == null) ? 0 : head.hashCode());
+		result = prime * result + ((tail == null) ? 0 : tail.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BreakPoint other = (BreakPoint) obj;
+		if (hardBreak != other.hardBreak)
+			return false;
+		if (head == null) {
+			if (other.head != null)
+				return false;
+		} else if (!head.equals(other.head))
+			return false;
+		if (tail == null) {
+			if (other.tail != null)
+				return false;
+		} else if (!tail.equals(other.tail))
+			return false;
+		return true;
+	}
+
 	private final String head;
 	private final String tail;
 	private final boolean hardBreak;
