@@ -101,9 +101,14 @@ public class InputDetectorTaskSystem implements TaskSystem {
 			if (rootNS!=null) {
 				if (rootNS.equals("http://www.daisy.org/z3986/2005/dtbook/") && rootElement.equals("dtbook")) {
 					inputformat = "dtbook.properties";
-				} // else if {
+				}
+				// else if {
 					// Add more input formats here...
 				// }
+			}
+			// TODO: if this becomes a documented feature of the system, then a namespace should be added and the root element name changed... 
+			else if (rootElement.equals("root")) {
+				inputformat = "flow.properties";
 			}
 			is.close();
 		} catch (SAXException e) {

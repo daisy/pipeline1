@@ -55,14 +55,16 @@
 	hypenate not implemented
 -->
 <!ATTLIST sequence
-	hyphenate (true|false) #IMPLIED
-	initial-page-number CDATA #IMPLIED
 	master IDREF #REQUIRED
+	initial-page-number CDATA #IMPLIED
+	xml:lang NMTOKEN #IMPLIED
+	hyphenate (true|false) #IMPLIED
 >
 
 <!ELEMENT float-item (block+)>
 <!ATTLIST float-item
 	name ID #REQUIRED
+	xml:lang NMTOKEN #IMPLIED
 >
 
 <!--
@@ -94,6 +96,7 @@
 	margin-right CDATA #IMPLIED
 	text-indent CDATA #IMPLIED
 	block-indent CDATA #IMPLIED
+	xml:lang NMTOKEN #IMPLIED
 >
 
 <!--

@@ -1209,6 +1209,7 @@ transformers/org_pef_dtbook2pef/package.html -text
 transformers/org_pef_dtbook2pef/setups/TaskSystemFactory.java -text
 transformers/org_pef_dtbook2pef/setups/TaskSystemFactoryException.java -text
 transformers/org_pef_dtbook2pef/setups/common/InputDetectorTaskSystem.java -text
+transformers/org_pef_dtbook2pef/setups/common/config/pef/flow.properties -text
 transformers/org_pef_dtbook2pef/setups/common/config/pef/xml.properties -text
 transformers/org_pef_dtbook2pef/setups/common/config/text/xml.properties -text
 transformers/org_pef_dtbook2pef/setups/common/definers/dtbook2flow.xsl -text
@@ -1253,6 +1254,7 @@ transformers/org_pef_dtbook2pef/system/tasks/TextNodeTask.java -text
 transformers/org_pef_dtbook2pef/system/tasks/ValidatorTask.java -text
 transformers/org_pef_dtbook2pef/system/tasks/VolumeCoverPageTask.java -text
 transformers/org_pef_dtbook2pef/system/tasks/XsltTask.java -text
+transformers/org_pef_dtbook2pef/system/tasks/cover/StaticVolumeCoverPage.java -text
 transformers/org_pef_dtbook2pef/system/tasks/cover/VolumeCoverPage.java -text
 transformers/org_pef_dtbook2pef/system/tasks/cover/VolumeCoverPageFilter.java -text
 transformers/org_pef_dtbook2pef/system/tasks/layout/flow/BlockPosition.java -text

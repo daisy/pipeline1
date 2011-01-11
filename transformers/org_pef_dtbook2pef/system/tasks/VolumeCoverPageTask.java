@@ -33,11 +33,17 @@ import org_pef_dtbook2pef.system.tasks.cover.VolumeCoverPageFilter;
  *
  */
 public class VolumeCoverPageTask extends InternalTask {
-	private VolumeCoverPage cover;
+	private final VolumeCoverPage frontCover;
+	private final VolumeCoverPage rearCover;
 
 	public VolumeCoverPageTask(String name, VolumeCoverPage cover) {
+		this(name, cover, null);
+	}
+	
+	public VolumeCoverPageTask(String name, VolumeCoverPage frontCover, VolumeCoverPage rearCover) {
 		super(name);
-		this.cover = cover;
+		this.frontCover = frontCover;
+		this.rearCover = rearCover;
 	}
 
 	@Override
@@ -63,7 +69,7 @@ public class VolumeCoverPageTask extends InternalTask {
 			VolumeCoverPageFilter pf = new VolumeCoverPageFilter(
 					inFactory.createXMLEventReader(new FileInputStream(input)), 
 					new FileOutputStream(output),
-					cover, volumeCount);
+					frontCover, rearCover, volumeCount);
 			pf.filter();
 			pf.close();
 		} catch (FileNotFoundException e) {
