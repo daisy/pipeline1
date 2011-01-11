@@ -54,6 +54,7 @@ transformers/no_hks_xhtml2dtbook/*.class
 transformers/org_pef_dist/*.class
 transformers/org_pef_dist/lib/*.class
 transformers/org_pef_dtbook2pef/*.class
+transformers/org_pef_dtbook2pef/apidoc
 transformers/org_pef_dtbook2pef/lib/*.class
 transformers/org_pef_dtbook2pef/setups/*.class
 transformers/org_pef_dtbook2pef/setups/common/*.class
