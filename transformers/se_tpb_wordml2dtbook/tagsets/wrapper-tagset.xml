@@ -20,6 +20,10 @@
 	<group name="prodnote-required" tag="prodnote">
 		<attribute name="render" value="required"/>
 	</group>
+
+	<group name="p-list" tag="list">
+		<attribute name="type" value="pl"/>
+	</group>
 	
 	<group name="list" tag="list" type="list">
 		<attribute name="type" value="pl"/>

@@ -21,6 +21,12 @@
 			<tag name="list">
 				<map value="li"/>
 			</tag>
+			<!-- Added for Word 2007 -->
+			<tag name="List">
+				<map value="li">
+					<attribute name="group" value="p-list"/>
+				</map>
+			</tag>
 			<!--
 			<tag name="List Number" listOverride="true">
 				<wrap value="list" addId="false" merge="true">
