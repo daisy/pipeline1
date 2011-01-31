@@ -41,6 +41,15 @@ hyperlänkar
          and uses the normal latex page style for the document class book.
     -->
   <xsl:param name="pageStyle">plain</xsl:param>
+  <xsl:param name="line_spacing">singlespacing</xsl:param>
+
+  <!-- Fill the following values if you pass a 'custom' papersize -->
+  <xsl:param name="paperwidth">200mm</xsl:param>
+  <xsl:param name="paperheight">250mm</xsl:param>
+  <xsl:param name="left_margin">28mm</xsl:param>
+  <xsl:param name="right_margin">20mm</xsl:param>
+  <xsl:param name="top_margin">20mm</xsl:param>
+  <xsl:param name="bottom_margin">20mm</xsl:param>
 
   <xsl:function name="my:quoteSpecialChars" as="xs:string">
     <xsl:param name="text"/>
@@ -56,10 +65,17 @@ hyperlänkar
    	<xsl:text>% DMFC dtbook2latex v0.2&#10;</xsl:text>
 	<xsl:text>% ***********************&#10;</xsl:text>
    	<xsl:text>\documentclass[</xsl:text>
-	<xsl:value-of select="$fontsize"/>
-   	<xsl:text>,</xsl:text>
-	<xsl:value-of select="$papersize"/>
-	<xsl:text>,twoside]{extbook}&#10;</xsl:text>   
+	<xsl:value-of select="concat($fontsize, ',')"/>
+	<xsl:if test="$papersize != 'custom'">
+	  <xsl:value-of select="concat($papersize, ',')"/>
+	</xsl:if>
+	<xsl:text>twoside]{extbook}&#10;</xsl:text>
+	<xsl:if test="$papersize = 'custom'">
+	  <xsl:value-of select="concat('\usepackage[paperwidth=', $paperwidth, 
+				',paperheight=', $paperheight, ',left=', $left_margin,
+				',right=', $right_margin,',top=', $top_margin,
+				',bottom=', $bottom_margin,']{geometry}}&#10;')"/>
+	</xsl:if>
    	<xsl:text>\usepackage{graphicx}&#10;</xsl:text>
    	<xsl:call-template name="findLanguage"/>
    	<xsl:text>\setlength{\parskip}{1.5ex}&#10;</xsl:text>
@@ -80,6 +96,10 @@ hyperlänkar
 	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
 	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
 	<xsl:text>\renewcommand{\labelenumii}{\theenumii}&#10;&#10;</xsl:text>
+	<xsl:if test="$line_spacing != 'singlespacing'">
+	  <xsl:text>\usepackage{setspace}&#10;</xsl:text>
+	  <xsl:value-of select="concat('\', $line_spacing, '&#10;&#10;')"/>
+	</xsl:if>
 	<xsl:apply-templates/>
    </xsl:template>
 

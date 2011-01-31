@@ -103,10 +103,71 @@
        <item nicename="letterpaper" value="letterpaper"/>
        <item nicename="legalpaper" value="legalpaper"/>
        <item nicename="executivepaper" value="executivepaper"/>
+       <item nicename="custom" value="custom"/>
      </enum>
     </datatype>
   </parameter>
   
+  <parameter name="line_spacing" value="single" required="false">
+    <nicename>Line spacing</nicename>
+    <description>The line spacing to be used.</description>
+    <datatype>
+     <enum>
+       <item nicename="Single spacing" value="singlespacing"/>
+       <item nicename="One-and-a-half spacing" value="onehalfspacing"/>
+       <item nicename="Double spacing" value="doublespacing"/>
+     </enum>
+    </datatype>
+  </parameter>
+
+  <parameter name="paperwidth" value="" required="false">
+    <nicename>Paper width</nicename>
+    <description>Specific width of the paper.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+  
+  <parameter name="paperheight" value="" required="false">
+    <nicename>Paper height</nicename>
+    <description>Specific height of the paper.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+
+  <parameter name="left_margin" value="" required="false">
+    <nicename>Left margin</nicename>
+    <description>Inner margin of the paper.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+
+  <parameter name="right_margin" value="" required="false">
+    <nicename>Right margin</nicename>
+    <description>Outer margin of the paper.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+
+  <parameter name="top_margin" value="" required="false">
+    <nicename>Top margin</nicename>
+    <description>Top margin of the page.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+
+  <parameter name="bottom_margin" value="" required="false">
+    <nicename>Bottom margin</nicename>
+    <description>Bottom margin of the page</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+
   &ValidatorScriptParamsSimpleStatic;		
   
   <task name="int_daisy_validator" interactive="false">
@@ -163,6 +224,42 @@
       <name>papersize</name>
       <value>${papersize}</value>			
     </parameter>				
+
+    <parameter>
+      <name>line_spacing</name>
+      <value>${line_spacing}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>paperwidth</name>
+      <value>${paperwidth}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>paperheight</name>
+      <value>${paperheight}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>left_margin</name>
+      <value>${left_margin}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>right_margin</name>
+      <value>${right_margin}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>top_margin</name>
+      <value>${top_margin}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>bottom_margin</name>
+      <value>${bottom_margin}</value>			
+    </parameter>				
+
   </task>		
 
   <task name="pipeline_system_deleter" interactive="false">
