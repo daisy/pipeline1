@@ -97,7 +97,9 @@ hyperlänkar
 	  <xsl:text>\usepackage{titletoc}&#10;</xsl:text>
 	  <xsl:text>\titlecontents{part}[1.5em]{\addvspace{1em}}{}{}{,~\thecontentspage}&#10;</xsl:text>
 	  <xsl:text>\titlecontents{chapter}[1.5em]{\addvspace{1em}}{}{}{,~\thecontentspage}&#10;</xsl:text>
-	  <xsl:text>\titlecontents{section}[1.5em]{}{}{}{,~\thecontentspage}&#10;&#10;</xsl:text>
+	  <xsl:text>\titlecontents{section}[1.5em]{}{}{}{,~\thecontentspage}&#10;</xsl:text>
+	  <xsl:text>\titlecontents{subsection}[1.5em]{}{}{}{,~\thecontentspage}&#10;</xsl:text>
+	  <xsl:text>\titlecontents{subsubsection}[1.5em]{}{}{}{,~\thecontentspage}&#10;&#10;</xsl:text>
 	</xsl:if>
 
 	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
