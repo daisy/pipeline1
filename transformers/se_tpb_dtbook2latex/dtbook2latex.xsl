@@ -92,7 +92,14 @@ hyperlänkar
 	  <xsl:text>\usepackage{titlesec}&#10;&#10;</xsl:text>
 	  <xsl:text>\titlelabel{}&#10;</xsl:text>
 	  <xsl:text>\titleformat{\chapter}[block]{}{}{0cm}{\Large\bfseries}&#10;&#10;</xsl:text>
+
+	  <!-- Drop the numbering from the TOC -->
+	  <xsl:text>\usepackage{titletoc}&#10;</xsl:text>
+	  <xsl:text>\titlecontents{part}[1.5em]{\addvspace{1em}}{}{}{,~\thecontentspage}&#10;</xsl:text>
+	  <xsl:text>\titlecontents{chapter}[1.5em]{\addvspace{1em}}{}{}{,~\thecontentspage}&#10;</xsl:text>
+	  <xsl:text>\titlecontents{section}[1.5em]{}{}{}{,~\thecontentspage}&#10;&#10;</xsl:text>
 	</xsl:if>
+
 	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
 	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
 	<xsl:text>\renewcommand{\labelenumii}{\theenumii}&#10;&#10;</xsl:text>
