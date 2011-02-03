@@ -75,6 +75,7 @@ transformers/org_pef_dtbook2pef/setups/sv_SE/config/pef/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/config/text/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/definers/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/tasks/*.class
+transformers/org_pef_dtbook2pef/setups/sv_SE/test/*.class
 transformers/org_pef_dtbook2pef/setups/sv_SE/validation/*.class
 transformers/org_pef_dtbook2pef/system/*.class
 transformers/org_pef_dtbook2pef/system/tasks/*.class
@@ -91,6 +92,9 @@ transformers/org_pef_dtbook2pef/system/tasks/layout/utils/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/writers/*.class
 transformers/org_pef_dtbook2pef/system/tasks/textnode/*.class
 transformers/org_pef_dtbook2pef/system/utils/*.class
+transformers/org_pef_dtbook2pef/test/junit/*.class
+transformers/org_pef_dtbook2pef/test/unit/*.class
+transformers/org_pef_dtbook2pef/test/unit/impl/*.class
 transformers/org_pef_pefFileMerger/*.class
 transformers/org_pef_pefFileSplitter/*.class
 transformers/org_pef_text/*.class
