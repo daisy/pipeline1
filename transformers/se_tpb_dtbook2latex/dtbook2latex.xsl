@@ -167,6 +167,8 @@ hyperlänkar
 
    <xsl:template match="dtb:book">
 	<xsl:text>\begin{document}&#10;</xsl:text>
+	<!-- Do not take '"' as a shorthand for inserting umlauts -->
+	<xsl:text>\shorthandoff{"}&#10;</xsl:text>
 	<xsl:if test="$pageStyle='plain' or $pageStyle='withPageNums'">
 	  <xsl:text>\pagestyle{plain}&#10;</xsl:text>
 	</xsl:if>
