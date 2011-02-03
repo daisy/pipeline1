@@ -51,6 +51,12 @@ hyperlänkar
   <xsl:param name="top_margin">20mm</xsl:param>
   <xsl:param name="bottom_margin">20mm</xsl:param>
 
+  <!-- FIXME: Unfortunately the current TDF Grammar doesn't allow for
+       boolean params, so the following param is handled as a string.
+       See
+       http://data.daisy.org/projects/pipeline/doc/developer/tdf-grammar-v1.1.html -->
+  <xsl:param name="replace_em_with_quote">false</xsl:param> 
+
   <xsl:function name="my:quoteSpecialChars" as="xs:string">
     <xsl:param name="text"/>
     <xsl:value-of select="replace(replace($text, '\s+', ' '), '(\$|&amp;|%|#|_|\{|\}|\\)', '\\$1')"/>
@@ -190,7 +196,7 @@ hyperlänkar
    </xsl:template>
 
    <xsl:template match="dtb:frontmatter/dtb:level1/dtb:list[descendant::dtb:lic]" priority="1">
-   	<xsl:message>skip!</xsl:message>
+   	<xsl:message>skipping lic in frontmatter!</xsl:message>
    </xsl:template>
 
    <xsl:template match="dtb:meta[@name='dc:title' or @name='dc:Title']" mode="titlePage">
@@ -634,11 +640,25 @@ hyperlänkar
    	<xsl:apply-templates/>
    </xsl:template>
 
-	<xsl:template match="dtb:em">
-		<xsl:text>\emph{</xsl:text>
-		<xsl:apply-templates/>
-		<xsl:text>}</xsl:text>		
-   	</xsl:template>
+   <xsl:template match="dtb:em">
+     <xsl:choose>
+       <xsl:when test="$replace_em_with_quote = 'true'">
+	 <xsl:text>``</xsl:text>
+       </xsl:when>
+       <xsl:otherwise>
+	 <xsl:text>\emph{</xsl:text>
+       </xsl:otherwise>
+     </xsl:choose>
+     <xsl:apply-templates/>
+     <xsl:choose>
+       <xsl:when test="$replace_em_with_quote = 'true'">
+	 <xsl:text>''</xsl:text>
+       </xsl:when>
+       <xsl:otherwise>
+	 <xsl:text>}</xsl:text>		
+       </xsl:otherwise>
+     </xsl:choose>
+   </xsl:template>
 
    <xsl:template match="dtb:strong">
    	<xsl:text>\textbf{</xsl:text>

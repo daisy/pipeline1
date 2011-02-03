@@ -152,6 +152,17 @@
 		  <default>20mm</default>
 		</parameter>
 
+		<parameter type="enum" direction="in" required="false">
+		  <name>replace_em_with_quote</name>			
+		  <description>Replace em with quoted text as emphasis might be hard</description>
+		  <example>false</example>
+		  <enum>
+		    <value>true</value>
+		    <value>false</value>
+		  </enum>
+		  <default>false</default>
+		</parameter>
+
 		<parameter type="string" direction="in" required="false">
 		  <name>top_margin</name>			
 		  <description>Specific top margin of the page (if papersize is defined as 'custom')</description>

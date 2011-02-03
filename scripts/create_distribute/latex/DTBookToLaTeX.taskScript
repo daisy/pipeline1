@@ -168,6 +168,17 @@
     </datatype>
   </parameter>
 
+  <parameter name="replace_em_with_quote" value="false" required="false">
+    <nicename>Replace em with quote</nicename>
+    <description>Replace italics with quotes for better readability.</description>
+    <datatype>
+     <enum>
+       <item nicename="Yes" value="true"/>
+       <item nicename="No" value="false"/>
+     </enum>
+    </datatype>
+  </parameter>
+
   &ValidatorScriptParamsSimpleStatic;		
   
   <task name="int_daisy_validator" interactive="false">
@@ -258,6 +269,11 @@
     <parameter>
       <name>bottom_margin</name>
       <value>${bottom_margin}</value>			
+    </parameter>				
+
+    <parameter>
+      <name>replace_em_with_quote</name>
+      <value>${replace_em_with_quote}</value>			
     </parameter>				
 
   </task>		
