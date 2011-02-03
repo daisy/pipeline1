@@ -163,6 +163,32 @@ hyperlänkar
      <xsl:text>]{babel}&#10;</xsl:text>
    </xsl:template>
 
+   <xsl:template name="titlepage">
+     <xsl:text>\begin{titlepage}&#10;</xsl:text>
+     <!-- Author(s) -->
+     <xsl:text>{\LARGE </xsl:text>
+     <xsl:for-each select="//dtb:meta[@name='dc:creator' or @name='dc:Creator']">
+       <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
+        <xsl:if test="not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
+     </xsl:for-each>
+     <xsl:text>}\\[1.5cm]&#10;</xsl:text>
+     <!-- Title -->
+     <xsl:for-each select="//dtb:meta[@name='dc:title' or @name='dc:Title']">
+       <xsl:text>{\Huge </xsl:text>
+       <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
+     <xsl:text>}\\[0.5cm]&#10;</xsl:text>
+     </xsl:for-each>
+     <xsl:text>{\rule{\linewidth}{0.5mm}} \\[1.5cm]&#10;</xsl:text>
+     <xsl:text>\vfill&#10;</xsl:text>
+     <!-- Publisher -->
+     <xsl:for-each select="//dtb:meta[@name='dc:publisher' or @name='dc:Publisher']">
+       <xsl:text>{\LARGE </xsl:text>
+       <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
+       <xsl:text>}\\[0.5cm]&#10;</xsl:text>
+     </xsl:for-each>
+     <xsl:text>\end{titlepage}&#10;</xsl:text>
+   </xsl:template>
+
    <xsl:template match="dtb:head">
    	<xsl:apply-templates/>
    </xsl:template>
@@ -187,8 +213,8 @@ hyperlänkar
 
    <xsl:template match="dtb:frontmatter">
    	<xsl:text>\frontmatter&#10;</xsl:text>
+	<xsl:call-template name="titlepage"/>
    	<xsl:apply-templates select="//dtb:meta" mode="titlePage"/>
-	<xsl:text>\maketitle&#10;</xsl:text>
 	<xsl:if test="dtb:level1/dtb:list[descendant::dtb:lic]">
 		<xsl:text>\tableofcontents&#10;</xsl:text>
 	</xsl:if>
