@@ -46,10 +46,11 @@
         <!-- <include name="icu4j-charsets.jar"/> -->    
 		<include name="jaudiotagger.jar"/>
 		<include name="jl1.0.jar"/>
-        <include name="log4j-1.2.15.jar"/>
+		<include name="junit-4.7.jar"/>
+		<include name="log4j-1.2.15.jar"/>
 		<include name="onvdl.jar"/>
 		<include name="sac.jar"/>
-        <include name="saxon.jar"/>
+		<include name="saxon.jar"/>
 		<include name="saxon8.jar"/>
 		<include name="saxon8-dom.jar"/>
 		<include name="serializer.jar"/>
