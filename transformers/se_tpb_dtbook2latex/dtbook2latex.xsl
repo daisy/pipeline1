@@ -59,7 +59,12 @@ hyperlänkar
 
   <xsl:function name="my:quoteSpecialChars" as="xs:string">
     <xsl:param name="text"/>
-    <xsl:value-of select="replace(replace(replace($text, '\s+', ' '), '(\$|&amp;|%|#|_|\{|\}|\\)', '\\$1'), '(~|\^)', '\\$1{}')"/>
+    <xsl:value-of 
+	select="replace(replace(replace(replace($text, 
+		'\\', '\\textbackslash '),
+		'\s+', ' '), 
+		'(\$|&amp;|%|#|_|\{|\})', '\\$1'), 
+		'(~|\^)', '\\$1{}')"/>
   </xsl:function>
 
    <xsl:template match="/">
