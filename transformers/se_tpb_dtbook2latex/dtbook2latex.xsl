@@ -57,6 +57,9 @@ hyperlänkar
        http://data.daisy.org/projects/pipeline/doc/developer/tdf-grammar-v1.1.html -->
   <xsl:param name="replace_em_with_quote">false</xsl:param> 
 
+  <!-- Escape characters that have a special meaning to LaTeX (see The
+       Comprehensive LaTeX Symbol List,
+       http://www.ctan.org/tex-archive/info/symbols/comprehensive/symbols-a4.pdf) -->
   <xsl:function name="my:quoteSpecialChars" as="xs:string">
     <xsl:param name="text"/>
     <xsl:value-of 
