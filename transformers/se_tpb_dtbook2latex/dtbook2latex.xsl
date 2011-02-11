@@ -171,20 +171,19 @@ hyperlänkar
      <xsl:text>]{babel}&#10;</xsl:text>
    </xsl:template>
 
-   <xsl:template name="titlepage">
-     <xsl:text>\begin{titlepage}&#10;</xsl:text>
+   <xsl:template name="cover">
      <!-- Author(s) -->
      <xsl:text>{\LARGE </xsl:text>
      <xsl:for-each select="//dtb:meta[@name='dc:creator' or @name='dc:Creator']">
        <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
-        <xsl:if test="not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
+       <xsl:if test="not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
      </xsl:for-each>
      <xsl:text>}\\[1.5cm]&#10;</xsl:text>
      <!-- Title -->
      <xsl:for-each select="//dtb:meta[@name='dc:title' or @name='dc:Title']">
        <xsl:text>{\Huge </xsl:text>
        <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
-     <xsl:text>}\\[0.5cm]&#10;</xsl:text>
+       <xsl:text>}\\[0.5cm]&#10;</xsl:text>
      </xsl:for-each>
      <xsl:text>{\rule{\linewidth}{0.5mm}} \\[1.5cm]&#10;</xsl:text>
      <xsl:text>\vfill&#10;</xsl:text>
@@ -194,7 +193,19 @@ hyperlänkar
        <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
        <xsl:text>}\\[0.5cm]&#10;</xsl:text>
      </xsl:for-each>
+   </xsl:template>
+
+   <xsl:template name="titlepage">
+     <xsl:text>\begin{titlepage}&#10;</xsl:text>
+     <xsl:call-template name="cover"/>
      <xsl:text>\end{titlepage}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template name="volumecover">
+     <xsl:text>\cleardoublepage&#10;</xsl:text>
+     <xsl:text>\thispagestyle{empty}&#10;</xsl:text>
+     <xsl:call-template name="cover"/>
+     <xsl:text>\clearpage&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:head">
@@ -427,6 +438,14 @@ hyperlänkar
    <xsl:template match="dtb:div">
    	<xsl:apply-templates/>
    </xsl:template>
+
+   <!-- Volume boundaries are indicated in the xml by an empty div
+        with a specific class. Insert a titlepage where the new volume
+        is to start -->
+   <xsl:template match="dtb:div[@class='large-print-volume-split']">
+     <xsl:call-template name="volumecover"/>
+   </xsl:template>
+
 
    <xsl:template match="dtb:imggroup">
    	<!--
