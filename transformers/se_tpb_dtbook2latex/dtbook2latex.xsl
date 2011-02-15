@@ -88,7 +88,7 @@ hyperlänkar
 	  <xsl:value-of select="concat('\usepackage[paperwidth=', $paperwidth, 
 				',paperheight=', $paperheight, ',left=', $left_margin,
 				',right=', $right_margin,',top=', $top_margin,
-				',bottom=', $bottom_margin,']{geometry}}&#10;')"/>
+				',bottom=', $bottom_margin,']{geometry}&#10;')"/>
 	</xsl:if>
    	<xsl:text>\usepackage{graphicx}&#10;</xsl:text>
    	<xsl:call-template name="findLanguage"/>
@@ -696,7 +696,7 @@ hyperlänkar
    <xsl:template match="dtb:em">
      <xsl:choose>
        <xsl:when test="$replace_em_with_quote = 'true'">
-	 <xsl:text>``</xsl:text>
+	 <xsl:text>'</xsl:text>
        </xsl:when>
        <xsl:otherwise>
 	 <xsl:text>\emph{</xsl:text>
@@ -705,7 +705,7 @@ hyperlänkar
      <xsl:apply-templates/>
      <xsl:choose>
        <xsl:when test="$replace_em_with_quote = 'true'">
-	 <xsl:text>''</xsl:text>
+	 <xsl:text>'</xsl:text>
        </xsl:when>
        <xsl:otherwise>
 	 <xsl:text>}</xsl:text>		
