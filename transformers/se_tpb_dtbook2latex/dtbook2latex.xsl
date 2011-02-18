@@ -262,6 +262,12 @@ hyperlänkar
      <xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
+   <!-- If a level 1 has no h1 make sure it is on a new page -->
+   <xsl:template match="dtb:level1[empty(dtb:h1)]">
+     <xsl:text>\cleardoublepage&#10;</xsl:text>
+   	<xsl:apply-templates/>
+   </xsl:template>
+
    <xsl:template match="dtb:level1">
    	<xsl:apply-templates/>
    </xsl:template>
