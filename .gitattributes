@@ -188,6 +188,10 @@ doc/transformers/uk_rnib_dtbook2xhtml.html -text
 doc/transformers/us_rfbd_dtbookMigrator.html -text
 doc/transformers/us_rfbd_nimasCreator.html -text svneol=unset#text/plain
 doc/transformers/us_rfbd_textOnlyDtbCreator.html -text svneol=unset#text/plain
+launchers/pipeline-lite.bat -text
+launchers/pipeline-lite.exe -text
+launchers/pipeline-lite.ini -text svneol=unset#text/plain
+launchers/pipeline-lite.sh -text
 launchers/pipeline-plugin.bat -text
 launchers/pipeline-plugin.sh -text
 launchers/pipeline.sh -text
