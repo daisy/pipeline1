@@ -204,26 +204,7 @@
 
    <xsl:template match="dtb:book">
      <body>
-     
-			<xsl:for-each select="(//dtb:doctitle)[1]">
-				<h1 class="title" id="h1classtitle">
-					<xsl:choose>
-						<xsl:when test="$first_smil and $hrefTarget='TEXT'">
-							<a href="{$smilPrefix}{$first_smil}#doctitleText">
-								<xsl:value-of select="."/>
-							</a>
-						</xsl:when>
-						<xsl:when test="$first_smil">
-							<a href="{$smilPrefix}{$first_smil}#doctitle">
-								<xsl:value-of select="."/>
-							</a>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="."/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</h1>
-			</xsl:for-each>
+     	   <!--TODO make sure the first element is a heading, even if no doctitle is here --> 
 			<xsl:if test="$toc_gen='true'">
 				<xsl:call-template name="tocgen"/>
 			</xsl:if>
@@ -567,6 +548,12 @@
     </div>
    </xsl:template>
 
+  <xsl:template match="dtb:doctitle[1]">
+    <h1 class="title">
+    	<xsl:call-template name="copyCncatts"/>
+    	<xsl:call-template name="maybeSmilref"/>
+    </h1>
+  </xsl:template>
   <xsl:template match="dtb:doctitle">
     <div class="doctitle">
     	<xsl:call-template name="copyCncatts"/>

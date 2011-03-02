@@ -94,7 +94,7 @@
   <!-- Rule 107: doctitle in frontmatter must exist (for Daisy 2.02) -->
   <sch:pattern name="dtbook_narrator_frontmatterDoctitle" id="dtbook_narrator_frontmatterDoctitle">
   	<sch:rule context="dtbk:book">
-  		<sch:assert test="count(dtbk:frontmatter/dtbk:doctitle)>=1">[narrator107] There must be a frontmatter/doctitle element</sch:assert>
+  		<sch:assert test="not(dtbk:frontmatter) or count(dtbk:frontmatter/dtbk:doctitle)>=1">[narrator107] If there is a frontmatter, there must be a doctitle element</sch:assert>
   	</sch:rule>  	
   </sch:pattern>
   

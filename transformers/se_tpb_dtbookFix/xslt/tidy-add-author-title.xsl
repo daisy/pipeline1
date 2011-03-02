@@ -88,6 +88,8 @@
 	<xsl:template match="dtb:frontmatter/dtb:docauthor">
 	</xsl:template>
 	
+	<!--
+	RD-20110302: no longer systematically create a frontmatter
 	<xsl:template match="dtb:book">
 		<xsl:copy>
 			<xsl:copy-of select="@*"/>
@@ -99,6 +101,6 @@
 			</xsl:if>
 			<xsl:apply-templates/>
 		</xsl:copy>
-	</xsl:template>
+	</xsl:template>-->
 	
 </xsl:stylesheet>

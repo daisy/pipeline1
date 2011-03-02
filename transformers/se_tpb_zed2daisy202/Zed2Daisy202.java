@@ -279,7 +279,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         //parameters.put("dtbook_document", dtbook.toURI());
         parameters.put("baseDir", inputDir.toURI());
         //parameters.put("ncx_document", ncx.toURI());
-        parameters.put("add_title", "true");
+//        parameters.put("add_title", "true");
         parameters.put("precalc_document", preCalcFile.toURI());
         
         TransformerCache cache = new TransformerCache();
