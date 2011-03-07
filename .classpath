@@ -35,5 +35,7 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lib/junit-4.7.jar"/>
 	<classpathentry kind="lib" path="transformers/int_vspiewak_odt2daisy/lib/odt2daisy.jar"/>
+	<classpathentry kind="lib" path="lib/brailleUtils-catalog-1.1.0rc1.jar"/>
+	<classpathentry kind="lib" path="lib/brailleUtils-core-1.1.0rc1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
