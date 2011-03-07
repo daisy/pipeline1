@@ -1,8 +1,0 @@
-
-Important notice!
-
-The transformers pef2text and text2pef have been deprecated. The functionality in them continue 
-to evolve here:
-http://code.google.com/p/brailleutils/
-
-At the moment, there is no plan to update these transformers using the new library.

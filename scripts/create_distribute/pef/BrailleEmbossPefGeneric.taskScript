@@ -81,12 +81,12 @@
 		
 		<parameter>
 			<name>table</name>
-			<value>en_US</value>
+			<value>org.daisy.braille.table.DefaultTableProvider.TableType.EN_US</value>
 		</parameter>
 		
 		<parameter>
 			<name>embosser</name>
-			<value>NONE</value>
+			<value>org_daisy.GenericEmbosserProvider.EmbosserType.NONE</value>
 		</parameter>
 
 		<parameter>

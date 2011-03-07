@@ -22,16 +22,18 @@
 		<description>Select the make and model of the target embosser</description>
 		<datatype>
 			<enum>
-			  <item nicename="Braillo 200 (firmware 000.17 or later)" value="BRAILLO_200" />
-			  <item nicename="Braillo 400S (firmware 000.17 or later)" value="BRAILLO_400_S" />
-			  <item nicename="Braillo 400SR (firmware 000.17 or later)" value="BRAILLO_400_SR" />
-			  <item nicename="Braillo 440SW - two page mode" value="BRAILLO_440_SW_2P" />
-			  <item nicename="Braillo 440SW - four page mode" value="BRAILLO_440_SW_4P" />
-			  <item nicename="Braillo 440SWSF" value="BRAILLO_440_SWSF" />
-			  <item nicename="Index Braille - 9.20 Everest V2" value="INDEX_EVEREST" />
-			  <item nicename="Index Braille - Everest V3" value="INDEX_EVEREST_V3" />
-			  <item nicename="Index Braille - 3.30 Basic V2" value="INDEX_BASIC" />
-			  <item nicename="Index Braille - Basic-D V3" value="INDEX_BASIC_D_V3" />
+				<item nicename="Braillo 200 (firmware 000.17 or later)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_200"/>
+				<item nicename="Braillo 270 (firmware 12 to 16)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_270"/>
+				<item nicename="Braillo 400S (firmware 000.17 or later)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_400_S"/>
+				<item nicename="Braillo 400SR (firmware 000.17 or later)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_400_SR"/>
+				<item nicename="Braillo 440SW (four page mode)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SW_4P"/>
+				<item nicename="Braillo 440SW (two page mode)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SW_2P"/>
+				<item nicename="Braillo 440SWSF" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SWSF"/>
+				<item nicename="Index Braille - 3.30 Basic V2" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC"/>
+				<item nicename="Index Braille - 9.20 Everest V2" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST"/>
+				<item nicename="Index Braille - Basic &quot;blue bar&quot;" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_BLUE_BAR"/>
+				<item nicename="Index Braille - Basic-D V3" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_D_V3"/>
+				<item nicename="Index Braille - Everest V3" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST_V3"/>
 			</enum>
 		</datatype>
 	</parameter>
@@ -130,7 +132,7 @@
 		
 		<parameter>
 			<name>table</name>
-			<value>en_US</value>
+			<value>org.daisy.braille.table.DefaultTableProvider.TableType.EN_US</value>
 		</parameter>
 		
 		<parameter>

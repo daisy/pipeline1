@@ -34,19 +34,21 @@
 			<description>Embosser make and model</description>
 			<example>Everest</example>
 			<enum>
-				<value>NONE</value>
-				<value>BRAILLO_200</value>
-				<value>BRAILLO_400_S</value>
-				<value>BRAILLO_400_SR</value>
-				<value>BRAILLO_440_SW_2P</value>
-				<value>BRAILLO_440_SW_4P</value>
-				<value>BRAILLO_440_SWSF</value>
-				<value>INDEX_EVEREST</value>
-				<value>INDEX_BASIC</value>
-				<value>INDEX_EVEREST_V3</value>
-				<value>INDEX_BASIC_D_V3</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_200</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_270</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_400_S</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_400_SR</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SW_4P</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SW_2P</value>
+			<value>com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SWSF</value>
+			<value>com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC</value>
+			<value>com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST</value>
+			<value>com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_BLUE_BAR</value>
+			<value>com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_D_V3</value>
+			<value>com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST_V3</value>
+			<value>org_daisy.GenericEmbosserProvider.EmbosserType.NONE</value>
 			</enum>
-			<default>NONE</default>
+			<default>org_daisy.GenericEmbosserProvider.EmbosserType.NONE</default>
 		</parameter>
 		
 		<parameter required="false" direction="in" type="enum">
@@ -54,18 +56,27 @@
 			<description>Braille code table</description>
 			<example>en_US</example>
 			<enum>
-				<value>en_US</value>
-				<value>da_DK</value>
-				<value>de_DE</value>
-				<value>es_ES</value>
-				<value>it_IT_FIRENZE</value>
-				<value>sv_SE_CX</value>
-				<value>sv_SE_SUPERNOVA</value>
-				<value>sv_SE_mixed</value>
-				<value>UNICODE_BRAILLE</value>
-				<value>BRAILLO_6DOT_046_01</value>
+			<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_044_00</value>
+			<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_047_01</value>
+			<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_046_01</value>
+			<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_001_00</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.EN_GB</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.DA_DK</value>
+			<value>org_daisy.BrailleEditorsTableProvider.TableType.BRF</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.DE_DE</value>
+			<value>de_brailletec.ImpactoTableProvider.TableType.IMPACTO</value>
+			<value>de_brailletec.ImpactoTableProvider.TableType.IMPACTO256</value>
+			<value>com_indexbraille.IndexTableProvider.TableType.BLUE_BAR</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.IT_IT_FIRENZE</value>
+			<value>org_daisy.BrailleEditorsTableProvider.TableType.MICROBRAILLE</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.ES_ES</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.ES_ES_TABLE_2</value>
+			<value>com_yourdolphin.SupernovaTableProvider.TableType.SV_SE_6DOT</value>
+			<value>se_tpb.CXTableProvider.TableType.SV_SE_CX</value>
+			<value>org.daisy.braille.table.DefaultTableProvider.TableType.EN_US</value>
+			<value>org_daisy.EmbosserTableProvider.TableType.UNICODE_BRAILLE</value>
 			</enum>
-			<default>en_US</default>
+			<default>org.daisy.braille.table.DefaultTableProvider.TableType.EN_US</default>
 		</parameter>	
 		
 		<parameter required="false" direction="in" type="enum">
@@ -121,15 +132,16 @@
 			<description>Set the size of the paper</description>
 			<example>A4</example>
 			<enum>
-			  <value>undefined</value>
-			  <value>A4</value>
-			  <value>w210mm_x_h10inch</value>
-			  <value>w210mm_x_h11inch</value>
-			  <value>w210mm_x_h12inch</value>
-			  <value>FA44</value>
-			  <value>FA44_LEGACY</value>
+			  <value></value>
+				<value>org_daisy.NorthAmericaPaperProvider.PaperSize.W11500THOU_X_H11INCH</value>
+				<value>org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H10INCH</value>
+				<value>org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H11INCH</value>
+				<value>org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H12INCH</value>
+				<value>org_daisy.ISO216PaperProvider.PaperSize.A4</value>
+				<value>se_tpb.FA44PaperProvider.PaperSize.FA44</value>
+				<value>org_daisy.NorthAmericaPaperProvider.PaperSize.LETTER</value>
 			</enum>
-			<default>undefined</default>
+			<default></default>
 		</parameter>
 		
 		<parameter required="false" type="enum">

@@ -28,16 +28,28 @@
 			<example>en_US</example>
 			<enum>
 				<value>detect</value>
-				<value>en_US</value>
-				<value>da_DK</value>
-				<value>de_DE</value>
-				<value>es_ES</value>
-				<value>it_IT_FIRENZE</value>
-				<value>sv_SE_CX</value>
-				<value>UNICODE_BRAILLE</value>
+				<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_044_00</value>
+				<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_047_01</value>
+				<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_046_01</value>
+				<value>com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_001_00</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.EN_GB</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.DA_DK</value>
+				<value>org_daisy.BrailleEditorsTableProvider.TableType.BRF</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.DE_DE</value>
+				<value>de_brailletec.ImpactoTableProvider.TableType.IMPACTO</value>
+				<value>de_brailletec.ImpactoTableProvider.TableType.IMPACTO256</value>
+				<value>com_indexbraille.IndexTableProvider.TableType.BLUE_BAR</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.IT_IT_FIRENZE</value>
+				<value>org_daisy.BrailleEditorsTableProvider.TableType.MICROBRAILLE</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.ES_ES</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.ES_ES_TABLE_2</value>
+				<value>com_yourdolphin.SupernovaTableProvider.TableType.SV_SE_6DOT</value>
+				<value>se_tpb.CXTableProvider.TableType.SV_SE_CX</value>
+				<value>org.daisy.braille.table.DefaultTableProvider.TableType.EN_US</value>
+				<value>org_daisy.EmbosserTableProvider.TableType.UNICODE_BRAILLE</value>
 			</enum>
 			<default>detect</default>
-		</parameter>	
+		</parameter>
 
 		<parameter type="string" required="false">
 			<name>author</name>

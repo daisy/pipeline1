@@ -9,9 +9,20 @@ import java.util.Map;
 import javax.print.PrintException;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.daisy.braille.embosser.Embosser;
+import org.daisy.braille.embosser.EmbosserCatalog;
+import org.daisy.braille.embosser.EmbosserFeatures;
+import org.daisy.braille.embosser.EmbosserWriter;
+import org.daisy.braille.embosser.UnsupportedWidthException;
+import org.daisy.braille.facade.PEFConverterFacade;
+import org.daisy.braille.pef.PEFHandler;
+import org.daisy.braille.pef.Range;
+import org.daisy.paper.PageFormat;
+import org.daisy.paper.PaperCatalog;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
+import org.daisy.printing.PrinterDevice;
 import org.daisy.util.file.TempFile;
 import org.xml.sax.SAXException;
 
@@ -52,21 +63,25 @@ public class PEF2Text extends Transformer {
         String deviceName = parameters.remove("deviceName");
 
 		Range rangeObj = null;
-		EmbosserFactory ef = new EmbosserFactory();
+		EmbosserCatalog ef = EmbosserCatalog.newInstance();
+		Embosser em = null;
 		if (embosser!=null && !"".equals(embosser)) {
-			ef.setEmbosserType(EmbosserFactory.EmbosserType.valueOf(embosser.toUpperCase()));
+			em = ef.get(embosser);
+		} else {
+			em = ef.get("org_daisy.GenericEmbosserProvider.EmbosserType.NONE");
 		}
 		if (papersize != null && !"".equals(papersize)) {
-			ef.setPaperSize(Paper.PaperSize.valueOf(papersize.toUpperCase()));
+			PaperCatalog pc = PaperCatalog.newInstance();
+			em.setFeature(EmbosserFeatures.PAGE_FORMAT, new PageFormat(pc.get(papersize)));
 		}
-		ef.setProperty("breaks", breaks);
+		em.setFeature("breaks", breaks);
 		if (range!=null && !"".equals(range)) {
 			rangeObj = Range.parseRange(range);
 		}
-		ef.setProperty("table", table);
-		ef.setProperty("padNewline", pad);
-		ef.setProperty("cellWidth", cellWidth);
-		ef.setProperty("cellHeight", cellHeight);
+		em.setFeature(EmbosserFeatures.TABLE, table);
+		em.setFeature("padNewline", pad);
+		em.setFeature("cellWidth", cellWidth);
+		em.setFeature("cellHeight", cellHeight);
 		
         File orIn = new File(parameters.remove("xml"));
 		File[] in = getInput(orIn);
@@ -90,15 +105,15 @@ public class PEF2Text extends Transformer {
 			try {
 				if ("".equals(outFileName)) {
 					try {
-						AbstractEmbosser embosserObj = ef.newEmbosser(bd);
+						EmbosserWriter embosserObj = em.newEmbosserWriter(bd);
 						for (int j=0; j<copies; j++) {
 							convert(input, embosserObj, rangeObj, paperWidthFallback, align, offset);
 						}
-					} catch (EmbosserFactoryException e) {
+					} catch (TransformerRunException e) {
 						output = TempFile.create();
 						FileOutputStream os = new FileOutputStream(output);
 						try {
-							AbstractEmbosser embosserObj = ef.newEmbosser(os);
+							EmbosserWriter embosserObj = em.newEmbosserWriter(os);
 							convert(input, embosserObj, rangeObj, paperWidthFallback, align, offset);
 							if (emboss) {
 								progress((i-0.5)/(double)in.length);
@@ -106,9 +121,7 @@ public class PEF2Text extends Transformer {
 									bd.transmit(output);
 								}
 							}
-						} catch (EmbosserFactoryException e2) {
-							throw new TransformerRunException(e2.getMessage(), e2);
-						} catch (FileNotFoundException e2) {
+						} catch (TransformerRunException e2) {
 							throw new TransformerRunException(e2.getMessage(), e2);
 						} finally {
 							os.close();
@@ -125,7 +138,7 @@ public class PEF2Text extends Transformer {
 						}
 					}
 					// if output is defined, use "single file" method, even if this means that some embossers cannot be supported.
-					convert(input, output, ef, rangeObj, paperWidthFallback, align, offset);
+					convert(input, output, em, rangeObj, paperWidthFallback, align, offset);
 					if (emboss) {
 						progress((i-0.5)/(double)in.length);
 						for (int j=0; j<copies; j++) {
@@ -158,18 +171,16 @@ public class PEF2Text extends Transformer {
 		}
 	}
 	
-	private void convert(File input, File output, EmbosserFactory ef, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException {
+	private void convert(File input, File output, Embosser em, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException {
 		try {
-			AbstractEmbosser embosserObj = ef.newEmbosser(new FileOutputStream(output));
+			EmbosserWriter embosserObj = em.newEmbosserWriter(new FileOutputStream(output));
 			convert(input, embosserObj, rangeObj, paperWidthFallback, align, offset);
-		} catch (EmbosserFactoryException e) {
-			throw new TransformerRunException(e.getMessage(), e);
 		} catch (FileNotFoundException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		}
 	}
 	
-	private void convert(File input, AbstractEmbosser embosserObj, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException {
+	private void convert(File input, EmbosserWriter embosserObj, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException {
 		try {
 			PEFHandler ph = new PEFHandler.Builder(embosserObj)
 				.range(rangeObj)
@@ -177,14 +188,14 @@ public class PEF2Text extends Transformer {
 				.mirrorAlignment(align)
 				.offset(offset)
 				.build();
-			PEFParser.parse(input, ph);
+			PEFConverterFacade.parsePefFile(input, ph);
 		} catch (ParserConfigurationException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (SAXException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (UnsupportedWidthException e) {
 			throw new TransformerRunException(e.getMessage(), e);
-		}  catch (IOException e) {
+		} catch (IOException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		}
 	}

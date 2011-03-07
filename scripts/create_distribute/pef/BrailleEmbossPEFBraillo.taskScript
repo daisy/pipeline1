@@ -22,12 +22,13 @@
 		<description>Select the make and model of the target embosser</description>
 		<datatype>
 			<enum>
-			  <item nicename="Braillo 200 (firmware 000.17 or later)" value="BRAILLO_200" />
-			  <item nicename="Braillo 400S (firmware 000.17 or later)" value="BRAILLO_400_S" />
-			  <item nicename="Braillo 400SR (firmware 000.17 or later)" value="BRAILLO_400_SR" />
-			  <item nicename="Braillo 440SW - two page mode" value="BRAILLO_440_SW_2P" />
-			  <item nicename="Braillo 440SW - four page mode" value="BRAILLO_440_SW_4P" />
-			  <item nicename="Braillo 440SWSF" value="BRAILLO_440_SWSF" />
+				<item nicename="Braillo 200 (firmware 000.17 or later)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_200"/>
+				<item nicename="Braillo 270 (firmware 12 to 16)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_270"/>
+				<item nicename="Braillo 400S (firmware 000.17 or later)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_400_S"/>
+				<item nicename="Braillo 400SR (firmware 000.17 or later)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_400_SR"/>
+				<item nicename="Braillo 440SW (four page mode)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SW_4P"/>
+				<item nicename="Braillo 440SW (two page mode)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SW_2P"/>
+				<item nicename="Braillo 440SWSF" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SWSF"/>
 			</enum>
 		</datatype>
 	</parameter>
@@ -37,10 +38,10 @@
 		<description>Select the braille table that the embosser is configured for</description>
 		<datatype>
 			<enum>
-				<item nicename="USA 6 DOT 001.00" value="EN_US" />
-				<item nicename="ENGLAND 6 DOT 044.00" value="EN_GB" />
-				<item nicename="SWEDEN 6 DOT 046.01" value="BRAILLO_6DOT_046_01" />
-				<item nicename="NORWAY 6 DOT 047.01" value="BRAILLO_6DOT_047_01" />
+				<item nicename="Braillo ENGLAND 6 DOT 044.00" value="com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_044_00"/>
+				<item nicename="Braillo NORWAY 6 DOT 047.01" value="com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_047_01"/>
+				<item nicename="Braillo SWEDEN 6 DOT 046.01" value="com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_046_01"/>
+				<item nicename="Braillo USA 6 DOT 001.00" value="com_braillo.BrailloTableProvider.TableType.BRAILLO_6DOT_001_00"/>
 			</enum>
 		</datatype>
 	</parameter>
