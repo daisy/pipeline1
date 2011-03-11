@@ -95,6 +95,7 @@ doc/scripts/DTBookToLaTeX.html -text
 doc/scripts/DTBookToPEF.html -text
 doc/scripts/DTBookToRTF.html -text
 doc/scripts/DTBookToText.html -text
+doc/scripts/DTBookToTranslatedBrailleDTBook.html -text
 doc/scripts/DTBookToXhtml.html -text
 doc/scripts/DTBookValidator.html -text
 doc/scripts/Daisy202DTBValidator.html -text
@@ -139,6 +140,7 @@ doc/scripts/img/audacity-titleauthor.jpg -text
 doc/summary.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/ca_cnib_rtf2dtbook.html -text
+doc/transformers/ch_sbs_dtbook2translatedbrailledtbook.html -text
 doc/transformers/dk_dbb_addIdsToDtbook.html -text
 doc/transformers/dk_dbb_dtbook2rtf.html -text
 doc/transformers/fr_braillenet_dtbook2daisy3.html -text svneol=unset#text/plain
