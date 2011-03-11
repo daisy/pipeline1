@@ -20,6 +20,7 @@ Bundle-ClassPath:
  lib/icu4j-3_8.jar,
  lib/jl1.0.jar,
  lib/log4j-1.2.15.jar,
+ lib/louisFat.jar,
  lib/onvdl.jar,
  lib/sac.jar,
  lib/saxon.jar,

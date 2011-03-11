@@ -210,6 +210,7 @@ lib/jing-saxon8-patch.jar -text
 lib/jl1.0.jar -text
 lib/junit-4.7.jar -text
 lib/log4j-1.2.15.jar -text
+lib/louisFat.jar -text
 lib/onvdl.jar -text
 lib/sac.jar -text
 lib/saxon.jar -text
@@ -591,6 +592,7 @@ scripts/create_distribute/dtb/Daisy3ToDaisy202.taskScript -text
 scripts/create_distribute/dtb/Fileset-DtbookToDaisy202TextOnly.taskScript -text
 scripts/create_distribute/dtb/Fileset-XhtmlToDaisy202TextOnly.taskScript -text
 scripts/create_distribute/dtb/Narrator-DtbookToDaisy.taskScript -text
+scripts/create_distribute/dtbook/DTBookToTranslatedBrailleDTBook.taskScript -text
 scripts/create_distribute/dtbook/OdtToDtbook.taskScript -text
 scripts/create_distribute/dtbook/RtfToDtbook.taskScript -text
 scripts/create_distribute/dtbook/WordMLtoDTBook.taskScript -text
@@ -729,6 +731,7 @@ src/org/daisy/pipeline/test/impl/DTBMigratorBackward1.java -text
 src/org/daisy/pipeline/test/impl/DTBMigratorForward1.java -text
 src/org/daisy/pipeline/test/impl/DTBSplitter1.java -text
 src/org/daisy/pipeline/test/impl/DTBook2LaTeX.java -text
+src/org/daisy/pipeline/test/impl/DTBook2TranslatedBrailleDTBook.java -text svneol=unset#text/plain
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml1.java -text
 src/org/daisy/pipeline/test/impl/DTBook2Xhtml2MathML.java -text
 src/org/daisy/pipeline/test/impl/DTBook2rtf1.java -text
@@ -1036,6 +1039,8 @@ transformers/ca_cnib_rtf2dtbook/rtf2xml-win/rtf2xml.exe -text
 transformers/ca_cnib_rtf2dtbook/rtf2xml-win/unicodedata.pyd -text
 transformers/ca_cnib_rtf2dtbook/rtf2xml-win/w9xpopen.exe -text
 transformers/ca_cnib_rtf2dtbook/transformer.tdf -text
+transformers/ch_sbs_dtbook2translatedbrailledtbook/dtbook2translatedBrailleDtbook.xsl -text svneol=unset#text/plain
+transformers/ch_sbs_dtbook2translatedbrailledtbook/transformer.tdf -text
 transformers/dk_dbb_addIdsToDtbook/add_ids_to_dtbook.xsl -text
 transformers/dk_dbb_addIdsToDtbook/transformer.tdf -text
 transformers/dk_dbb_dtbook2rtf/dtbook_to_rtf.xsl -text

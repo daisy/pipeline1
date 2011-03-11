@@ -28,15 +28,6 @@ import org.daisy.pipeline.core.script.Job;
 import org.daisy.pipeline.core.script.Script;
 import org.daisy.pipeline.core.script.ScriptParameter;
 import org.daisy.pipeline.core.script.Task;
-import org.daisy.pipeline.test.impl.MixedContentNormalizer1;
-import org.daisy.pipeline.test.impl.Narrator1;
-import org.daisy.pipeline.test.impl.Narrator2;
-import org.daisy.pipeline.test.impl.Narrator3;
-import org.daisy.pipeline.test.impl.Narrator4;
-import org.daisy.pipeline.test.impl.Narrator5;
-import org.daisy.pipeline.test.impl.Narrator6;
-import org.daisy.pipeline.test.impl.Narrator7;
-import org.daisy.pipeline.test.impl.ValidatorConfigurable2;
 import org.daisy.util.file.Directory;
 import org.daisy.util.file.FileUtils;
 import org.daisy.util.xml.stax.ExtendedLocationImpl;
@@ -309,6 +300,7 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new FilesetGenerator2(inputDir, outputDir));
 //		tests.add(new DTBook2LaTeX(inputDir, outputDir));
 //		tests.add(new MixedContentNormalizer1(inputDir, outputDir));
+//		tests.add(new DTBook2TranslatedBrailleDTBook(inputDir, outputDir));
 		
 		//tests.add(new NarratorAutumn20081(inputDir, outputDir));
 		//tests.add(new FilesetGenerator3(inputDir, outputDir));

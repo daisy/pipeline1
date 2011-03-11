@@ -29,6 +29,12 @@
     <p>You need to
     install <a href="http://code.google.com/p/liblouis/">Liblouis</a>
     for this transformer to work.</p>
+  	
+  	 <p class="alert">This script has mostly been tested on Linux. When 
+  	 the LibLouis library is not installed in a standard location and 
+  	 cannot found (resulting in a <code>UnsatisfiedLinkError</code>),
+  	 the Java VM has to be started with the option <code>-Djna.library.path=/path/to/liblouis/</code>
+  	 </p>
 
     <p>This script maps
     an <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO language
