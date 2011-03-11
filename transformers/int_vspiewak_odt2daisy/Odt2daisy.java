@@ -71,6 +71,9 @@ public class Odt2daisy extends Transformer {
             	new com.versusoft.packages.ooo.odt2daisy.Odt2Daisy(inputOdt.getAbsolutePath());
             
             odt2daisy.init();
+            
+            String lang_message = "Main Language detected: " + odt2daisy.getLangParam();
+            sendMessage(lang_message, MessageEvent.Type.INFO, MessageEvent.Cause.INPUT);  
 
             if (!odt2daisy.isUsingHeadings()) {
             	String no_heading_message = "You SHOULD use Headings Styles to structure your documents.\n Will export in a unique level tag";
