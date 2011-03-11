@@ -9,7 +9,7 @@
 		<nicename>Input OPF</nicename>
 		<description>Select the input Package file (OPF) document</description>
 		<datatype>
-			<file mime="application/xml" type="input"/>
+			<file mime="application/oebps-package+xml" type="input"/>
 		</datatype>
 	</parameter>
 	
