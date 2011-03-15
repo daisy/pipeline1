@@ -13,18 +13,46 @@ Report bugs and issues to:
 http://sourceforge.net/tracker/?func=add&group_id=134191&atid=729299
 
 ***************************************
-Pipeline Release, ????-??-??
+Pipeline Maintenance Release [RC], 2011-03-17
 ***************************************
 
-- Fixed some problems in the DTbook to LaTeX transformer namely
-  - handle special chars in title, author and date
-  - Fix a problem with noteref lookup
-- Added features to DTbook to LaTeX transformer
+Bug fixes and improvements:
+
+- [Narrator] Improved tolerance to rounding errors by augmenting the default end audio padding.
+- [Narrator] Improved wave file handling (now generates 5000 files max in each sub directory)
+- [Narrator] Improved parsing of Roman numerals found in 'special' pages
+- [Narrator] Improved handling of acronyms: non-pronounceable acronyms are now spoken letter-by-letter)
+- [Narrator] Improved handling of abbreviations: the 'title' attribute is spoken when present
+- [Narrator] Improved the  long-standing "duplicate doctitle" issue
+  - The Pipeline no-longer systematically creates a frontmatter
+  - when the frontmatter is present but has no doctitle a doctitle is added from the metadata value.
+  - when the frontmatter is present but has no docauthor, a docauthor is inserted with the value of the metadata.
+  - nothing is changed if no frontmatter is present
+  - when the "dc:Title" metadata is not set (invalid), the value is set to the value of the first doctitle, or the first heading if no doctitle is found.  
+- [DAISY 2.02 splitter] only perform the split if the input book is larger than the split size
+- [DAISY 2.02 to DAISY 3 forward migrator] Fixed several bugs 
+- [DAISY 3 Validator] the file browser now asks for *.opf files
+- [DAISY 3 to 2.02 downgrader] Fixed a bug that could occur when some SMIL elements had no associated audio.
+- [DTBook to DAISY 3 Text-Only] Improved: now trims whitespace from NCX labels
+- [DTBook to DAISY 3 Text-Only] Improved support for mixed content (uses the int_daisy_mixedContentNormalizer)
+- [DTbook to LaTeX] Fixed handling special chars in title, author and date
+- [DTbook to LaTeX] Fixed a problem with noteref lookup
+- [DTbook to LaTeX] Improved the  transformer:
   - Allow for custom specification of page dimensions
   - Allow specification of line spacing
+- [EPUB Creator] Added a new parameter "forceXhtml" to always create an XHTML-based EPUB even from a DTBook 2005-2 input
+- ... and other minor fixes and improvements 
+
+Also: 
+
+- New "DTBook to Translated Braille DTBook script", contributed by Christian Egli and Bernhard Wagner (SBS)
+- Updated pef2text and text2pef transformers and related scripts (Emboss PEF, Text to PEF, PEF to Text, Braille Text To Text) to use the Braille Utils library
+  More information at:  http://code.google.com/p/brailleutils/
+  
+
 
 ***************************************
-Pipeline Release, 2010-01-25
+Pipeline Maintenance Release, 2010-01-25
 ***************************************
 
 - Refined documentation of the ODT to DAISY XML script and transformer
