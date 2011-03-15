@@ -45,7 +45,7 @@ Bug fixes and improvements:
 
 Also: 
 
-- New "DTBook to Translated Braille DTBook script", contributed by Christian Egli and Bernhard Wagner (SBS)
+- New "DTBook to Translated Braille DTBook script", which provides a basic integration of Liblouis in the pipeline, contributed by Christian Egli and Bernhard Wagner (SBS)
 - Updated pef2text and text2pef transformers and related scripts (Emboss PEF, Text to PEF, PEF to Text, Braille Text To Text) to use the Braille Utils library
   More information at:  http://code.google.com/p/brailleutils/
   
