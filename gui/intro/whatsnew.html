@@ -9,26 +9,28 @@
 <body>    
 <h1 class="page-title">What's New ?</h1>
   <div class="textBox">
-      <h2>Pipeline 20100125 Release</h2>
+  	<h2>Pipeline 20110317 [RC] Maintenance Release</h2>
         <ul>
-<li>New Hyphenator script, contributed by Joel Håkansson, TPB</li>
-<li>New DTBook to PEF script, contributed by Joel Håkansson, TPB</li>
-<li>New DTBook to text script, contributed by Joel Håkansson, TPB </li>
-<li>New PEF File splitter script, contributed by Joel Håkansson, TPB</li>
-<li>New PEF File merger script, contributed by Joel Håkansson, TPB</li>
-<li>New ODT to DTBook script, contributed by Vincent Spiewak, Freelance.</li>
-<li>New DTBook to DAISY 3 text-only script based on Java, contributed by James Pritchett, RFB&amp;D.</li>
-<li>New DTBook to DAISY 3 text-only script based on XSLT, contributed by Alex Bernier, BrailleNet.</li>
-<li>Added Finnish localization of the Narrator transformers, contributed by Päivi Suhonen, Celia.</li>
-<li>Added Norwegian localization of the Narrator transformers, contributed by Olav Indergaard, NLB.</li>
-<li>Added Japanese localization of the Narrator transformers, contributed by ATDO</li>
-<li>Added support for country in the language codes of the ttsbuilder.xml</li>
-<li>Added an optional DTBookFix step to the DTBook to 2.02 text-only script</li>
-<li>Added a validator time tolerance parameter to the DAISY 3 to DAISY 2.02 converter</li>
-<li>Added a new int_daisy_metadataEditor transformer that is able to edit (add/overwrite/merge) metadata in a file or fileset</li>
-<li>SoX and LAME Universal Binaries are now bundled with the Mac OS X distribution, with no need to install them externally</li>
-<li>Upgraded the underlying Eclipse Platform to version 3.5.1</li>
-<li>... and many bug fixes.</li>
+        	<li>[Narrator] Improved tolerance to rounding errors by augmenting the default end audio padding.</li>
+        	<li>[Narrator] Improved wave file handling (now generates 5000 files max in each sub directory)</li>
+        	<li>[Narrator] Improved parsing of Roman numerals found in 'special' pages</li>
+        	<li>[Narrator] Improved handling of acronyms: non-pronounceable acronyms are now spoken letter-by-letter)</li>
+        	<li>[Narrator] Improved handling of abbreviations: the 'title' attribute is spoken when present</li>
+        	<li>[Narrator] Improved the  long-standing "duplicate doctitle" issue</li>
+        	<li>[DAISY 2.02 splitter] only perform the split if the input book is larger than the split size</li>
+        	<li>[DAISY 2.02 to DAISY 3 forward migrator] Fixed several bugs </li>
+        	<li>[DAISY 3 Validator] the file browser now asks for *.opf files</li>
+        	<li>[DAISY 3 to 2.02 downgrader] Fixed a bug that could occur when some SMIL elements had no associated audio.</li>
+        	<li>[DTBook to DAISY 3 Text-Only] Improved: now trims whitespace from NCX labels</li>
+        	<li>[DTBook to DAISY 3 Text-Only] Improved support for mixed content (uses the int_daisy_mixedContentNormalizer)</li>
+        	<li>[DTbook to LaTeX] Fixed handling special chars in title, author and date</li>
+        	<li>[DTbook to LaTeX] Fixed a problem with noteref lookup</li>
+        	<li>[DTbook to LaTeX] Improved the transformer</li>
+        	<li>[EPUB Creator] Added a new parameter "forceXhtml" to always create an XHTML-based EPUB even from a DTBook 2005-2 input</li>
+        	<li>New "DTBook to Translated Braille DTBook script", which provides a
+        		basic integration of Liblouis in the pipeline, contributed by Christian Egli and Bernhard Wagner (SBS)</li>
+        	<li>Updated pef2text and text2pef transformers and related scripts (Emboss PEF, Text to PEF, PEF to Text, Braille Text To Text) to use the <a href="http://code.google.com/p/brailleutils/">Braille Utils</a> library</li>
+        	<li>... and other fixes and improvements </li>
       </ul>
   </div>
   <a href="http://org.eclipse.ui.intro/switchToLaunchBar"><img id="switchToPipeline" src="images/workbench.gif" alt="Switch to the Pipeline"/></a>
