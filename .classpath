@@ -32,6 +32,7 @@
 	<classpathentry exported="true" kind="lib" path="transformers/int_daisy_filesetAudioTagger/lib/jaudiotagger.jar"/>
 	<classpathentry exported="true" kind="lib" path="transformers/se_tpb_speechgen2/lib/com4j.jar"/>
 	<classpathentry kind="lib" path="transformers/se_tpb_hyphenator/lib/texhyphj.jar"/>
+	<classpathentry kind="lib" path="lib/louisFat.jar"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lib/junit-4.7.jar"/>
 	<classpathentry kind="lib" path="transformers/int_vspiewak_odt2daisy/lib/odt2daisy.jar"/>
