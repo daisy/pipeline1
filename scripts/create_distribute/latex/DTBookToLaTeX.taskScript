@@ -108,7 +108,7 @@
     </datatype>
   </parameter>
   
-  <parameter name="line_spacing" value="single" required="false">
+  <parameter name="line_spacing" value="singlespacing" required="false">
     <nicename>Line spacing</nicename>
     <description>The line spacing to be used.</description>
     <datatype>
