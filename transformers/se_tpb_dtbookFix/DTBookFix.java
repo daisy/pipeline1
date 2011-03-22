@@ -245,7 +245,7 @@ public class DTBookFix extends Transformer implements EntityResolver, URIResolve
 	 * @throws IOException If juggle close fails. 
 	 */
 	private void finalize(File input, File output, FileJuggler files) throws IOException  {	    
-		if(!input.getParentFile().equals(output.getParentFile())) {
+		if(!input.getAbsoluteFile().getParentFile().equals(output.getAbsoluteFile().getParentFile())) {
 			try{
 			    // We cannot just instantiate a fileset with the input file as manifest, since
 			    // the input file may contain broken links.
