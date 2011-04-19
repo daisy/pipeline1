@@ -199,8 +199,8 @@ launchers/pipeline-plugin.sh -text
 launchers/pipeline.sh -text
 lib/batik-css.jar -text
 lib/batik-util.jar -text
-lib/brailleUtils-catalog-1.1.0rc1.jar -text
-lib/brailleUtils-core-1.1.0rc1.jar -text
+lib/brailleUtils-catalog-1.1.0.jar -text
+lib/brailleUtils-core-1.1.0.jar -text
 lib/chardet.jar -text
 lib/commons-cli-1.1.jar -text
 lib/commons-pool-1.4.jar -text

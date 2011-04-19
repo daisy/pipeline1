@@ -123,9 +123,13 @@ public class PEF2Text extends Transformer {
 							}
 						} catch (TransformerRunException e2) {
 							throw new TransformerRunException(e2.getMessage(), e2);
+						} catch (UnsupportedWidthException e2) {
+							throw new TransformerRunException(e2.getMessage(), e2);
 						} finally {
 							os.close();
 						}
+					} catch (UnsupportedWidthException e) {
+						throw new TransformerRunException(e.getMessage(), e);
 					}
 				} else {
 					output = new File(outFileName);
@@ -152,6 +156,8 @@ public class PEF2Text extends Transformer {
 				throw new TransformerRunException(e.getMessage(), e);
 			} catch (PrintException e) {
 				throw new TransformerRunException(e.getMessage(), e);
+			} catch (UnsupportedWidthException e) {
+				throw new TransformerRunException(e.getMessage(), e);
 			} finally {
 				if ("".equals(outFileName) && output!=null) {
 					output.delete();
@@ -171,7 +177,7 @@ public class PEF2Text extends Transformer {
 		}
 	}
 	
-	private void convert(File input, File output, Embosser em, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException {
+	private void convert(File input, File output, Embosser em, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException, UnsupportedWidthException {
 		try {
 			EmbosserWriter embosserObj = em.newEmbosserWriter(new FileOutputStream(output));
 			convert(input, embosserObj, rangeObj, paperWidthFallback, align, offset);
@@ -180,7 +186,7 @@ public class PEF2Text extends Transformer {
 		}
 	}
 	
-	private void convert(File input, EmbosserWriter embosserObj, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException {
+	private void convert(File input, EmbosserWriter embosserObj, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException, UnsupportedWidthException {
 		try {
 			PEFHandler ph = new PEFHandler.Builder(embosserObj)
 				.range(rangeObj)
@@ -194,7 +200,7 @@ public class PEF2Text extends Transformer {
 		} catch (SAXException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		} catch (UnsupportedWidthException e) {
-			throw new TransformerRunException(e.getMessage(), e);
+			throw e;
 		} catch (IOException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		}
