@@ -1,21 +1,21 @@
 package org_pef_dtbook2pef;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
+//import org.daisy.dotify.setups.TaskSystemFactory;
+//import org.daisy.dotify.setups.TaskSystemFactory.OutputFormat;
+//import org.daisy.dotify.setups.TaskSystemFactory.Setup;
+//import org.daisy.dotify.system.InternalTaskException;
+import org.daisy.dotify.setups.TaskSystemFactory.OutputFormat;
+import org.daisy.dotify.setups.TaskSystemFactory.Setup;
+import org.daisy.dotify.system.InternalTaskException;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-import org.daisy.util.file.FileJuggler;
-import org.daisy.util.file.FileUtils;
+/*
 import org_pef_dtbook2pef.setups.TaskSystemFactory;
 import org_pef_dtbook2pef.setups.TaskSystemFactoryException;
 import org_pef_dtbook2pef.setups.TaskSystemFactory.OutputFormat;
@@ -23,7 +23,7 @@ import org_pef_dtbook2pef.setups.TaskSystemFactory.Setup;
 import org_pef_dtbook2pef.system.InternalTask;
 import org_pef_dtbook2pef.system.InternalTaskException;
 import org_pef_dtbook2pef.system.TaskSystem;
-import org_pef_dtbook2pef.system.TaskSystemException;
+import org_pef_dtbook2pef.system.TaskSystemException;*/
 
 /**
  * <p>The transformer loads a TaskSystem implementation and runs the steps
@@ -69,20 +69,29 @@ public class DTBook2PEF extends Transformer {
 	protected boolean execute(Map<String, String> parameters) throws TransformerRunException {
 		progress(0);
 		// get parameters
-		String input = parameters.get("input");
+		File input = new File(parameters.get("input"));
 		File output = new File(parameters.get("output"));
 		File debug = new File(parameters.get("tempFilesDirectory"));
 		Setup setup = Setup.valueOf(parameters.get("setup").replace('-', '_'));
 		OutputFormat outputformat = OutputFormat.valueOf(parameters.get("outputFormat").toUpperCase());
-		String dateFormat = parameters.get("dateFormat");
-		boolean writeTempFiles = "true".equals(parameters.get("writeTempFiles"));
-		String cols = parameters.get("cols");
-		if (cols==null || "".equals(cols)) {
-			parameters.remove("cols");
-		}
+		//String dateFormat = parameters.get("dateFormat");
+		//boolean writeTempFiles = "true".equals(parameters.get("writeTempFiles"));
+		//String cols = parameters.get("cols");
+		//if (cols==null || "".equals(cols)) {
+//			parameters.remove("cols");
+		//}
 
 		map = new HashMap<String, String>();
 		map.putAll(parameters);
+		org.daisy.dotify.Main dotify = new org.daisy.dotify.Main();
+		try {
+			dotify.run(input, output, outputformat, setup, map);
+		} catch (InternalTaskException e) {
+			throw new TransformerRunException("InternalTaskException", e);
+		} catch (IOException e) {
+			throw new TransformerRunException("IOException", e);
+		}
+		/*
 		map.put("systemRelease", "20100125");
 		map.put("conversionDate", new Date().toString());
 		// Add default values for optional parameters
@@ -153,7 +162,7 @@ public class DTBook2PEF extends Transformer {
 			throw new TransformerRunException("IO error: ", e.getCause());
 		} catch (InternalTaskException e) {
 			throw new TransformerRunException("Error in internal task", e);
-		}
+		}*/
 		progress(1);
 		return true;
 	}
