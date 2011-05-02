@@ -199,13 +199,13 @@
 		<javac 	srcdir="${dmfc.src.dir}" 
 				destdir="${build.dir}" 
 				includes="**/*.java" 
-				debug="true">
+				debug="true" encoding="UTF-8">
 			<classpath refid="path.utilJars"/>
 		</javac>
 		<javac 	srcdir="${transformers.dir}" 
 				destdir="${transformers.dir}" 
 				includes="**/*.java" 
-				debug="true">
+				debug="true" encoding="UTF-8">
 			<classpath refid="path.build.transformers"/>
 		</javac>
 		<copy todir="${build.dir}" failonerror="true" overwrite="false">
@@ -380,7 +380,7 @@
 	     ================================= -->
 	<target name="buildCoreJar"
 			description="Builds the core JAR"
-			depends="createDistributionDir">
+			depends="createDistributionDir, compile">
 		<jar jarfile="${distribution.dir}/pipeline.jar">
 			<fileset dir="${base.dir}/bin">
 				<include name="org/daisy/pipeline/**/*.*"/>
