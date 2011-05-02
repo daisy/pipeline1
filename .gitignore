@@ -56,9 +56,6 @@ transformers/org_pef_dist/lib/*.class
 transformers/org_pef_dtbook2pef/*.class
 transformers/org_pef_dtbook2pef/apidoc
 transformers/org_pef_dtbook2pef/setups/*.class
-transformers/org_pef_dtbook2pef/setups/common/*.class
-transformers/org_pef_dtbook2pef/setups/en_US/*.class
-transformers/org_pef_dtbook2pef/setups/sv_SE/*.class
 transformers/org_pef_dtbook2pef/system/*.class
 transformers/org_pef_dtbook2pef/system/tasks/*.class
 transformers/org_pef_dtbook2pef/system/tasks/layout/*.class
