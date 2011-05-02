@@ -64,6 +64,7 @@
 		<include name="xalan.jar"/>
 		<include name="xercesImpl.jar"/>			
 		<include name="zedval.jar"/>
+		<include name="brailleUtils-core-1.1.0.jar"/>
 	</patternset>
 	
 	<fileset dir="${base.dir}/lib" id="fileset.utilJars">
@@ -200,13 +201,13 @@
 		<javac 	srcdir="${dmfc.src.dir}" 
 				destdir="${build.dir}" 
 				includes="**/*.java" 
-				debug="true" encoding="UTF-8">
+				debug="true" encoding="UTF-8" target="1.5">
 			<classpath refid="path.utilJars"/>
 		</javac>
 		<javac 	srcdir="${transformers.dir}" 
 				destdir="${transformers.dir}" 
 				includes="**/*.java" 
-				debug="true" encoding="UTF-8">
+				debug="true" encoding="UTF-8" target="1.5">
 			<classpath refid="path.build.transformers"/>
 		</javac>
 		<copy todir="${build.dir}" failonerror="true" overwrite="false">
