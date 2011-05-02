@@ -58,7 +58,6 @@ transformers/org_pef_dtbook2pef/apidoc
 transformers/org_pef_dtbook2pef/setups/*.class
 transformers/org_pef_dtbook2pef/system/*.class
 transformers/org_pef_dtbook2pef/system/tasks/*.class
-transformers/org_pef_dtbook2pef/system/tasks/layout/*.class
 transformers/org_pef_pefFileMerger/*.class
 transformers/org_pef_pefFileSplitter/*.class
 transformers/org_pef_text/*.class
