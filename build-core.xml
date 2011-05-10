@@ -64,6 +64,7 @@
 		<include name="xalan.jar"/>
 		<include name="xercesImpl.jar"/>			
 		<include name="zedval.jar"/>
+		<include name="brailleUtils-core-1.1.0.jar"/>
 	</patternset>
 	
 	<fileset dir="${base.dir}/lib" id="fileset.utilJars">
