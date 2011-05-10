@@ -16,9 +16,9 @@ public class DTBook2LaTeX extends PipelineTest {
 		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy-2005-1.xml");
 		mParameters.add("--output=" + mDataOutputDir + "/DTBook2LaTeX/fromDTBook.tex");		
 		mParameters.add("--fontsize="+"20pt");
-		mParameters.add("--fontfamily="+"cmss");
+		mParameters.add("--font="+"LMRoman10 Regular");
 		mParameters.add("--defaultLanguage="+"ngerman");
-		mParameters.add("--papersize="+"letterpaper");
+		mParameters.add("--stocksize="+"letterpaper");
 		return mParameters;
 	}
 
