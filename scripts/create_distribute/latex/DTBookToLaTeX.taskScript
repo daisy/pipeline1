@@ -92,9 +92,12 @@
     </datatype>
   </parameter>
   
-  <parameter name="papersize" value="a4paper" required="false">
-    <nicename>Paper size</nicename>
-    <description>The paper size to be used.</description>
+  <parameter name="stocksize" value="a4paper" required="false">
+    <nicename>Stock size</nicename>
+    <description>The stock size to be used. This is the size of the
+    paper that the book will be printed on. Usually the stock size is
+    larger than the paper size (with trim marks indicating where to
+    trim the paper).</description>
     <datatype>
      <enum>
        <item nicename="a3paper" value="a3paper"/>
@@ -232,8 +235,8 @@
     </parameter>				
 
     <parameter>
-      <name>papersize</name>
-      <value>${papersize}</value>			
+      <name>stocksize</name>
+      <value>${stocksize}</value>			
     </parameter>				
 
     <parameter>
