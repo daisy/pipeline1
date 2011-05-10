@@ -60,7 +60,6 @@ public class DtbMergerTransformer extends Transformer implements DtbTransformati
 	
 	/**
 	 * @param inListener
-	 * @param eventListeners
 	 * @param isInteractive
 	 */
 	public DtbMergerTransformer(InputListener inListener, Boolean isInteractive) {

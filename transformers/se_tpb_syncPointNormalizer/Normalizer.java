@@ -76,7 +76,6 @@ public class Normalizer extends Transformer {
     
     /**
      * @param inListener
-     * @param eventListeners
      * @param isInteractive
      */
     public Normalizer(InputListener inListener, Boolean isInteractive) {
