@@ -98,6 +98,7 @@ doc/scripts/DTBookToText.html -text
 doc/scripts/DTBookToTranslatedBrailleDTBook.html -text
 doc/scripts/DTBookToXhtml.html -text
 doc/scripts/DTBookValidator.html -text
+doc/scripts/DTBookVolumeSplitter.html -text
 doc/scripts/Daisy202DTBValidator.html -text
 doc/scripts/Daisy202ToZ39862005.html -text
 doc/scripts/Daisy3ToDaisy202.html -text svneol=unset#text/plain
@@ -141,6 +142,7 @@ doc/summary.html -text
 doc/templates/script-doc-template.html -text
 doc/transformers/ca_cnib_rtf2dtbook.html -text
 doc/transformers/ch_sbs_dtbook2translatedbrailledtbook.html -text
+doc/transformers/ch_sbs_dtbookVolumeSplitter.html -text
 doc/transformers/dk_dbb_addIdsToDtbook.html -text
 doc/transformers/dk_dbb_dtbook2rtf.html -text
 doc/transformers/fr_braillenet_dtbook2daisy3.html -text svneol=unset#text/plain
@@ -621,6 +623,7 @@ scripts/modify_improve/dtb/DTBForwardMigrator.taskScript -text
 scripts/modify_improve/dtb/DTBMerger.taskScript -text
 scripts/modify_improve/dtb/DTBSplitter.taskScript -text
 scripts/modify_improve/dtbook/DTBookMigrator.taskScript -text
+scripts/modify_improve/dtbook/DTBookVolumeSplit.taskScript -text
 scripts/modify_improve/dtbook/DTBookfix.taskScript -text
 scripts/modify_improve/multiformat/AudioTagger.taskScript -text
 scripts/modify_improve/multiformat/CharacterRepertoireManipulator.taskScript -text
@@ -740,6 +743,7 @@ src/org/daisy/pipeline/test/impl/DTBookFix2.java -text
 src/org/daisy/pipeline/test/impl/DTBookMigrator1.java -text
 src/org/daisy/pipeline/test/impl/DTBookMigrator2.java -text
 src/org/daisy/pipeline/test/impl/DTBookMigrator3.java -text
+src/org/daisy/pipeline/test/impl/DTBookVolumeSplit.java -text
 src/org/daisy/pipeline/test/impl/Daisy202ToZ398620051.java -text
 src/org/daisy/pipeline/test/impl/FilesetCreator1.java -text
 src/org/daisy/pipeline/test/impl/FilesetGenerator1.java -text
@@ -1041,6 +1045,8 @@ transformers/ca_cnib_rtf2dtbook/rtf2xml-win/w9xpopen.exe -text
 transformers/ca_cnib_rtf2dtbook/transformer.tdf -text
 transformers/ch_sbs_dtbook2translatedbrailledtbook/dtbook2translatedBrailleDtbook.xsl -text svneol=unset#text/plain
 transformers/ch_sbs_dtbook2translatedbrailledtbook/transformer.tdf -text
+transformers/ch_sbs_dtbookInsertVolumeSplitPoints/insertVolumeSplitPoints.tdf -text
+transformers/ch_sbs_dtbookInsertVolumeSplitPoints/insertVolumeSplitPoints.xsl -text
 transformers/dk_dbb_addIdsToDtbook/add_ids_to_dtbook.xsl -text
 transformers/dk_dbb_addIdsToDtbook/transformer.tdf -text
 transformers/dk_dbb_dtbook2rtf/dtbook_to_rtf.xsl -text
