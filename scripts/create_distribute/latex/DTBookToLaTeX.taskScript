@@ -36,6 +36,7 @@
        <item nicename="14pt" value="14pt"/>
        <item nicename="17pt" value="17pt"/>
        <item nicename="20pt" value="20pt"/>
+       <item nicename="25pt" value="25pt"/>
      </enum>
     </datatype>
   </parameter>
@@ -106,7 +107,6 @@
        <item nicename="letterpaper" value="letterpaper"/>
        <item nicename="legalpaper" value="legalpaper"/>
        <item nicename="executivepaper" value="executivepaper"/>
-       <item nicename="custom" value="custom"/>
      </enum>
     </datatype>
   </parameter>

@@ -37,6 +37,7 @@
 		    <value>14pt</value>
 		    <value>17pt</value>
 		    <value>20pt</value>
+		    <value>25pt</value>
 		  </enum>
 		  <default>17pt</default>
 		</parameter>

@@ -88,7 +88,7 @@
      <xsl:text>\pagestyle{empty}&#10;</xsl:text>
      <xsl:call-template name="cover">
        <xsl:with-param name="current_volume_number" 
-		       select="count(preceding::dtb:div[@class='large-print-volume-split'])+2"/>
+		       select="count(preceding::dtb:div[@class='volume-split-point'])+2"/>
      </xsl:call-template>
      <xsl:apply-templates select="//dtb:level1[@class='titlepage']"/>
      <xsl:text>\cleartorecto&#10;</xsl:text>

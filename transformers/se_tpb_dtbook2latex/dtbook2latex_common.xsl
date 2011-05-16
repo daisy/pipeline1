@@ -12,7 +12,7 @@
   <xsl:strip-space elements="*"/>
   <xsl:preserve-space elements="code samp"/>
 	
-  <!-- Possible values are 12pt, 14pt, 17pt, 20pt and 24pt -->
+  <!-- Possible values are 12pt, 14pt, 17pt, 20pt and 25pt -->
   <xsl:param name="fontsize">17pt</xsl:param>
   <!-- Possible values are for example 'Tiresias LPfont', 'LMRoman10
   Regular', 'LMSans10 Regular' or 'LMTypewriter10 Regular'. Basically
@@ -56,7 +56,7 @@
        http://data.daisy.org/projects/pipeline/doc/developer/tdf-grammar-v1.1.html -->
   <xsl:param name="replace_em_with_quote">false</xsl:param> 
 
-  <xsl:variable name="number_of_volumes" select="count(//dtb:div[@class='large-print-volume-split'])+1"/>
+  <xsl:variable name="number_of_volumes" select="count(//dtb:div[@class='volume-split-point'])+1"/>
 
   <!-- Escape characters that have a special meaning to LaTeX (see The
        Comprehensive LaTeX Symbol List,
@@ -89,9 +89,20 @@
 	<xsl:value-of select="concat($fontsize, ',', $stocksize, ',')"/>
 	<xsl:text>,extrafontsizes,twoside,showtrims,openright]{memoir}&#10;</xsl:text>
 	<xsl:text>\usepackage{calc}&#10;</xsl:text>
-	<xsl:value-of select="concat('\settrimmedsize{',$paperheight,'}{',$paperwidth,'}{*}&#10;')"/>
-	<xsl:value-of select="concat('\setlrmarginsandblock{',$left_margin,'}{',$right_margin,'}{*}&#10;')"/>
-	<xsl:value-of select="concat('\setulmarginsandblock{',$top_margin,'}{',$bottom_margin,' + 1.5\onelineskip}{*}&#10;')"/>
+	<xsl:choose>
+	  <xsl:when test="($paperheight ne '') and ($paperwidth ne '')">
+	    <xsl:value-of select="concat('\settrimmedsize{',$paperheight,'}{',$paperwidth,'}{*}&#10;')"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>\settrimmedsize{\stockheight}{\stockwidth}{*}&#10;</xsl:text>
+	  </xsl:otherwise>
+	</xsl:choose>
+	<xsl:if test="($left_margin ne '') and ($right_margin ne '')">
+	  <xsl:value-of select="concat('\setlrmarginsandblock{',$left_margin,'}{',$right_margin,'}{*}&#10;')"/>
+	</xsl:if>
+	<xsl:if test="($top_margin ne '') and ($bottom_margin ne '')">
+	  <xsl:value-of select="concat('\setulmarginsandblock{',$top_margin,'}{',$bottom_margin,' + 1.5\onelineskip}{*}&#10;')"/>
+	</xsl:if>
 	<xsl:text>\setheadfoot{\onelineskip}{1.5\onelineskip}&#10;</xsl:text>
 	<xsl:text>\setheaderspaces{*}{*}{0.4}&#10;</xsl:text>
 	<xsl:text>\checkandfixthelayout&#10;&#10;</xsl:text>
@@ -161,7 +172,6 @@
 	  <!-- Display page numbers on the right on a recto page -->
 	  <xsl:text>\makeevenfoot{plain}{\thepage}{}{}&#10;</xsl:text>
 	  <xsl:text>\makeoddfoot{plain}{}{}{\thepage}&#10;</xsl:text>
-
 	</xsl:if>
 
 	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
@@ -173,6 +183,10 @@
 	<xsl:if test="$line_spacing = 'doublespacing'">
 	  <xsl:text>\DoubleSpacing&#10;</xsl:text>
 	</xsl:if>
+
+	<!-- Make sure wrapped poetry lines are not indented -->
+	<xsl:text>\setlength{\vindent}{0em}&#10;</xsl:text>
+
 	<xsl:apply-templates/>
    </xsl:template>
 
@@ -282,7 +296,7 @@
      <xsl:text>\pagestyle{empty}&#10;</xsl:text>
      <xsl:call-template name="cover">
        <xsl:with-param name="current_volume_number" 
-		       select="count(preceding::dtb:div[@class='large-print-volume-split'])+2"/>
+		       select="count(preceding::dtb:div[@class='volume-split-point'])+2"/>
      </xsl:call-template>
      <xsl:text>\cleartorecto&#10;</xsl:text>
      <xsl:value-of select="my:restore_pagestyle()"/>
@@ -531,7 +545,7 @@
    <!-- Volume boundaries are indicated in the xml by an empty div
         with a specific class. Insert a titlepage where the new volume
         is to start -->
-   <xsl:template match="dtb:div[@class='large-print-volume-split']">
+   <xsl:template match="dtb:div[@class='volume-split-point']">
      <xsl:call-template name="volumecover"/>
    </xsl:template>
 
@@ -717,6 +731,11 @@
    	<xsl:text>\begin{verse}&#10;</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>\end{verse}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:poem/dtb:linegroup">
+   	<xsl:apply-templates/>
+   	<xsl:text>&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:poem/dtb:title">
