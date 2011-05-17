@@ -72,14 +72,13 @@
      </xsl:if>
      <xsl:text>\frontmatter&#10;</xsl:text>
      <xsl:call-template name="cover"/>
-     <xsl:apply-templates select="//dtb:meta" mode="titlePage"/>
-     <xsl:if test="dtb:level1/dtb:list[descendant::dtb:lic]">
-       <xsl:text>\tableofcontents&#10;</xsl:text>
-     </xsl:if>
      <xsl:apply-templates select="dtb:level1[@class='titlepage']"/>
      <xsl:text>\clearpage&#10;</xsl:text>
      <xsl:apply-templates select="dtb:*[not(@class='titlepage')]"/>
      <xsl:text>\cleartorecto&#10;</xsl:text>
+     <xsl:if test="dtb:level1/dtb:list[descendant::dtb:lic]">
+       <xsl:text>\tableofcontents*&#10;</xsl:text>
+     </xsl:if>
    </xsl:template>
 
    <xsl:template name="volumecover">

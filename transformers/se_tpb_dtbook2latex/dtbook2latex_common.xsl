@@ -197,6 +197,9 @@
 	  <xsl:text>\DoubleSpacing&#10;</xsl:text>
 	</xsl:if>
 
+	<!-- Increase the spacing in toc -->
+	<xsl:text>\setlength{\cftparskip}{0.25\onelineskip}&#10;</xsl:text>
+
 	<!-- Make sure wrapped poetry lines are not indented -->
 	<xsl:text>\setlength{\vindent}{0em}&#10;</xsl:text>
 
@@ -341,10 +344,11 @@
 	  <xsl:text>\pagestyle{plain}&#10;</xsl:text>
 	</xsl:if>
    	<xsl:text>\frontmatter&#10;</xsl:text>
-	<xsl:call-template name="cover"/>
    	<xsl:apply-templates select="//dtb:meta" mode="titlePage"/>
+	<xsl:call-template name="cover"/>
+	<xsl:text>\cleartorecto&#10;</xsl:text>
 	<xsl:if test="dtb:level1/dtb:list[descendant::dtb:lic]">
-		<xsl:text>\tableofcontents&#10;</xsl:text>
+		<xsl:text>\tableofcontents*&#10;</xsl:text>
 	</xsl:if>
 	<xsl:apply-templates/>
    </xsl:template>
