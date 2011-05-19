@@ -87,7 +87,7 @@
 	<xsl:text>% ***********************&#10;</xsl:text>
    	<xsl:text>\documentclass[</xsl:text>
 	<xsl:value-of select="concat($fontsize, ',', $stocksize, ',')"/>
-	<xsl:text>,extrafontsizes,twoside,showtrims,openright]{memoir}&#10;</xsl:text>
+	<xsl:text>extrafontsizes,twoside,showtrims,openright]{memoir}&#10;</xsl:text>
 	<xsl:text>\usepackage{calc}&#10;</xsl:text>
 	<xsl:choose>
 	  <xsl:when test="($paperheight ne '') and ($paperwidth ne '')">
