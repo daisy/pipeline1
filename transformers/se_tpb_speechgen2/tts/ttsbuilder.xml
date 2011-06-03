@@ -67,6 +67,30 @@
 				<param name="sapiVoiceSelection" value="Language=409"/>
 			</tts>
 		</lang>
+		<lang lang="en_AU">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=c09"/>
+			</tts>
+		</lang>
+		<lang lang="en_GB">
+			<tts>
+				<param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=809"/>
+			</tts>
+		</lang>
+		<lang lang="ar_EG">
+			<tts>
+                <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<param name="characterSubstitutionTables" value="${transformer_dir}/charsubst/character-translation-table.xml"/>
+				<param name="sapiVoiceSelection" value="Language=C01"/>
+			</tts>
+		</lang>
 		<lang lang="da">
 			<tts>
                 <param name="class" value="se_tpb_speechgen2.external.win.DefaultSapiTTS"/>
@@ -455,6 +479,17 @@
 				<!-- The first existing voice will be used -->
 				<!-- If the voice is unknown, the default system voice will be used -->
 				<param name="voice" value="Alex"/>
+			</tts>
+		</lang>
+   		<lang lang="fr">
+			<tts>
+				<param name="class" value="se_tpb_speechgen2.external.MacOS.MacSayTTS"/>
+                <param name="regex" value="${transformer_dir}/regex/macosx-say.xml"/>
+				<param name="xslt" value="${transformer_dir}/xslt/transform.xsl"/>
+				<!-- The voice parameter is a coma-separated list of voice names-->
+				<!-- The first existing voice will be used -->
+				<!-- If the voice is unknown, the default system voice will be used -->
+				<param name="voice" value="Vicki"/>
 			</tts>
 		</lang>
 	</os>
