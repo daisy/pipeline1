@@ -107,6 +107,12 @@
 	<xsl:text>\setheaderspaces{*}{*}{0.4}&#10;</xsl:text>
 	<xsl:text>\checkandfixthelayout&#10;&#10;</xsl:text>
 
+	<!-- The trim marks should be outside the actual page so that
+	     you will not see any lines even if you do not cut the
+	     paper absolutely precisely (see section 18.3. Trim marks
+	     in the memoir manual) -->
+	<xsl:text>\trimLmarks&#10;&#10;</xsl:text>
+
    	<xsl:text>\usepackage{graphicx}&#10;</xsl:text>
    	<xsl:call-template name="findLanguage"/>
 	<!-- The Babel package defines what they call shorthands.
