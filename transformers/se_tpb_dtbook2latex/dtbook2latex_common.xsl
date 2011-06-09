@@ -278,16 +278,20 @@
    <xsl:template name="imprint">
    </xsl:template>
 
-   <xsl:template name="cover">
-     <xsl:param name="current_volume_number" select="1"/>
-
-     <!-- Author(s) -->
+   <xsl:template name="author">
      <xsl:text>{\large </xsl:text>
      <xsl:for-each select="//dtb:meta[@name='dc:creator' or @name='dc:Creator']">
        <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
        <xsl:if test="not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
      </xsl:for-each>
      <xsl:text>}\\[1.5cm]&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template name="cover">
+     <xsl:param name="current_volume_number" select="1"/>
+
+     <!-- Author(s) -->
+     <xsl:call-template name="author"/>
 
      <!-- Title -->
      <xsl:text>\begin{Spacing}{1.75}&#10;</xsl:text>

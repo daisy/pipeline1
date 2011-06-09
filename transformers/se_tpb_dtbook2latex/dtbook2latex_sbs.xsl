@@ -44,6 +44,16 @@
     <xsl:value-of select="concat('Grossdruck in ', $language-map/entry[@key=$number_of_volumes], ' ', $volumes-string, '\\[0.5cm]&#10;')"/>
   </xsl:template>
 
+   <xsl:template name="author">
+     <xsl:text>{\large </xsl:text>
+     <xsl:apply-templates select="//dtb:docauthor" mode="cover"/>
+     <xsl:text>}\\[1.5cm]&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:docauthor" mode="cover">
+     <xsl:apply-templates/>
+   </xsl:template>
+
   <xsl:template name="publisher">
     <xsl:text>SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\[0.5cm]&#10;</xsl:text>
   </xsl:template>
