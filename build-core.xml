@@ -106,6 +106,7 @@
 	<path id="path.combined">
 		<path refid="path.classpath"/>
 		<path refid="path.utilJars"/>
+		<path refid="path.build.transformers"/>
 		<dirset dir="${base.dir}">
 			<include name="src"/>
 		</dirset>
