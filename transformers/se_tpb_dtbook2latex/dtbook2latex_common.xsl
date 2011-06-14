@@ -141,17 +141,12 @@
 	<xsl:text>\defaultfontfeatures{Mapping=tex-text}&#10;</xsl:text>
 	<xsl:text>\setmainfont{</xsl:text><xsl:value-of select="$font"/><xsl:text>}&#10;</xsl:text>
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
+	<xsl:value-of select="concat('\hypersetup{pdftitle={', //dtb:meta[@name='dc:title' or @name='dc:Title']/@content, '}, pdfauthor={', //dtb:meta[@name='dc:creator' or @name='dc:Creator']/@content, '}}&#10;')"/>
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
 	<xsl:text>\usepackage{alphalph}&#10;&#10;</xsl:text>
 
 	<!-- avoid overfull \hbox (which is a serious problem with large fonts) -->
 	<xsl:text>\sloppy&#10;</xsl:text>
-	<xsl:text>\sloppybottom&#10;&#10;</xsl:text>
-
-	<!-- eliminate widows and orphans -->
-	<xsl:text>\clubpenalty=10000&#10;</xsl:text>
-	<xsl:text>\widowpenalty=10000&#10;</xsl:text>
-	<xsl:text>\raggedbottom&#10;&#10;</xsl:text>
 
 	<!-- use slightly smaller fonts for headings -->
 	<xsl:text>\renewcommand*{\chaptitlefont}{\normalfont\LARGE\bfseries\raggedright}&#10;</xsl:text>
@@ -279,12 +274,24 @@
    </xsl:template>
 
    <xsl:template name="author">
-     <xsl:text>{\large </xsl:text>
+     <xsl:param name="font_size" select="'\large'"/>
+     <xsl:value-of select="concat('{', $font_size, ' ')"/>
      <xsl:for-each select="//dtb:meta[@name='dc:creator' or @name='dc:Creator']">
        <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
        <xsl:if test="not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
      </xsl:for-each>
      <xsl:text>}\\[1.5cm]&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template name="title">
+     <xsl:param name="font_size" select="'\huge'"/>
+     <xsl:text>\begin{Spacing}{1.75}&#10;</xsl:text>
+     <xsl:for-each select="//dtb:meta[@name='dc:title' or @name='dc:Title']">
+       <xsl:value-of select="concat('{', $font_size, ' ')"/>
+       <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
+       <xsl:text>}\\[0.5cm]&#10;</xsl:text>
+     </xsl:for-each>
+     <xsl:text>\end{Spacing}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template name="cover">
@@ -294,13 +301,7 @@
      <xsl:call-template name="author"/>
 
      <!-- Title -->
-     <xsl:text>\begin{Spacing}{1.75}&#10;</xsl:text>
-     <xsl:for-each select="//dtb:meta[@name='dc:title' or @name='dc:Title']">
-       <xsl:text>{\huge </xsl:text>
-       <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
-       <xsl:text>}\\[0.5cm]&#10;</xsl:text>
-     </xsl:for-each>
-     <xsl:text>\end{Spacing}&#10;</xsl:text>
+     <xsl:call-template name="title"/>
 
      <!-- Volume information -->
      <xsl:call-template name="current_volume_string">
@@ -325,6 +326,10 @@
 		       select="count(preceding::dtb:div[@class='volume-split-point'])+2"/>
      </xsl:call-template>
      <xsl:text>\cleartorecto&#10;</xsl:text>
+     <!-- insert a toc in every volume -->
+     <xsl:if test="dtb:level1/dtb:list[descendant::dtb:lic]">
+       <xsl:text>\tableofcontents*&#10;</xsl:text>
+     </xsl:if>
      <xsl:value-of select="my:restore_pagestyle()"/>
      <xsl:text>\restorepagenumber&#10;</xsl:text>
    </xsl:template>
@@ -385,10 +390,10 @@
      <xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
-   <!-- If a level 1 has no h1 make sure it is on a new page -->
+   <!-- Insert an empty header if a level 1 has no h1 -->
    <xsl:template match="dtb:level1[empty(dtb:h1)]">
-     <xsl:text>\clearpage&#10;</xsl:text>
-   	<xsl:apply-templates/>
+     <xsl:text>\chapter*{\ }&#10;</xsl:text>
+     <xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template match="dtb:level1">

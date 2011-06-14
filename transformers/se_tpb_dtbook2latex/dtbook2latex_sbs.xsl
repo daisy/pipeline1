@@ -45,7 +45,8 @@
   </xsl:template>
 
    <xsl:template name="author">
-     <xsl:text>{\large </xsl:text>
+     <xsl:param name="font_size" select="'\large'"/>
+     <xsl:value-of select="concat('{', $font_size, ' ')"/>
      <xsl:apply-templates select="//dtb:docauthor" mode="cover"/>
      <xsl:text>}\\[1.5cm]&#10;</xsl:text>
    </xsl:template>
@@ -60,13 +61,13 @@
 
   <xsl:template name="imprint">
     <xsl:text>\clearpage&#10;</xsl:text>
+    <xsl:text>Dieses Grossdruckbuch ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.&#10;</xsl:text>
+    <xsl:text>\vfill&#10;</xsl:text>
     <xsl:text>Verlag, Satz und Druck:\\[0.5cm]&#10;</xsl:text>
     <xsl:text>SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte, Zürich\\[0.5cm]&#10;</xsl:text>
     <xsl:text>www.sbs.ch\\[0.5cm]&#10;</xsl:text>
     <xsl:variable name="year" select="tokenize(//dtb:meta[lower-case(@name)='dc:date']/@content, '-')[1]"/>
-    <xsl:value-of select="concat('SBS ', $year, '\\[0.5cm]&#10;')"/>
-    <xsl:text>\vfill&#10;</xsl:text>
-    <xsl:text>Dieses Grossdruckbuch ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.&#10;</xsl:text>
+    <xsl:value-of select="concat('SBS ', $year, '&#10;')"/>
   </xsl:template>
 
   <!-- Contrary to the default front matter we would like to rearrange
@@ -100,15 +101,88 @@
 		       select="count(preceding::dtb:div[@class='volume-split-point'])+2"/>
      </xsl:call-template>
      <xsl:apply-templates select="//dtb:level1[@class='titlepage']"/>
+     <xsl:if test="//dtb:frontmatter//dtb:level1/dtb:list[descendant::dtb:lic]">
+       <xsl:text>\pagestyle{empty}&#10;</xsl:text>
+       <xsl:text>\cleartorecto&#10;</xsl:text>
+       <xsl:text>\tableofcontents*&#10;</xsl:text>
+     </xsl:if>
      <xsl:text>\cleartorecto&#10;</xsl:text>
      <xsl:text>\pagestyle{plain}&#10;</xsl:text>
      <xsl:text>\restorepagenumber&#10;</xsl:text>
    </xsl:template>
 
+   <xsl:template match="dtb:frontmatter//dtb:h1">
+   	<xsl:text>\chapter*{</xsl:text>
+   	<xsl:apply-templates/>
+   	<xsl:text>}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:frontmatter//dtb:h2">
+   	<xsl:text>\section*{</xsl:text>
+   	<xsl:apply-templates/>
+   	<xsl:text>}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:frontmatter//dtb:h3">
+   	<xsl:text>\subsection*{</xsl:text>
+   	<xsl:apply-templates/>
+   	<xsl:text>}&#10;</xsl:text>   
+   </xsl:template>
+
+   <xsl:template match="dtb:frontmatter//dtb:h4">
+   	<xsl:text>\subsubsection*{</xsl:text>
+   	<xsl:apply-templates/>
+   	<xsl:text>}&#10;</xsl:text>   
+   </xsl:template>
+
+   <xsl:template match="dtb:frontmatter//dtb:h5">
+   	<xsl:text>\paragraph*{</xsl:text>
+   	<xsl:apply-templates/>
+   	<xsl:text>}&#10;</xsl:text>   
+   </xsl:template>
+
+   <xsl:template match="dtb:frontmatter//dtb:h6">
+   	<xsl:text>\subparagraph*{</xsl:text>
+   	<xsl:apply-templates/>
+   	<xsl:text>}&#10;</xsl:text>   
+   </xsl:template>
+
    <xsl:template match="dtb:level1[@class='titlepage']" priority="100">
-     <xsl:text>\clearpage&#10;</xsl:text>
-     <xsl:text>Verwendete Vorlage:\\[0.5cm]&#10;</xsl:text>
      <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:level1[@class='titlepage']/dtb:level2[1]">
+     <xsl:text>\clearpage&#10;</xsl:text>
+
+     <xsl:call-template name="author">
+       <xsl:with-param name="font_size" select="'\normalsize'"/>
+     </xsl:call-template>
+     <xsl:call-template name="title">
+       <xsl:with-param name="font_size" select="'\Large'"/>
+     </xsl:call-template>
+     <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:level1[@class='titlepage']/dtb:level2[1]/dtb:p[@class='sourcePublisher']">
+     <xsl:text>\vfill&#10;</xsl:text>
+     <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:level1[@class='titlepage']/dtb:level2[2]">
+     <xsl:text>\clearpage&#10;</xsl:text>
+     <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:p[@class='precedingemptyline']">   
+     <xsl:text>\plainbreak{1.5}&#10;&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>&#10;&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:p[@class='precedingseparator']">   
+     <xsl:text>\fancybreak{***}&#10;&#10;</xsl:text>
+	<xsl:apply-templates/>
+	<xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
 
 </xsl:stylesheet>
