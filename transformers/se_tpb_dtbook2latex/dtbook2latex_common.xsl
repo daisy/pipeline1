@@ -63,12 +63,17 @@
        http://www.ctan.org/tex-archive/info/symbols/comprehensive/symbols-a4.pdf) -->
   <xsl:function name="my:quoteSpecialChars" as="xs:string">
     <xsl:param name="text"/>
-    <xsl:value-of 
-	select="replace(replace(replace(replace($text, 
-		'\\', '\\textbackslash '),
-		'\s+', ' '), 
-		'(\$|&amp;|%|#|_|\{|\})', '\\$1'), 
-		'(~|\^)', '\\$1{}')"/>
+    <!-- handle backslash -->
+    <xsl:variable name="tmp1" select="replace($text, '\\', '\\textbackslash ')"/>
+    <!-- drop excessive white space -->
+    <xsl:variable name="tmp2" select="replace($tmp1, '\s+', ' ')"/>
+    <!-- quote special chars -->
+    <xsl:variable name="tmp3" select="replace($tmp2, '(\$|&amp;|%|#|_|\{|\})', '\\$1')"/>
+    <!-- append a '{}' to special chars so they are not missinterpreted -->
+    <xsl:variable name="tmp4" select="replace($tmp3, '(~|\^)', '\\$1{}')"/>
+    <!-- add non-breaking space in front of mdash followed by punctuation -->
+    <xsl:variable name="tmp5" select="replace($tmp4, ' (—\p{P})', ' $1')"/>
+    <xsl:value-of select="$tmp5"/>
   </xsl:function>
 
   <xsl:function name="my:restore_pagestyle" as="xs:string">
@@ -915,6 +920,11 @@
    	<xsl:apply-templates/>
    </xsl:template>
 
+   <!-- insert non-breaking spaces inside abbrevs -->
+   <xsl:template match="dtb:abbr//text()">
+    <xsl:value-of select="replace(string(current()), ' ', '~')"/>
+   </xsl:template>
+   	
    <xsl:template match="text()">
      <xsl:value-of select="my:quoteSpecialChars(string(current()))"/>
    </xsl:template>
