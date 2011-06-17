@@ -308,10 +308,13 @@
      <!-- Title -->
      <xsl:call-template name="title"/>
 
-     <!-- Volume information -->
-     <xsl:call-template name="current_volume_string">
-       <xsl:with-param name="current_volume_number" select="$current_volume_number"/>
-     </xsl:call-template>
+     <xsl:if test="$number_of_volumes > 1">
+       <!-- Volume information -->
+       <xsl:call-template name="current_volume_string">
+	 <xsl:with-param name="current_volume_number" select="$current_volume_number"/>
+       </xsl:call-template>
+     </xsl:if>
+
      <xsl:text>\vfill&#10;</xsl:text>
      <xsl:call-template name="total_volumes_string"/>
      

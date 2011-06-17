@@ -51,7 +51,20 @@
      <xsl:text>}\\[1.5cm]&#10;</xsl:text>
    </xsl:template>
 
+   <xsl:template name="title">
+     <xsl:param name="font_size" select="'\huge'"/>
+     <xsl:text>\begin{Spacing}{1.75}&#10;</xsl:text>
+     <xsl:value-of select="concat('{', $font_size, ' ')"/>
+     <xsl:apply-templates select="//dtb:doctitle" mode="cover"/>
+     <xsl:text>}\\[0.5cm]&#10;</xsl:text>
+     <xsl:text>\end{Spacing}&#10;</xsl:text>
+   </xsl:template>
+
    <xsl:template match="dtb:docauthor" mode="cover">
+     <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:doctitle" mode="cover">
      <xsl:apply-templates/>
    </xsl:template>
 
