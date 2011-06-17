@@ -620,6 +620,12 @@
   	<xsl:apply-templates/>
    </xsl:template>
 
+   <!-- Treat bylines inside levels as if they were paragraphs -->
+  <xsl:template match="dtb:byline[parent::dtb:level|parent::dtb:level1|parent::dtb:level2|parent::dtb:level3|parent::dtb:level4|parent::dtb:level5|parent::dtb:level6]">
+    <xsl:apply-templates/>
+    <xsl:text>&#10;&#10;</xsl:text>
+   </xsl:template>
+
   <xsl:template match="dtb:dateline">
   	<xsl:apply-templates/>
    </xsl:template>
