@@ -147,6 +147,9 @@
 	<!-- avoid overfull \hbox (which is a serious problem with large fonts) -->
 	<xsl:text>\sloppy&#10;</xsl:text>
 
+	<!-- avoid random stretches in the middle of a page, if need be stretch at the bottom -->
+	<xsl:text>\raggedbottom&#10;</xsl:text>
+
 	<!-- use slightly smaller fonts for headings -->
 	<xsl:text>\renewcommand*{\chaptitlefont}{\normalfont\LARGE\bfseries\raggedright}&#10;</xsl:text>
 	<xsl:text>\setsecheadstyle{\Large\bfseries\raggedright}&#10;</xsl:text>
