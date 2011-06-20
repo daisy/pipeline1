@@ -69,7 +69,9 @@
    </xsl:template>
 
   <xsl:template name="publisher">
-    <xsl:text>SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte\\[0.5cm]&#10;</xsl:text>
+    <xsl:text>SBS Schweizerische Bibliothek </xsl:text>
+    <xsl:if test="$fontsize = '17pt'"><xsl:text>\\&#10;</xsl:text></xsl:if>
+    <xsl:text>für Blinde, Seh- und Lesebehinderte\\[0.5cm]&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template name="imprint">
@@ -77,7 +79,9 @@
     <xsl:text>Dieses Grossdruckbuch ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.&#10;</xsl:text>
     <xsl:text>\vfill&#10;</xsl:text>
     <xsl:text>Verlag, Satz und Druck:\\[0.5cm]&#10;</xsl:text>
-    <xsl:text>SBS Schweizerische Bibliothek für Blinde, Seh- und Lesebehinderte, Zürich\\[0.5cm]&#10;</xsl:text>
+    <xsl:text>SBS Schweizerische Bibliothek </xsl:text>
+    <xsl:if test="$fontsize = '17pt'"><xsl:text>\\&#10;</xsl:text></xsl:if>
+    <xsl:text>für Blinde, Seh- und Lesebehinderte, Zürich\\[0.5cm]&#10;</xsl:text>
     <xsl:text>www.sbs.ch\\[0.5cm]&#10;</xsl:text>
     <xsl:variable name="year" select="tokenize(//dtb:meta[lower-case(@name)='dc:date']/@content, '-')[1]"/>
     <xsl:value-of select="concat('SBS ', $year, '&#10;')"/>
@@ -153,6 +157,11 @@
    	<xsl:text>\subparagraph*{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
+   </xsl:template>
+
+   <!-- Do not fake an empty chapter if the only children are level2 -->
+   <xsl:template match="dtb:frontmatter/dtb:level1[not(child::*[not(self::dtb:level2)])]">
+     <xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template match="dtb:level1[@class='titlepage']" priority="100">
