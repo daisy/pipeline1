@@ -88,12 +88,7 @@
        default template and invoke apply-templates for levels with
        class titlepage. -->
    <xsl:template match="dtb:frontmatter">
-     <xsl:if test="$pageStyle='plain'">
-       <xsl:text>\pagestyle{empty}&#10;</xsl:text>
-     </xsl:if>
-     <xsl:if test="$pageStyle='withPageNums'">
-       <xsl:text>\pagestyle{plain}&#10;</xsl:text>
-     </xsl:if>
+     <xsl:call-template name="set_frontmatter_pagestyle"/>
      <xsl:text>\frontmatter&#10;</xsl:text>
      <xsl:call-template name="cover"/>
      <xsl:apply-templates select="dtb:level1[@class='titlepage']"/>
@@ -108,7 +103,7 @@
    <xsl:template name="volumecover">
      <xsl:text>\cleartorecto&#10;</xsl:text>
      <xsl:text>\savepagenumber&#10;</xsl:text>
-     <xsl:text>\pagestyle{empty}&#10;</xsl:text>
+     <xsl:call-template name="set_frontmatter_pagestyle"/>
      <xsl:call-template name="cover">
        <xsl:with-param name="current_volume_number" 
 		       select="count(preceding::dtb:div[@class='volume-split-point'])+2"/>
@@ -120,7 +115,7 @@
        <xsl:text>\tableofcontents*&#10;</xsl:text>
      </xsl:if>
      <xsl:text>\cleartorecto&#10;</xsl:text>
-     <xsl:text>\pagestyle{plain}&#10;</xsl:text>
+     <xsl:call-template name="restore_pagestyle"/>
      <xsl:text>\restorepagenumber&#10;</xsl:text>
    </xsl:template>
 

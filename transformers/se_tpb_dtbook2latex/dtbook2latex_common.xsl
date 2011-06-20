@@ -76,12 +76,6 @@
     <xsl:value-of select="$tmp5"/>
   </xsl:function>
 
-  <xsl:function name="my:restore_pagestyle" as="xs:string">
-    <xsl:value-of 
-	select="if ($pageStyle='plain' or $pageStyle='withPageNums') 
-		then '\pagestyle{plain}&#10;' else '\pagestyle{Ruled}&#10;'"/>
-  </xsl:function>
-
    <xsl:template match="/">
       <xsl:apply-templates/>
    </xsl:template>
@@ -257,6 +251,23 @@
      <xsl:text>]{babel}&#10;</xsl:text>
    </xsl:template>
 
+  <xsl:template name="set_frontmatter_pagestyle">
+    <xsl:if test="$pageStyle='plain'">
+      <xsl:text>\pagestyle{empty}&#10;</xsl:text>
+      <xsl:text>\aliaspagestyle{chapter}{empty}&#10;</xsl:text>
+    </xsl:if>
+    <xsl:if test="$pageStyle='withPageNums'">
+      <xsl:text>\pagestyle{plain}&#10;</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="restore_pagestyle">
+    <xsl:value-of 
+	select="if ($pageStyle='plain' or $pageStyle='withPageNums') 
+		then '\pagestyle{plain}&#10;' else '\pagestyle{Ruled}&#10;'"/>
+      <xsl:text>\aliaspagestyle{chapter}{plain}&#10;</xsl:text>
+  </xsl:template>
+
    <xsl:template name="current_volume_string">
      <xsl:param name="current_volume_number"/>
      <xsl:value-of select="concat('Volume ', $current_volume_number, ' of ', $number_of_volumes, '\\[0.5cm]&#10;')"/>
@@ -328,7 +339,7 @@
    <xsl:template name="volumecover">
      <xsl:text>\cleartorecto&#10;</xsl:text>
      <xsl:text>\savepagenumber&#10;</xsl:text>
-     <xsl:text>\pagestyle{empty}&#10;</xsl:text>
+     <xsl:call-template name="set_frontmatter_pagestyle"/>
      <xsl:call-template name="cover">
        <xsl:with-param name="current_volume_number" 
 		       select="count(preceding::dtb:div[@class='volume-split-point'])+2"/>
@@ -338,7 +349,7 @@
      <xsl:if test="dtb:level1/dtb:list[descendant::dtb:lic]">
        <xsl:text>\tableofcontents*&#10;</xsl:text>
      </xsl:if>
-     <xsl:value-of select="my:restore_pagestyle()"/>
+     <xsl:call-template name="restore_pagestyle"/>
      <xsl:text>\restorepagenumber&#10;</xsl:text>
    </xsl:template>
 
@@ -360,12 +371,7 @@
    </xsl:template>
 
    <xsl:template match="dtb:frontmatter">
-	<xsl:if test="$pageStyle='plain'">
-	  <xsl:text>\pagestyle{empty}&#10;</xsl:text>
-	</xsl:if>
-	<xsl:if test="$pageStyle='withPageNums'">
-	  <xsl:text>\pagestyle{plain}&#10;</xsl:text>
-	</xsl:if>
+	<xsl:call-template name="set_frontmatter_pagestyle"/>
    	<xsl:text>\frontmatter&#10;</xsl:text>
    	<xsl:apply-templates select="//dtb:meta" mode="titlePage"/>
 	<xsl:call-template name="cover"/>
@@ -527,7 +533,7 @@
 
    <xsl:template match="dtb:bodymatter">
      <xsl:text>\mainmatter&#10;</xsl:text>
-     <xsl:value-of select="my:restore_pagestyle()"/>
+     <xsl:call-template name="restore_pagestyle"/>
      <xsl:apply-templates/>
    </xsl:template>
 
