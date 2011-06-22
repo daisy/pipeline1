@@ -183,6 +183,7 @@
    <xsl:template match="dtb:level1[@class='titlepage']/dtb:level2[1]/dtb:p[@class='sourcePublisher']">
      <xsl:text>\vfill&#10;</xsl:text>
      <xsl:apply-templates/>
+     <xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:level1[@class='titlepage']/dtb:level2[2]">
