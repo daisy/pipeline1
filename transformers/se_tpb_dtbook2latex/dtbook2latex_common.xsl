@@ -91,6 +91,11 @@
 	<xsl:choose>
 	  <xsl:when test="($paperheight ne '') and ($paperwidth ne '')">
 	    <xsl:value-of select="concat('\settrimmedsize{',$paperheight,'}{',$paperwidth,'}{*}&#10;')"/>
+	     <!-- Equal trims at the top and bottom and no trim in the
+	          spine (apparently this is better for gluing) -->
+	    <xsl:text>\setlength{\trimtop}{\stockheight - \paperheight}&#10;</xsl:text>
+	    <xsl:text>\setlength{\trimedge}{\stockwidth - \paperwidth}&#10;</xsl:text>
+	    <xsl:text>\settrims{0.5\trimtop}{\trimedge}&#10;</xsl:text>
 	  </xsl:when>
 	  <xsl:otherwise>
 	    <xsl:text>\settrimmedsize{\stockheight}{\stockwidth}{*}&#10;</xsl:text>
