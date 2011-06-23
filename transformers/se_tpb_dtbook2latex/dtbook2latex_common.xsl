@@ -9,8 +9,8 @@
 		exclude-result-prefixes="dtb my">
   
   <xsl:output method="text" encoding="utf-8" indent="no"/>
-  <xsl:strip-space elements="*"/>
-  <xsl:preserve-space elements="code samp"/>
+  <!-- <xsl:strip-space elements="*"/> -->
+  <!-- <xsl:preserve-space elements="dtb:code dtb:samp dtb:doctitle dtb:docauthor dtb:p dtb:em dtb:strong dtb:span dtb:author dtb:byline dtb:li dtb:lic dtb:line dtb:div"/> -->
 	
   <!-- Possible values are 12pt, 14pt, 17pt, 20pt and 25pt -->
   <xsl:param name="fontsize">17pt</xsl:param>
@@ -71,8 +71,8 @@
     <xsl:variable name="tmp3" select="replace($tmp2, '(\$|&amp;|%|#|_|\{|\})', '\\$1')"/>
     <!-- append a '{}' to special chars so they are not missinterpreted -->
     <xsl:variable name="tmp4" select="replace($tmp3, '(~|\^)', '\\$1{}')"/>
-    <!-- add non-breaking space in front of mdash followed by punctuation -->
-    <xsl:variable name="tmp5" select="replace($tmp4, ' (—\p{P})', ' $1')"/>
+    <!-- add non-breaking space in front of emdash or endash followed by punctuation -->
+    <xsl:variable name="tmp5" select="replace($tmp4, ' ([–—]\p{P})', ' $1')"/>
     <xsl:value-of select="$tmp5"/>
   </xsl:function>
 
@@ -592,8 +592,13 @@
    	<!--<xsl:text>}&#10;</xsl:text>-->
    </xsl:template>
 
+   <!-- What's the point of a div? Usually you want some visual clue
+        that the content inside the div is special, hence the break
+        before and after -->
    <xsl:template match="dtb:div">
+     <xsl:text>\plainbreak{1.5}&#10;&#10;</xsl:text>
    	<xsl:apply-templates/>
+     <xsl:text>\plainbreak{1.5}&#10;&#10;</xsl:text>
    </xsl:template>
 
    <!-- Volume boundaries are indicated in the xml by an empty div
@@ -634,8 +639,8 @@
   	<xsl:apply-templates/>
    </xsl:template>
 
-   <!-- Treat bylines inside levels as if they were paragraphs -->
-  <xsl:template match="dtb:byline[parent::dtb:level|parent::dtb:level1|parent::dtb:level2|parent::dtb:level3|parent::dtb:level4|parent::dtb:level5|parent::dtb:level6]">
+   <!-- Treat bylines inside levels and divs as if they were paragraphs -->
+  <xsl:template match="dtb:byline[parent::dtb:level|parent::dtb:level1|parent::dtb:level2|parent::dtb:level3|parent::dtb:level4|parent::dtb:level5|parent::dtb:level6|parent::dtb:div]">
     <xsl:apply-templates/>
     <xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
@@ -945,7 +950,7 @@
 
    <!-- insert non-breaking spaces inside abbrevs -->
    <xsl:template match="dtb:abbr//text()">
-    <xsl:value-of select="replace(string(current()), ' ', '~')"/>
+    <xsl:value-of select="my:quoteSpecialChars(replace(string(current()), ' ', ' '))"/>
    </xsl:template>
    	
    <xsl:template match="text()">
