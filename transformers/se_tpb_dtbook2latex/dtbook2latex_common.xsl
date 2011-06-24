@@ -799,7 +799,7 @@
    </xsl:template>
 
    <xsl:template match="dtb:poem/dtb:linegroup">
-   	<xsl:apply-templates/>
+   	<xsl:apply-templates select="*"/>
    	<xsl:text>&#10;</xsl:text>
    </xsl:template>
 
