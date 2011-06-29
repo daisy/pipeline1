@@ -2,7 +2,6 @@
 	<name>DTBook to PEF</name>
 	<description>Transforms DTBook 2005-3 into PEF 2008-1</description>
 	<classname>org_pef_dtbook2pef.DTBook2PEF</classname>
-	<jar>../../lib/dotify-1.0b.jar</jar>
 	<license>LGPL</license>
 	<author>Joel Håkansson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>

@@ -5,25 +5,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-//import org.daisy.dotify.setups.TaskSystemFactory;
-//import org.daisy.dotify.setups.TaskSystemFactory.OutputFormat;
-//import org.daisy.dotify.setups.TaskSystemFactory.Setup;
-//import org.daisy.dotify.system.InternalTaskException;
+import org.daisy.dotify.setups.TaskSystemFactory;
 import org.daisy.dotify.setups.TaskSystemFactory.OutputFormat;
 import org.daisy.dotify.setups.TaskSystemFactory.Setup;
 import org.daisy.dotify.system.InternalTaskException;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
-/*
-import org_pef_dtbook2pef.setups.TaskSystemFactory;
-import org_pef_dtbook2pef.setups.TaskSystemFactoryException;
-import org_pef_dtbook2pef.setups.TaskSystemFactory.OutputFormat;
-import org_pef_dtbook2pef.setups.TaskSystemFactory.Setup;
-import org_pef_dtbook2pef.system.InternalTask;
-import org_pef_dtbook2pef.system.InternalTaskException;
-import org_pef_dtbook2pef.system.TaskSystem;
-import org_pef_dtbook2pef.system.TaskSystemException;*/
 
 /**
  * <p>The transformer loads a TaskSystem implementation and runs the steps
