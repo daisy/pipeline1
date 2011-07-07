@@ -180,20 +180,22 @@
 	  <!-- Display page numbers on the right on a recto page -->
 	  <xsl:text>\makeevenfoot{plain}{\thepage}{}{}&#10;</xsl:text>
 	  <xsl:text>\makeoddfoot{plain}{}{}{\thepage}&#10;</xsl:text>
-
-	  <!-- footnote styling -->
-	  <!-- Use the normal font -->
-	  <xsl:text>\renewcommand{\foottextfont}{\normalsize}&#10;</xsl:text>
-	  <!-- paragraph indenting -->
-	  <xsl:text>\setlength{\footparindent}{0ex}&#10;</xsl:text>
-	  <xsl:text>\setlength{\footmarkwidth}{0ex}&#10;</xsl:text>
-	  <xsl:text>\setlength{\footmarksep}{\footmarkwidth}&#10;</xsl:text>
-	  <!-- rule -->
-	  <xsl:text>\renewcommand{\footnoterule}{%&#10;</xsl:text>
-	  <xsl:text>\kern-3pt%&#10;</xsl:text>
-	  <xsl:text>\hrule height 1.5pt&#10;</xsl:text>
-	  <xsl:text>\kern 2.6pt}&#10;</xsl:text>
 	</xsl:if>
+
+	<!-- footnote styling -->
+	<!-- Use the normal font -->
+	<xsl:text>\renewcommand{\foottextfont}{\normalsize}&#10;</xsl:text>
+	<!-- add some space after the footnote marker -->
+	<xsl:text>\footmarkstyle{\textsuperscript{#1} }&#10;</xsl:text>
+	<!-- paragraph indenting -->
+	<xsl:text>\setlength{\footmarkwidth}{0ex}&#10;</xsl:text>
+	<xsl:text>\setlength{\footmarksep}{\footmarkwidth}&#10;</xsl:text>
+	<!-- rule -->
+	<xsl:text>\renewcommand{\footnoterule}{%&#10;</xsl:text>
+	<xsl:text>\kern-3pt%&#10;</xsl:text>
+	<xsl:text>\hrule height 1.5pt&#10;</xsl:text>
+	<xsl:text>\kern 2.6pt&#10;</xsl:text>
+	<xsl:text>\smallskip}&#10;</xsl:text>
 
 	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
 	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
@@ -546,12 +548,18 @@
    </xsl:template>
 
    <xsl:template match="dtb:noteref">
-   	<xsl:text>\footnote{</xsl:text>
-   	<xsl:variable name="refText">
-	  <xsl:value-of select="normalize-space(//*[@id=translate(current()/@idref,'#','')])"/>
-   	</xsl:variable>
-	<xsl:value-of select="my:quoteSpecialChars(string($refText))"/>
-   	<xsl:text>}</xsl:text>
+     <xsl:variable name="refText">
+       <xsl:value-of select="normalize-space(//*[@id=translate(current()/@idref,'#','')])"/>
+     </xsl:variable>
+     <xsl:text>\footnotemark</xsl:text>
+     <xsl:text>\footnotetext{</xsl:text>
+     <xsl:if test="$alignment='left'"><xsl:text>\raggedright </xsl:text></xsl:if>
+     <xsl:value-of select="my:quoteSpecialChars(string($refText))"/>
+     <xsl:if test="$alignment='left'">
+        <!-- an empty line is needed. Otherwise raggedright has no effect -->
+       <xsl:text>&#10;&#10;</xsl:text>
+     </xsl:if>
+     <xsl:text>}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:img">
