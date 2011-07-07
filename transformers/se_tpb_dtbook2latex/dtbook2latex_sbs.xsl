@@ -78,11 +78,14 @@
     <xsl:text>\clearpage&#10;</xsl:text>
     <xsl:text>Dieses Grossdruckbuch ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.&#10;</xsl:text>
     <xsl:text>\vfill&#10;</xsl:text>
-    <xsl:text>Verlag, Satz und Druck:\\[0.5cm]&#10;</xsl:text>
+    <xsl:text>Verlag, Satz und Druck:</xsl:text>
+    <xsl:value-of select="if ($fontsize = '25pt') then '\\&#10;' else '\\[0.5cm]&#10;'"/>
     <xsl:text>SBS Schweizerische Bibliothek </xsl:text>
     <xsl:if test="$fontsize = '17pt'"><xsl:text>\\&#10;</xsl:text></xsl:if>
-    <xsl:text>für Blinde, Seh- und Lesebehinderte, Zürich\\[0.5cm]&#10;</xsl:text>
-    <xsl:text>www.sbs.ch\\[0.5cm]&#10;</xsl:text>
+    <xsl:text>für Blinde, Seh- und Lesebehinderte, Zürich</xsl:text>
+    <xsl:value-of select="if ($fontsize = '25pt') then '\\&#10;' else '\\[0.5cm]&#10;'"/>
+    <xsl:text>www.sbs.ch</xsl:text>
+    <xsl:value-of select="if ($fontsize = '25pt') then '\\&#10;' else '\\[0.5cm]&#10;'"/>
     <xsl:variable name="year" select="tokenize(//dtb:meta[lower-case(@name)='dc:date']/@content, '-')[1]"/>
     <xsl:value-of select="concat('SBS ', $year, '&#10;')"/>
   </xsl:template>
@@ -96,8 +99,10 @@
      <xsl:text>\frontmatter&#10;</xsl:text>
      <xsl:call-template name="cover"/>
      <xsl:apply-templates select="dtb:level1[@class='titlepage']"/>
-     <xsl:text>\clearpage&#10;</xsl:text>
-     <xsl:apply-templates select="dtb:*[not(@class='titlepage')]"/>
+     <xsl:if test="dtb:*[not(@class='titlepage' or @class='toc')]">
+       <xsl:text>\clearpage&#10;</xsl:text>
+       <xsl:apply-templates select="dtb:*[not(@class='titlepage' or @class='toc')]"/>
+     </xsl:if>
      <xsl:text>\cleartorecto&#10;</xsl:text>
      <xsl:if test="dtb:level1/dtb:list[descendant::dtb:lic]">
        <xsl:text>\tableofcontents*&#10;</xsl:text>
