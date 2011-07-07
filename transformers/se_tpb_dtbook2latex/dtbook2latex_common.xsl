@@ -948,9 +948,9 @@
    	<xsl:apply-templates/>
    </xsl:template>
 
-   <!-- insert non-breaking spaces inside abbrevs -->
+   <!-- remove excessive space and insert non-breaking spaces inside abbrevs -->
    <xsl:template match="dtb:abbr//text()">
-    <xsl:value-of select="my:quoteSpecialChars(replace(string(current()), ' ', ' '))"/>
+    <xsl:value-of select="my:quoteSpecialChars(replace(replace(string(current()), '\s+', ' '), ' ', ' '))"/>
    </xsl:template>
    	
    <xsl:template match="text()">
