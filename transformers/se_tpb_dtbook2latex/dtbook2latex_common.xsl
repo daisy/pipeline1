@@ -182,6 +182,11 @@
 	  <xsl:text>\makeoddfoot{plain}{}{}{\thepage}&#10;</xsl:text>
 	</xsl:if>
 
+	<xsl:if test="$alignment='left'">
+	  <!-- set the TOC entries ragged right -->
+	  <xsl:text>\setrmarg{3.55em plus 1fil}&#10;</xsl:text>
+	</xsl:if>
+
 	<!-- footnote styling -->
 	<!-- Use the normal font -->
 	<xsl:text>\renewcommand{\foottextfont}{\normalsize}&#10;</xsl:text>
