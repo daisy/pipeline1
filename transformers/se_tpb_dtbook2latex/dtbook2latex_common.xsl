@@ -73,7 +73,9 @@
     <xsl:variable name="tmp4" select="replace($tmp3, '(~|\^)', '\\$1{}')"/>
     <!-- add non-breaking space in front of emdash or endash followed by punctuation -->
     <xsl:variable name="tmp5" select="replace($tmp4, ' ([–—]\p{P})', ' $1')"/>
-    <xsl:value-of select="$tmp5"/>
+    <!-- add non-breaking space in front ellipsis followed by punctuation -->
+    <xsl:variable name="tmp6" select="replace($tmp5, ' ((\.{3}|…)\p{P})', ' $1')"/>
+    <xsl:value-of select="$tmp6"/>
   </xsl:function>
 
    <xsl:template match="/">
@@ -187,6 +189,9 @@
 	  <xsl:text>\setrmarg{3.55em plus 1fil}&#10;</xsl:text>
 	</xsl:if>
 
+	<!-- Set the depth of the toc based on how many nested lic there are in the frontmatter -->	
+	<xsl:call-template name="setmaxtocdepth"/>
+
 	<!-- footnote styling -->
 	<!-- Use the normal font -->
 	<xsl:text>\renewcommand{\foottextfont}{\normalsize}&#10;</xsl:text>
@@ -195,12 +200,13 @@
 	<!-- paragraph indenting -->
 	<xsl:text>\setlength{\footmarkwidth}{0ex}&#10;</xsl:text>
 	<xsl:text>\setlength{\footmarksep}{\footmarkwidth}&#10;</xsl:text>
+
 	<!-- rule -->
 	<xsl:text>\renewcommand{\footnoterule}{%&#10;</xsl:text>
 	<xsl:text>\kern-3pt%&#10;</xsl:text>
 	<xsl:text>\hrule height 1.5pt&#10;</xsl:text>
 	<xsl:text>\kern 2.6pt&#10;</xsl:text>
-	<xsl:text>\smallskip}&#10;</xsl:text>
+	<xsl:text>\medskip}&#10;</xsl:text>
 
 	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
 	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
@@ -264,6 +270,26 @@
        </xsl:with-param>
      </xsl:call-template>
      <xsl:text>]{babel}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template name="setmaxtocdepth">
+     <!-- Determine the depth of toc by calculating the depth of the lic inside list in the frontmatter -->
+     <xsl:variable 
+	 name="max_toc_depth" 
+	 select="max(for $node in //dtb:frontmatter/dtb:level1/dtb:list//dtb:lic return count($node/ancestor::dtb:list))"/>
+
+     <xsl:if test="$max_toc_depth &gt; 0">
+       <xsl:text>\maxtocdepth{</xsl:text>
+       <xsl:choose>
+	 <xsl:when test="$max_toc_depth=1"><xsl:text>chapter</xsl:text></xsl:when>
+	 <xsl:when test="$max_toc_depth=2"><xsl:text>section</xsl:text></xsl:when>
+	 <xsl:when test="$max_toc_depth=3"><xsl:text>subsection</xsl:text></xsl:when>
+	 <xsl:when test="$max_toc_depth=4"><xsl:text>subsubsection</xsl:text></xsl:when>
+	 <xsl:when test="$max_toc_depth=5"><xsl:text>paragraph</xsl:text></xsl:when>
+	 <xsl:when test="$max_toc_depth>5"><xsl:text>subparagraph</xsl:text></xsl:when>
+       </xsl:choose>
+       <xsl:text>}&#10;</xsl:text>
+     </xsl:if>
    </xsl:template>
 
   <xsl:template name="set_frontmatter_pagestyle">
