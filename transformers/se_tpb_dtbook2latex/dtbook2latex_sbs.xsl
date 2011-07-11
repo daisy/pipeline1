@@ -185,7 +185,7 @@
      <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:level1[@class='titlepage']/dtb:level2[1]/dtb:p[@class='sourcePublisher']">
+   <xsl:template match="dtb:level1[@class='titlepage']/dtb:level2[1]/dtb:p[contains(@class,'sourcePublisher')]">
      <xsl:text>\vfill&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>&#10;&#10;</xsl:text>
@@ -196,13 +196,13 @@
      <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:p[@class='precedingemptyline']">   
+   <xsl:template match="dtb:p[contains(@class,'precedingemptyline')]">   
      <xsl:text>\plainbreak{1.5}&#10;&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:p[@class='precedingseparator']">   
+   <xsl:template match="dtb:p[contains(@class,'precedingseparator')]">   
      <xsl:text>\fancybreak{***}&#10;&#10;</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>&#10;&#10;</xsl:text>
