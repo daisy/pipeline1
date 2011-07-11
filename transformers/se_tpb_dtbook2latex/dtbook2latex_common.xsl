@@ -580,16 +580,12 @@
 
    <xsl:template match="dtb:noteref">
      <xsl:variable name="refText">
-       <xsl:value-of select="normalize-space(//*[@id=translate(current()/@idref,'#','')])"/>
+       <xsl:apply-templates select="//dtb:note[@id=translate(current()/@idref,'#','')]" mode="footnotes"/>
      </xsl:variable>
      <xsl:text>\footnotemark</xsl:text>
      <xsl:text>\footnotetext{</xsl:text>
      <xsl:if test="$alignment='left'"><xsl:text>\raggedright </xsl:text></xsl:if>
-     <xsl:value-of select="my:quoteSpecialChars(string($refText))"/>
-     <xsl:if test="$alignment='left'">
-        <!-- an empty line is needed. Otherwise raggedright has no effect -->
-       <xsl:text>&#10;&#10;</xsl:text>
-     </xsl:if>
+     <xsl:value-of select="string($refText)"/>
      <xsl:text>}</xsl:text>
    </xsl:template>
 
@@ -694,6 +690,10 @@
 
    <xsl:template match="dtb:note">
    	<!--<xsl:apply-templates/>-->
+   </xsl:template>
+
+   <xsl:template match="dtb:note" mode="footnotes">
+     <xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template match="dtb:sidebar">
