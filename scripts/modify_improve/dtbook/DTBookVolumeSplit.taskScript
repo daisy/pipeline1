@@ -58,6 +58,20 @@
 		</datatype>
 	</parameter>
 
+	<parameter name="allowed_stretch" value="0.1" required="false">
+		<nicename>Allowed Stretch</nicename>
+		<description>How much can a volume be streched so that the volume splits occur at nearby level1</description>
+		<datatype>
+			<enum>
+			  <item nicename="Do not stretch" value="0" />
+			  <item nicename="5 percent" value="0.05" />
+			  <item nicename="10 percent" value="0.1" />
+			  <item nicename="20 percent" value="0.2" />
+			  <item nicename="30 percent" value="0.3" />
+			</enum>
+		</datatype>
+	</parameter>
+
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>

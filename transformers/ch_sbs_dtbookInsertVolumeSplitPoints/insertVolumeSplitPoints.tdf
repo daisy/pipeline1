@@ -62,6 +62,20 @@
 		  <default>1</default>
 		</parameter>
 		
+		<parameter type="enum" direction="in" required="false">
+		  <name>allowed_stretch</name>			
+		  <description>How much can a volume be streched so that the volume splits occur at nearby level1</description>
+		  <example>0.1</example>
+		  <enum>
+		    <value>0</value>
+		    <value>0.05</value>
+		    <value>0.1</value>
+		    <value>0.2</value>
+		    <value>0.3</value>
+		  </enum>
+		  <default>0.1</default>
+		</parameter>
+
 		<parameter required="true" direction="out" type="application/x-dtbook+xml">
 			<name>out</name>
 			<description>The output DTBook document with split points</description>
