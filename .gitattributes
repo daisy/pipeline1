@@ -1343,8 +1343,13 @@ transformers/se_tpb_aligner/util/Source.java -text
 transformers/se_tpb_aligner/util/Triple.java -text
 transformers/se_tpb_aligner/util/XMLResult.java -text
 transformers/se_tpb_aligner/util/XMLSource.java -text
+transformers/se_tpb_annonsator/Annonsator.java -text svneol=unset#text/plain
+transformers/se_tpb_annonsator/AnnonsatorXSLTBuilder.java -text svneol=unset#text/plain
 transformers/se_tpb_annonsator/messages_hi.properties -text svneol=unset#unset
 transformers/se_tpb_annonsator/messages_ja.properties -text svneol=unset#text/plain
+transformers/se_tpb_annonsator/transformer.tdf -text
+transformers/se_tpb_annonsator/type/dtbook-2005_newpaper.xml -text svneol=unset#text/plain
+transformers/se_tpb_annonsator/type_newspaper.xml -text svneol=unset#text/plain
 transformers/se_tpb_daisy202splitter/ContentDocFilter.java -text
 transformers/se_tpb_daisy202splitter/Daisy202Splitter.java -text
 transformers/se_tpb_daisy202splitter/NccCreator.java -text

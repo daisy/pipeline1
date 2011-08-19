@@ -72,6 +72,7 @@ public class Annonsator extends Transformer implements ErrorListener {
     
     /**
      * @param inListener
+     * @param eventListeners
      * @param isInteractive
      */
     public Annonsator(InputListener inListener, Boolean isInteractive) {
@@ -83,9 +84,17 @@ public class Annonsator extends Transformer implements ErrorListener {
         String output = parameters.remove("output");
         String xslOutput = parameters.remove("xslOutput");
         
+        //JW 2011-06-20 change file for announcements by a voluntary parameter 
+        String filename = "type.xml";
+        String pathToTypeFile = parameters.remove("catalogFile");
+        if (pathToTypeFile != null) filename = pathToTypeFile;
+     
+        
+        
         XMLInputFactory factory = XMLInputFactory.newInstance();
         try {
-            resolver = SettingsResolver.getInstance("type.xml", this.getClass()); 
+        	System.out.println("filename for catalogfile in tpb_annonsator" +filename);
+            resolver = SettingsResolver.getInstance(filename, this.getClass()); 
             //mg20071203: set entityresolver
             factory.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
             XMLEventReader reader = factory.createXMLEventReader(new FileInputStream(input));
