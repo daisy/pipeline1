@@ -299,6 +299,7 @@ public class PipelineTestDriver implements BusListener {
 //		tests.add(new FilesetGenerator1(inputDir, outputDir));
 //		tests.add(new FilesetGenerator2(inputDir, outputDir));
 //		tests.add(new DTBook2LaTeX(inputDir, outputDir));
+//		tests.add(new DTBookVolumeSplit(inputDir, outputDir));
 //		tests.add(new MixedContentNormalizer1(inputDir, outputDir));
 //		tests.add(new DTBook2TranslatedBrailleDTBook(inputDir, outputDir));
 		

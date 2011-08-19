@@ -5,20 +5,17 @@ import java.util.List;
 import org.daisy.pipeline.test.PipelineTest;
 import org.daisy.util.file.Directory;
 
-public class DTBook2LaTeX extends PipelineTest {
+public class DTBookVolumeSplit extends PipelineTest {
 
-	public DTBook2LaTeX(Directory dataInputDir, Directory dataOutputDir) {
+	public DTBookVolumeSplit(Directory dataInputDir, Directory dataOutputDir) {
 		super(dataInputDir, dataOutputDir);
 	}
 	
 	@Override
 	public List<String> getParameters() {
 		mParameters.add("--input=" + mDataInputDir + "/dtbook/hauy-2005-1.xml");
-		mParameters.add("--output=" + mDataOutputDir + "/DTBook2LaTeX/fromDTBook.tex");		
-		mParameters.add("--fontsize="+"20pt");
-		mParameters.add("--font="+"LMRoman10 Regular");
-		mParameters.add("--defaultLanguage="+"ngerman");
-		mParameters.add("--stocksize="+"letterpaper");
+		mParameters.add("--output=" + mDataOutputDir + "/DTBookVolumeSplit/DTBook.xml");
+		mParameters.add("--number_of_volumes="+"3");
 		return mParameters;
 	}
 
@@ -29,7 +26,7 @@ public class DTBook2LaTeX extends PipelineTest {
 
 	@Override
 	public boolean supportsScript(String scriptName) {
-		if("DTBookToLaTeX.taskScript".equals(scriptName)) {
+		if("DTBookVolumeSplit.taskScript".equals(scriptName)) {
 			return true;
 		}		
 		return false;

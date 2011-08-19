@@ -37,6 +37,7 @@
 		    <value>14pt</value>
 		    <value>17pt</value>
 		    <value>20pt</value>
+		    <value>25pt</value>
 		  </enum>
 		  <default>17pt</default>
 		</parameter>
@@ -97,8 +98,8 @@
 		</parameter>
 		
 		<parameter type="enum" direction="in" required="false">
-		  <name>papersize</name>			
-		  <description>Paper size for the generated LaTeX</description>
+		  <name>stocksize</name>			
+		  <description>Stock size for the generated LaTeX</description>
 		  <example>a4paper</example>
 		  <enum>
 		    <value>a3paper</value>
@@ -107,7 +108,6 @@
 		    <value>letterpaper</value>
 		    <value>legalpaper</value>
 		    <value>executivepaper</value>
-		    <value>custom</value>
 		  </enum>
 		  <default>a4paper</default>
 		</parameter>
@@ -126,28 +126,42 @@
 		
 		<parameter type="string" direction="in" required="false">
 		  <name>paperwidth</name>			
-		  <description>Specific width of the paper (if papersize is defined as 'custom')</description>
+		  <description>Specific width of the paper.</description>
 		  <example>200mm</example>
 		  <default>200mm</default>
 		</parameter>
 
 		<parameter type="string" direction="in" required="false">
 		  <name>paperheight</name>			
-		  <description>Specific height of the paper (if papersize is defined as 'custom')</description>
+		  <description>Specific height of the paper</description>
 		  <example>250mm</example>
 		  <default>250mm</default>
 		</parameter>
 
 		<parameter type="string" direction="in" required="false">
 		  <name>left_margin</name>			
-		  <description>Specific inner margin of the paper (if papersize is defined as 'custom')</description>
+		  <description>Specific inner margin of the paper</description>
 		  <example>28mm</example>
 		  <default>28mm</default>
 		</parameter>
 
 		<parameter type="string" direction="in" required="false">
 		  <name>right_margin</name>			
-		  <description>Specific outer margin of the paper (if papersize is defined as 'custom')</description>
+		  <description>Specific outer margin of the paper</description>
+		  <example>20mm</example>
+		  <default>20mm</default>
+		</parameter>
+
+		<parameter type="string" direction="in" required="false">
+		  <name>top_margin</name>			
+		  <description>Specific top margin of the page</description>
+		  <example>20mm</example>
+		  <default>20mm</default>
+		</parameter>
+
+		<parameter type="string" direction="in" required="false">
+		  <name>bottom_margin</name>			
+		  <description>Specific bottom margin of the page</description>
 		  <example>20mm</example>
 		  <default>20mm</default>
 		</parameter>
@@ -161,20 +175,6 @@
 		    <value>false</value>
 		  </enum>
 		  <default>false</default>
-		</parameter>
-
-		<parameter type="string" direction="in" required="false">
-		  <name>top_margin</name>			
-		  <description>Specific top margin of the page (if papersize is defined as 'custom')</description>
-		  <example>20mm</example>
-		  <default>20mm</default>
-		</parameter>
-
-		<parameter type="string" direction="in" required="false">
-		  <name>bottom_margin</name>			
-		  <description>Specific bottom margin of the page (if papersize is defined as 'custom')</description>
-		  <example>20mm</example>
-		  <default>20mm</default>
 		</parameter>
 
 		<parameter required="true" direction="out" type="application/x-latex">
