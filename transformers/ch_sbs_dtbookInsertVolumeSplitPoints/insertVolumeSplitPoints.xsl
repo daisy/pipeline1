@@ -16,9 +16,7 @@
      allowed_stretch defines how much a volume can be streched so that
      volume splits occur at nearby level1. -->
 
-  <xsl:output method="xml" encoding="utf-8" indent="yes"/>
-  <xsl:strip-space elements="*"/>
-  <xsl:preserve-space elements="code samp"/>
+  <xsl:output method="xml" encoding="utf-8" indent="no"/>
 	
   <xsl:param name="number_of_volumes" select="1"/>
   <xsl:param name="allowed_stretch" select="0.1"/>
