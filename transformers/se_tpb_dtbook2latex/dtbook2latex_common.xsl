@@ -752,9 +752,13 @@
    </xsl:template>
 
    <xsl:template match="dtb:li">
-   	<xsl:text>\item </xsl:text>
+     <xsl:variable name="itemContent">
 	<xsl:apply-templates/>
-	<xsl:text>&#10;</xsl:text>
+     </xsl:variable>
+     <xsl:text>\item </xsl:text>
+     <!-- quote [] right after an \item with {} -->
+     <xsl:value-of select="replace($itemContent,'^(\s*)(\[.*\])','$1{$2}')"/>
+     <xsl:text>&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:dl">
@@ -989,9 +993,9 @@
 
    <!-- remove excessive space and insert non-breaking spaces inside abbrevs -->
    <xsl:template match="dtb:abbr//text()">
-    <xsl:value-of select="my:quoteSpecialChars(replace(replace(string(current()), '\s+', ' '), ' ', ' '))"/>
+    <xsl:value-of select="my:quoteSpecialChars(replace(normalize-space(string(current())), ' ', ' '))"/>
    </xsl:template>
-   	
+
    <xsl:template match="text()">
      <xsl:value-of select="my:quoteSpecialChars(string(current()))"/>
    </xsl:template>
