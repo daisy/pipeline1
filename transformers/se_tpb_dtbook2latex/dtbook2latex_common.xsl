@@ -670,6 +670,12 @@
    	<xsl:apply-templates/>
    </xsl:template>
 
+   <!-- Treat authors inside levels, divs and blockquotes as if they were paragraphs -->
+  <xsl:template match="dtb:author[parent::dtb:level|parent::dtb:level1|parent::dtb:level2|parent::dtb:level3|parent::dtb:level4|parent::dtb:level5|parent::dtb:level6|parent::dtb:div|parent::dtb:blockquote]">
+    <xsl:apply-templates/>
+    <xsl:text>&#10;&#10;</xsl:text>
+   </xsl:template>
+
    <xsl:template match="dtb:blockquote">
    	<xsl:text>\begin{quote}&#10;</xsl:text>
    	<xsl:apply-templates/>
@@ -680,8 +686,8 @@
   	<xsl:apply-templates/>
    </xsl:template>
 
-   <!-- Treat bylines inside levels and divs as if they were paragraphs -->
-  <xsl:template match="dtb:byline[parent::dtb:level|parent::dtb:level1|parent::dtb:level2|parent::dtb:level3|parent::dtb:level4|parent::dtb:level5|parent::dtb:level6|parent::dtb:div]">
+   <!-- Treat bylines inside levels, divs and blockquotes as if they were paragraphs -->
+  <xsl:template match="dtb:byline[parent::dtb:level|parent::dtb:level1|parent::dtb:level2|parent::dtb:level3|parent::dtb:level4|parent::dtb:level5|parent::dtb:level6|parent::dtb:div|parent::dtb:blockquote]">
     <xsl:apply-templates/>
     <xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
@@ -853,6 +859,12 @@
    </xsl:template>
 
    <xsl:template match="dtb:poem/dtb:linegroup/dtb:line">
+   	<xsl:apply-templates/>
+	<xsl:if test="position() != last()"><xsl:text>\\</xsl:text></xsl:if>
+	<xsl:text>&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:poem/dtb:line|dtb:poem/dtb:author|dtb:poem/dtb:byline">
    	<xsl:apply-templates/>
 	<xsl:if test="position() != last()"><xsl:text>\\</xsl:text></xsl:if>
 	<xsl:text>&#10;</xsl:text>
