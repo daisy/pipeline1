@@ -9,8 +9,14 @@
 		exclude-result-prefixes="dtb my">
   
   <xsl:output method="text" encoding="utf-8" indent="no"/>
-  <!-- <xsl:strip-space elements="*"/> -->
-  <!-- <xsl:preserve-space elements="dtb:code dtb:samp dtb:doctitle dtb:docauthor dtb:p dtb:em dtb:strong dtb:span dtb:author dtb:byline dtb:li dtb:lic dtb:line dtb:div"/> -->
+  <xsl:strip-space elements="*"/>
+  <xsl:preserve-space elements="dtb:line dtb:address dtb:div dtb:title dtb:author dtb:note dtb:byline dtb:dateline 
+				dtb:a dtb:em dtb:strong dtb:dfn dtb:kbd dtb:code dtb:samp dtb:cite dtb:abbr dtb:acronym
+				dtb:sub dtb:sup dtb:span dtb:bdo dtb:sent dtb:w 
+				dtb:q dtb:p 
+				dtb:doctitle dtb:docauthor dtb:covertitle 
+				dtb:h1 dtb:h2 dtb:h3 dtb:h4 dtb:h5 dtb:h6
+				dtb:bridgehead dtb:hd dtb:dt dtb:li dtb:lic "/>
 	
   <!-- Possible values are 12pt, 14pt, 17pt, 20pt and 25pt -->
   <xsl:param name="fontsize">17pt</xsl:param>
