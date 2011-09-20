@@ -2,28 +2,70 @@
 
 <xsl:stylesheet version="2.0"
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"	
+		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		xmlns:func="http://my-functions"
 		exclude-result-prefixes="dtb">
   
 <!-- This stylesheet inserts split points in a dtbook so that a book
      can be split into several volumes later on, e.g. by the latex
-     transformer. The splitting is done as follows: First determine
-     the number of paragraphs per volume, i.e. total number of
-     paragraphs divided by number_of_volumes. Then simply calculate
-     the split point based on that. Now if any of the split points are
-     near a level1 move the split point to just before this level1, so
-     that the new level will end up in the new volume. The
-     allowed_stretch defines how much a volume can be streched so that
-     volume splits occur at nearby level1. -->
+     transformer. The splitting is done as follows: 
+     - First determine the number of words per volume, i.e. total
+       number of words divided by number_of_volumes.  
+     - Then recurse through all p while checking if the words so far
+       exceed the allowed limit. If yes mark this p as a split point. 
+     - Now if any of the split points are near a level1 move the split
+       point to just before this level1, so that the new level will
+       end up in the new volume. The allowed_stretch defines how much
+       a volume can be streched so that volume splits occur at nearby
+       level1. -->  
 
   <xsl:output method="xml" encoding="utf-8" indent="no"/>
 	
   <xsl:param name="number_of_volumes" select="1"/>
   <xsl:param name="allowed_stretch" select="0.1"/>
 
+  <!-- Count the words in a given paragraph -->
+  <xsl:function name="func:wc" as="xs:integer">
+    <xsl:param name="para"/>
+    <xsl:value-of select="count(tokenize(normalize-space(string($para)), '\s+'))"/>
+  </xsl:function>
+
+  <!-- Determine paragraphs where a volume should be split, i.e.
+       paragraphs where the numbers of words since the last split
+       point are greater that the wanted words per volume -->
+  <xsl:function name="func:splitInternal">
+    <xsl:param name="wordsSoFar"/>
+    <xsl:param name="wordsPerVolume"/>
+    <xsl:param name="paragraphSequence"/>
+    <xsl:variable name="head" select="$paragraphSequence[1]"/>
+    <xsl:variable name="tail" select="subsequence($paragraphSequence, 2)"/>
+    <xsl:variable name="currentWordCount" select="$wordsSoFar + func:wc($head)"/>
+    <xsl:choose>
+      <xsl:when test="empty($paragraphSequence)">
+	<xsl:sequence select="$paragraphSequence"/>
+      </xsl:when>
+      <xsl:when test="$wordsSoFar >= $wordsPerVolume">
+	<xsl:sequence select="$head,func:splitInternal(0, $wordsPerVolume, $tail)"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:sequence select="func:splitInternal($currentWordCount, $wordsPerVolume, $tail)"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
+  <xsl:function name="func:split">
+    <xsl:param name="wordsPerVolume"/>
+    <xsl:param name="paragraphSequence"/>
+    <xsl:sequence select="func:splitInternal(0, $wordsPerVolume, $paragraphSequence)"/>
+  </xsl:function>
+
   <xsl:variable name="all_p" select="//dtb:p"/>
   <xsl:variable name="p_per_volume" select="ceiling(count($all_p) div number($number_of_volumes)) + 1"/>
-  <xsl:variable name="split_nodes" select="$all_p[position() mod $p_per_volume = 0]"/>
+
+  <xsl:variable name="total_words" select="sum(for $p in $all_p return func:wc($p))"/>
+  <xsl:variable name="words_per_volume" select="ceiling($total_words div number($number_of_volumes)) + 1"/>
+  <xsl:variable name="split_nodes" select="func:split($words_per_volume, $all_p)"/>
 
   <!-- Calculate all the poor split points, i.e the ones close to a level1 -->
   <xsl:param name="allowed_stretch_in_nodes" select="ceiling($p_per_volume * number($allowed_stretch))"/>
@@ -45,7 +87,7 @@
 		select="$replaced_after_split_nodes union $replaced_before_split_nodes"/>
   <xsl:variable name="valid_split_nodes" 
 		select="$good_split_nodes union $replaced_split_nodes"/>
-
+  
   <xsl:template match="dtb:level1">
     <xsl:if test="some $node in $valid_split_nodes satisfies current() is $node">
       <xsl:element name="div" namespace="http://www.daisy.org/z3986/2005/dtbook/">
