@@ -27,7 +27,7 @@
 
   <!-- Count the words in a given paragraph -->
   <xsl:function name="func:wc" as="xs:integer">
-    <xsl:param name="para"/>
+    <xsl:param name="para" as="element()"/>
     <xsl:value-of select="count(tokenize(normalize-space(string($para)), '\s+'))"/>
   </xsl:function>
 
@@ -35,11 +35,11 @@
        paragraphs where the numbers of words since the last split
        point are greater that the wanted words per volume -->
   <xsl:function name="func:splitInternal">
-    <xsl:param name="wordsSoFar"/>
-    <xsl:param name="wordsPerVolume"/>
-    <xsl:param name="paragraphSequence"/>
+    <xsl:param name="wordsSoFar" as="xs:double"/>
+    <xsl:param name="wordsPerVolume" as="xs:double"/>
+    <xsl:param name="paragraphSequence" as="element()*"/>
     <xsl:variable name="head" select="$paragraphSequence[1]"/>
-    <xsl:variable name="tail" select="subsequence($paragraphSequence, 2)"/>
+    <xsl:variable name="tail" select="$paragraphSequence[position() gt 1]"/>
     <xsl:variable name="currentWordCount" select="$wordsSoFar + func:wc($head)"/>
     <xsl:choose>
       <xsl:when test="empty($paragraphSequence)">
@@ -55,40 +55,93 @@
   </xsl:function>
 
   <xsl:function name="func:split">
-    <xsl:param name="wordsPerVolume"/>
-    <xsl:param name="paragraphSequence"/>
+    <xsl:param name="wordsPerVolume" as="xs:double"/>
+    <xsl:param name="paragraphSequence" as="element()*"/>
     <xsl:sequence select="func:splitInternal(0, $wordsPerVolume, $paragraphSequence)"/>
   </xsl:function>
 
+  <xsl:function name="func:findClosestLevel">
+    <xsl:param name="level"/>
+    <xsl:param name="wordsSoFar" as="xs:double"/>
+    <xsl:param name="allowed_stretch_in_words" as="xs:double"/>
+    <xsl:param name="paragraphSequence" as="element()*"/>
+    <xsl:variable name="head" select="$paragraphSequence[1]"/>
+    <xsl:variable name="tail" select="$paragraphSequence[position() gt 1]"/>
+    <xsl:variable name="currentWordCount" select="$wordsSoFar + func:wc($head)"/>
+    <xsl:choose>
+      <xsl:when test="empty($paragraphSequence)">
+	<xsl:sequence select="()"/>
+      </xsl:when>
+      <xsl:when test="$wordsSoFar >= $allowed_stretch_in_words">
+	<xsl:sequence select="()"/>
+      </xsl:when>
+      <xsl:when test="local-name($head)=$level">
+	<xsl:sequence select="$head,$wordsSoFar"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:sequence select="func:findClosestLevel(
+			      $level, $currentWordCount, 
+			      $allowed_stretch_in_words, $tail)"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
+  <xsl:function name="func:replaceWithClosestLevel">
+    <xsl:param name="split_point" as="element()"/>
+    <xsl:param name="allowed_stretch_in_words" as="xs:double"/>
+    <xsl:variable name="closestLevel1Before" 
+		  select="func:findClosestLevel('level1', 0, $allowed_stretch_in_words, 
+			  reverse($split_point/preceding::node()[local-name()='level1' or local-name()='p']|$split_point/ancestor::dtb:level1))"/>
+    <xsl:variable name="closestLevel1After" 
+		  select="func:findClosestLevel('level1', 0, $allowed_stretch_in_words, 
+			  $split_point/following::node()[local-name()='level1' or local-name()='p'])"/>
+    <xsl:variable name="closestLevel2Before" 
+		  select="func:findClosestLevel('level2', 0, $allowed_stretch_in_words, 
+			  reverse($split_point/preceding::node()[local-name()='level2' or local-name()='p']|$split_point/ancestor::dtb:level2))"/>
+    <xsl:variable name="closestLevel2After" 
+		  select="func:findClosestLevel('level2', 0, $allowed_stretch_in_words, 
+			  $split_point/following::node()[local-name()='level2' or local-name()='p'])"/>
+    <xsl:choose>
+      <xsl:when test="exists($closestLevel1Before) and exists($closestLevel1After)">
+	<xsl:sequence select="if ($closestLevel1Before[2] le $closestLevel1After[2]) 
+			      then $closestLevel1Before[1]
+			      else $closestLevel1After[1]"/>
+      </xsl:when>
+      <xsl:when test="exists($closestLevel1Before)">
+	<xsl:sequence select="$closestLevel1Before[1]"/>
+      </xsl:when>
+      <xsl:when test="exists($closestLevel1After)">
+	<xsl:sequence select="$closestLevel1After[1]"/>
+      </xsl:when>
+      <xsl:when test="exists($closestLevel2Before) and exists($closestLevel2After)">
+	<xsl:sequence select="if ($closestLevel2Before[2] le $closestLevel2After[2]) 
+			      then $closestLevel2Before[1]
+			      else $closestLevel2After[1]"/>
+      </xsl:when>
+      <xsl:when test="exists($closestLevel2Before)">
+	<xsl:sequence select="$closestLevel2Before[1]"/>
+      </xsl:when>
+      <xsl:when test="exists($closestLevel2After)">
+	<xsl:sequence select="$closestLevel2After[1]"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:sequence select="$split_point"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
   <xsl:variable name="all_p" select="//dtb:p"/>
-  <xsl:variable name="p_per_volume" select="ceiling(count($all_p) div number($number_of_volumes)) + 1"/>
 
   <xsl:variable name="total_words" select="sum(for $p in $all_p return func:wc($p))"/>
   <xsl:variable name="words_per_volume" select="ceiling($total_words div number($number_of_volumes)) + 1"/>
   <xsl:variable name="split_nodes" select="func:split($words_per_volume, $all_p)"/>
 
-  <!-- Calculate all the poor split points, i.e the ones close to a level1 -->
-  <xsl:param name="allowed_stretch_in_nodes" select="ceiling($p_per_volume * number($allowed_stretch))"/>
-  <xsl:variable name="p_right_after_level1" 
-		select="//dtb:level1/descendant::dtb:p[position() le $allowed_stretch_in_nodes]"/>
-  <xsl:variable name="p_right_before_level1" 
-		select="//dtb:level1/descendant::dtb:p[(last() - position()) lt $allowed_stretch_in_nodes]"/>
-  <xsl:variable name="poor_choices" 
-		select="$p_right_after_level1 union $p_right_before_level1"/>
-  <xsl:variable name="good_split_nodes" select="$split_nodes except $poor_choices"/>
+  <xsl:param name="allowed_stretch_in_words" select="ceiling($words_per_volume * number($allowed_stretch))"/>
+  <xsl:variable name="valid_split_nodes"
+  		select="for $split_point in $split_nodes 
+			return func:replaceWithClosestLevel($split_point, $allowed_stretch_in_words)"/>
 
-  <!-- if any of the split nodes are in the set of poor choices
-       replace this node with the level1 node where we want to break -->
-  <xsl:variable name="replaced_after_split_nodes"
-  		select="for $x in ($split_nodes intersect $p_right_after_level1) return $x/ancestor::dtb:level1"/>
-  <xsl:variable name="replaced_before_split_nodes"
-  		select="for $x in ($split_nodes intersect ($p_right_before_level1 except $p_right_after_level1)) return $x/following::dtb:level1[1]"/>
-  <xsl:variable name="replaced_split_nodes" 
-		select="$replaced_after_split_nodes union $replaced_before_split_nodes"/>
-  <xsl:variable name="valid_split_nodes" 
-		select="$good_split_nodes union $replaced_split_nodes"/>
-  
-  <xsl:template match="dtb:level1">
+  <xsl:template match="dtb:level1|dtb:level2">
     <xsl:if test="some $node in $valid_split_nodes satisfies current() is $node">
       <xsl:element name="div" namespace="http://www.daisy.org/z3986/2005/dtbook/">
 	<xsl:attribute name="class">volume-split-point</xsl:attribute>
