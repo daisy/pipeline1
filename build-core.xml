@@ -65,7 +65,7 @@
 		<include name="xercesImpl.jar"/>			
 		<include name="zedval.jar"/>
 		<include name="brailleUtils-core-1.1.0.jar"/>
-		<include name="dotify-1.0b.jar"/>
+		<include name="dotify-1.0.jar"/>
 	</patternset>
 	
 	<fileset dir="${base.dir}/lib" id="fileset.utilJars">
