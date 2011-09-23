@@ -9,8 +9,14 @@
 		exclude-result-prefixes="dtb my">
   
   <xsl:output method="text" encoding="utf-8" indent="no"/>
-  <!-- <xsl:strip-space elements="*"/> -->
-  <!-- <xsl:preserve-space elements="dtb:code dtb:samp dtb:doctitle dtb:docauthor dtb:p dtb:em dtb:strong dtb:span dtb:author dtb:byline dtb:li dtb:lic dtb:line dtb:div"/> -->
+  <xsl:strip-space elements="*"/>
+  <xsl:preserve-space elements="dtb:line dtb:address dtb:div dtb:title dtb:author dtb:note dtb:byline dtb:dateline 
+				dtb:a dtb:em dtb:strong dtb:dfn dtb:kbd dtb:code dtb:samp dtb:cite dtb:abbr dtb:acronym
+				dtb:sub dtb:sup dtb:span dtb:bdo dtb:sent dtb:w 
+				dtb:q dtb:p 
+				dtb:doctitle dtb:docauthor dtb:covertitle 
+				dtb:h1 dtb:h2 dtb:h3 dtb:h4 dtb:h5 dtb:h6
+				dtb:bridgehead dtb:hd dtb:dt dtb:li dtb:lic "/>
 	
   <!-- Possible values are 12pt, 14pt, 17pt, 20pt and 25pt -->
   <xsl:param name="fontsize">17pt</xsl:param>
@@ -507,7 +513,7 @@
 
    <xsl:template match="dtb:h1">
    	<xsl:text>\chapter[</xsl:text>
-	<xsl:value-of select="text()"/>
+	<xsl:value-of select="normalize-space(string())"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>
@@ -515,7 +521,7 @@
 
    <xsl:template match="dtb:h2">
    	<xsl:text>\section[</xsl:text>
-	<xsl:value-of select="text()"/>
+	<xsl:value-of select="normalize-space(string())"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>
@@ -523,7 +529,7 @@
 
    <xsl:template match="dtb:h3">
    	<xsl:text>\subsection[</xsl:text>
-	<xsl:value-of select="text()"/>
+	<xsl:value-of select="normalize-space(string())"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
@@ -531,7 +537,7 @@
 
    <xsl:template match="dtb:h4">
    	<xsl:text>\subsubsection[</xsl:text>
-	<xsl:value-of select="text()"/>
+	<xsl:value-of select="normalize-space(string())"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
@@ -539,7 +545,7 @@
 
    <xsl:template match="dtb:h5">
    	<xsl:text>\paragraph[</xsl:text>
-	<xsl:value-of select="text()"/>
+	<xsl:value-of select="normalize-space(string())"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
@@ -547,7 +553,7 @@
 
    <xsl:template match="dtb:h6">
    	<xsl:text>\subparagraph[</xsl:text>
-	<xsl:value-of select="text()"/>
+	<xsl:value-of select="normalize-space(string())"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
@@ -664,6 +670,12 @@
    	<xsl:apply-templates/>
    </xsl:template>
 
+   <!-- Treat authors inside levels, divs and blockquotes as if they were paragraphs -->
+  <xsl:template match="dtb:author[parent::dtb:level|parent::dtb:level1|parent::dtb:level2|parent::dtb:level3|parent::dtb:level4|parent::dtb:level5|parent::dtb:level6|parent::dtb:div|parent::dtb:blockquote]">
+    <xsl:apply-templates/>
+    <xsl:text>&#10;&#10;</xsl:text>
+   </xsl:template>
+
    <xsl:template match="dtb:blockquote">
    	<xsl:text>\begin{quote}&#10;</xsl:text>
    	<xsl:apply-templates/>
@@ -674,8 +686,8 @@
   	<xsl:apply-templates/>
    </xsl:template>
 
-   <!-- Treat bylines inside levels and divs as if they were paragraphs -->
-  <xsl:template match="dtb:byline[parent::dtb:level|parent::dtb:level1|parent::dtb:level2|parent::dtb:level3|parent::dtb:level4|parent::dtb:level5|parent::dtb:level6|parent::dtb:div]">
+   <!-- Treat bylines inside levels, divs and blockquotes as if they were paragraphs -->
+  <xsl:template match="dtb:byline[parent::dtb:level|parent::dtb:level1|parent::dtb:level2|parent::dtb:level3|parent::dtb:level4|parent::dtb:level5|parent::dtb:level6|parent::dtb:div|parent::dtb:blockquote]">
     <xsl:apply-templates/>
     <xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
@@ -752,9 +764,13 @@
    </xsl:template>
 
    <xsl:template match="dtb:li">
-   	<xsl:text>\item </xsl:text>
+     <xsl:variable name="itemContent">
 	<xsl:apply-templates/>
-	<xsl:text>&#10;</xsl:text>
+     </xsl:variable>
+     <xsl:text>\item </xsl:text>
+     <!-- quote [] right after an \item with {} -->
+     <xsl:value-of select="replace($itemContent,'^(\s*)(\[.*\])','$1{$2}')"/>
+     <xsl:text>&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:dl">
@@ -843,6 +859,12 @@
    </xsl:template>
 
    <xsl:template match="dtb:poem/dtb:linegroup/dtb:line">
+   	<xsl:apply-templates/>
+	<xsl:if test="position() != last()"><xsl:text>\\</xsl:text></xsl:if>
+	<xsl:text>&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:poem/dtb:line|dtb:poem/dtb:author|dtb:poem/dtb:byline">
    	<xsl:apply-templates/>
 	<xsl:if test="position() != last()"><xsl:text>\\</xsl:text></xsl:if>
 	<xsl:text>&#10;</xsl:text>
@@ -989,9 +1011,9 @@
 
    <!-- remove excessive space and insert non-breaking spaces inside abbrevs -->
    <xsl:template match="dtb:abbr//text()">
-    <xsl:value-of select="my:quoteSpecialChars(replace(replace(string(current()), '\s+', ' '), ' ', ' '))"/>
+    <xsl:value-of select="my:quoteSpecialChars(replace(normalize-space(string(current())), ' ', ' '))"/>
    </xsl:template>
-   	
+
    <xsl:template match="text()">
      <xsl:value-of select="my:quoteSpecialChars(string(current()))"/>
    </xsl:template>
