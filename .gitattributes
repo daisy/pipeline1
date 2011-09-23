@@ -1032,7 +1032,6 @@ src/org/daisy/util/xml/xslt/stylesheets/misc/xsl-doctype-switcher.xsl -text
 src/org/daisy/util/xml/xslt/stylesheets/xhtml/xhtml10toXhtml11.xsl -text
 src/pipeline.properties -text
 src/pipeline.user.properties -text
-/test.txt -text
 test/org/daisy/util/text/URIUtilsTest.java -text svneol=unset#text/plain
 transformers/ca_cnib_rtf2dtbook/messages_hi.properties -text svneol=unset#unset
 transformers/ca_cnib_rtf2dtbook/rtf2xml-win/MSVCR71.dll -text
