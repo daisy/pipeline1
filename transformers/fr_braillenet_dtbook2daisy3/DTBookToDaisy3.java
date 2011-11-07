@@ -70,7 +70,7 @@ public class DTBookToDaisy3 extends Transformer implements FilesetErrorHandler, 
 		String copyReferring = parameters.remove("copyReferring");				
 		
 		URL xsltURL = Stylesheets.get("dtbook2daisy3textonly.xsl");		
-		File inFile = FilenameOrFileURI.toFile(inputXML);
+		File inFile = FilenameOrFileURI.toFile(inputXML).getAbsoluteFile();
 		
 		
 		/*

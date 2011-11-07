@@ -112,7 +112,7 @@ public class RTF2DTBook extends Transformer {
 		sendMessage(i18n("APPLYING_XSLT"), MessageEvent.Type.INFO_FINER);
 		this.progress(0.70);
 		try {
-			File outputFile = new File(dtbookFile);
+			File outputFile = new File(dtbookFile).getAbsoluteFile();
 			outputFile.getParentFile().mkdirs();
 			EntityResolver resolver = CatalogEntityResolver.getInstance();
 			Stylesheet.apply(xmlFile.getFile().getAbsolutePath(), stylesheet,
