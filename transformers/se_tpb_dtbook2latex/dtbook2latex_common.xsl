@@ -206,13 +206,14 @@
 	<!-- paragraph indenting -->
 	<xsl:text>\setlength{\footmarkwidth}{0ex}&#10;</xsl:text>
 	<xsl:text>\setlength{\footmarksep}{\footmarkwidth}&#10;</xsl:text>
+	<!-- space between footnotes -->
+	<xsl:text>\setlength{\footnotesep}{\onelineskip}&#10;</xsl:text>
 
 	<!-- rule -->
 	<xsl:text>\renewcommand{\footnoterule}{%&#10;</xsl:text>
 	<xsl:text>\kern-3pt%&#10;</xsl:text>
 	<xsl:text>\hrule height 1.5pt&#10;</xsl:text>
-	<xsl:text>\kern 2.6pt&#10;</xsl:text>
-	<xsl:text>\medskip}&#10;</xsl:text>
+	<xsl:text>\kern 2.6pt}&#10;</xsl:text>
 
 	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
 	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
@@ -706,6 +707,11 @@
 
    <xsl:template match="dtb:note" mode="footnotes">
      <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:note/dtb:p">
+     <xsl:apply-templates/>
+     <xsl:if test="position() != last()"><xsl:text>&#10;&#10;</xsl:text></xsl:if>
    </xsl:template>
 
    <xsl:template match="dtb:sidebar">
