@@ -81,7 +81,9 @@
     <xsl:variable name="tmp5" select="replace($tmp4, ' ([–—]\p{P})', ' $1')"/>
     <!-- add non-breaking space in front ellipsis followed by punctuation -->
     <xsl:variable name="tmp6" select="replace($tmp5, ' ((\.{3}|…)\p{P})', ' $1')"/>
-    <xsl:value-of select="$tmp6"/>
+    <!-- [ and ] can sometimes be interpreted as the start or the end of an optional argument -->
+    <xsl:variable name="tmp7" select="replace(replace($tmp6, '\[', '\\lbrack{}'), '\]', '\\rbrack{}')"/>
+    <xsl:value-of select="$tmp7"/>
   </xsl:function>
 
    <xsl:template match="/">
