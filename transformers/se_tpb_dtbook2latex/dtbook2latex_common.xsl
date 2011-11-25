@@ -516,7 +516,7 @@
 
    <xsl:template match="dtb:h1">
    	<xsl:text>\chapter[</xsl:text>
-	<xsl:value-of select="normalize-space(string())"/>
+	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>
@@ -524,7 +524,7 @@
 
    <xsl:template match="dtb:h2">
    	<xsl:text>\section[</xsl:text>
-	<xsl:value-of select="normalize-space(string())"/>
+	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>
@@ -532,7 +532,7 @@
 
    <xsl:template match="dtb:h3">
    	<xsl:text>\subsection[</xsl:text>
-	<xsl:value-of select="normalize-space(string())"/>
+	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
@@ -540,7 +540,7 @@
 
    <xsl:template match="dtb:h4">
    	<xsl:text>\subsubsection[</xsl:text>
-	<xsl:value-of select="normalize-space(string())"/>
+	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
@@ -548,7 +548,7 @@
 
    <xsl:template match="dtb:h5">
    	<xsl:text>\paragraph[</xsl:text>
-	<xsl:value-of select="normalize-space(string())"/>
+	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
@@ -556,7 +556,7 @@
 
    <xsl:template match="dtb:h6">
    	<xsl:text>\subparagraph[</xsl:text>
-	<xsl:value-of select="normalize-space(string())"/>
+	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
 	<xsl:text>]{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}&#10;</xsl:text>   
