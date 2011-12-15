@@ -9,28 +9,23 @@
 <body>    
 <h1 class="page-title">What's New ?</h1>
   <div class="textBox">
-  	<h2>Pipeline 20110317 [RC] Maintenance Release</h2>
+  	<h2>Pipeline 20111215 Maintenance Release</h2>
         <ul>
-        	<li>[Narrator] Improved tolerance to rounding errors by augmenting the default end audio padding.</li>
-        	<li>[Narrator] Improved wave file handling (now generates 5000 files max in each sub directory)</li>
-        	<li>[Narrator] Improved parsing of Roman numerals found in 'special' pages</li>
-        	<li>[Narrator] Improved handling of acronyms: non-pronounceable acronyms are now spoken letter-by-letter)</li>
-        	<li>[Narrator] Improved handling of abbreviations: the 'title' attribute is spoken when present</li>
-        	<li>[Narrator] Improved the  long-standing "duplicate doctitle" issue</li>
-        	<li>[DAISY 2.02 splitter] only perform the split if the input book is larger than the split size</li>
-        	<li>[DAISY 2.02 to DAISY 3 forward migrator] Fixed several bugs </li>
-        	<li>[DAISY 3 Validator] the file browser now asks for *.opf files</li>
-        	<li>[DAISY 3 to 2.02 downgrader] Fixed a bug that could occur when some SMIL elements had no associated audio.</li>
-        	<li>[DTBook to DAISY 3 Text-Only] Improved: now trims whitespace from NCX labels</li>
-        	<li>[DTBook to DAISY 3 Text-Only] Improved support for mixed content (uses the int_daisy_mixedContentNormalizer)</li>
-        	<li>[DTbook to LaTeX] Fixed handling special chars in title, author and date</li>
-        	<li>[DTbook to LaTeX] Fixed a problem with noteref lookup</li>
-        	<li>[DTbook to LaTeX] Improved the transformer</li>
-        	<li>[EPUB Creator] Added a new parameter "forceXhtml" to always create an XHTML-based EPUB even from a DTBook 2005-2 input</li>
-        	<li>New "DTBook to Translated Braille DTBook script", which provides a
-        		basic integration of Liblouis in the pipeline, contributed by Christian Egli and Bernhard Wagner (SBS)</li>
-        	<li>Updated pef2text and text2pef transformers and related scripts (Emboss PEF, Text to PEF, PEF to Text, Braille Text To Text) to use the <a href="http://code.google.com/p/brailleutils/">Braille Utils</a> library</li>
-        	<li>... and other fixes and improvements </li>
+        	<li>[DTBook Fixer] Fixed a bug occurring when using relative input file paths</li>
+        	<li>[DTBook to HTML] Added support for the 'start' attribute on 'list' elements</li>
+        	<li>[DTBook to LaTeX] The generated LaTeX is now based on the memoir class, with more features like crop marks, improved page styles, proper page numbering accross volume boundaries</li>
+        	<li>[DTBook to LaTeX] Improved the XSLT extensibility / customizability</li>
+        	<li>[DTBook to LaTeX] Added support for volume splitting</li>
+        	<li>[DTBook to LaTeX] Many layout and styling improvements</li>
+        	<li>[DTBook to LaTeX] Many bug fixes</li>
+        	<li>[DTBook to PEF] Improved the Swedish braille table</li>
+        	<li>[DTBook to PEF] Updated to rely on the 'dotify' library</li>
+        	<li>[PEF to Text] Improved error messages</li>
+        	<li>[Braille Utils] Updated the brailleUtils library to version 1.1.0</li>
+        	<li>[Narrator] Updated to the latest version used in the Save as DAISY Add-In for Microsoft Word version 2.5.5.1</li>
+        	<li>[Narrator] Improved support for locale country codes</li>
+        	<li>[Narrator] Added Windows SAPI5 language codes for ar-EG, en-GB and en-AU</li>
+        	<li>New "DTBook Volume Splitter" transformer: takes a DTBook XML and inserts special div elements as split points, to be used by other scripts like "DTBook to LaTex", contributed by Christian Egli (SBS)</li>
       </ul>
   </div>
   <a href="http://org.eclipse.ui.intro/switchToLaunchBar"><img id="switchToPipeline" src="images/workbench.gif" alt="Switch to the Pipeline"/></a>
