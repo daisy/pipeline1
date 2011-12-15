@@ -9,6 +9,29 @@ More information is available on the [project home page](http://www.daisy.org/pi
 
 --------------------------------------------------------------------
 
+## Pipeline Maintenance Release, 2011-12-15
+
+Bug fixes and improvements:
+
+ * [DTBook Fixer] Fixed a bug occurring when using relative input file paths
+ * [DTBook to HTML] Added support for the 'start' attribute on 'list' elements
+ * [DTBook to LaTeX] The generated LaTeX is now based on the memoir class, with more features like crop marks, improved page styles, proper page numbering accross volume boundaries
+ * [DTBook to LaTeX] Improved the XSLT extensibility / customizability
+ * [DTBook to LaTeX] Added support for volume splitting
+ * [DTBook to LaTeX] Many layout and styling improvements
+ * [DTBook to LaTeX] Many bug fixes
+ * [DTBook to PEF] Improved the Swedish braille table
+ * [DTBook to PEF] Updated to rely on the 'dotify' library
+ * [PEF to Text] Improved error messages
+ * [Braille Utils] Updated the brailleUtils library to version 1.1.0
+ * [Narrator] Updated to the latest version used in the Save as DAISY Add-In for Microsoft Word version 2.5.5.1
+ * [Narrator] Improved support for locale country codes
+ * [Narrator] Added Windows SAPI5 language codes for ar-EG, en-GB and en-AU
+
+Also:
+
+ * New "DTBook Volume Splitter" transformer: takes a DTBook XML and inserts special div elements as split points, to be used by other scripts like "DTBook to LaTex", contributed by Christian Egli (SBS)
+
 ## Pipeline Maintenance Release [RC], 2011-03-17 ##
 
 
