@@ -772,7 +772,7 @@ public class SpeechGen2 extends Transformer {
 		String lang = scopeRoot.getAttribute("xml:lang");
 
 		// choose tts
-		TTS tts = ttsEngines.get(lang);
+		TTS tts = ttsEngines.get(lang.replace('-', '_'));
 
 		
 
@@ -841,7 +841,7 @@ public class SpeechGen2 extends Transformer {
 		String lang = scopeRoot.getAttribute("xml:lang");
 
 		// choose tts
-		TTS tts = ttsEngines.get(lang);		
+		TTS tts = ttsEngines.get(lang.replace('-', '_'));		
 		File file = null;
 		File temp = null;
 		
@@ -1074,7 +1074,7 @@ public class SpeechGen2 extends Transformer {
 		}
 		Locale currentLocale = xmlContext.getCurrentLocale();
 		if (currentLocale != null) {
-			root.setAttribute("xml:lang", currentLocale.toString());
+			root.setAttribute("xml:lang", currentLocale.toString().replace('_', '-'));
 		}
 
 		dom.appendChild(root);
