@@ -98,7 +98,7 @@
 			<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN" "http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd"</xsl:text>
 		</xsl:when>
 		<xsl:otherwise>
-			<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"</xsl:text>
+			<xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"</xsl:text>
 		</xsl:otherwise>
 	</xsl:choose>
 	<xsl:if test="$daisy_noteref='true'">
@@ -405,6 +405,7 @@
    
    <xsl:template match="dtb:list[not(@type)]">
      <ul>
+     	 <xsl:copy-of select="@start"/>
        <xsl:call-template name="copyCatts"/>
        <xsl:apply-templates/>
      </ul>
@@ -666,6 +667,7 @@
 
    <xsl:template match="dtb:list[@type='ol']">
      <ol> 
+     	<xsl:copy-of select="@start"/>
 		<xsl:choose>
 			<xsl:when test="@enum='i'">
 				<xsl:attribute name="class">lower-roman</xsl:attribute>
@@ -690,13 +692,17 @@
 
 
    <xsl:template match="dtb:list[@type='ul']">
-     <ul> <xsl:call-template name="copyCatts"/>
+     <ul>
+     	 <xsl:copy-of select="@start"/>
+     	 <xsl:call-template name="copyCatts"/>
        <xsl:apply-templates/>
      </ul> 
    </xsl:template>
 
    <xsl:template match="dtb:list[@type='pl']">
-     <ul class="plain"> <xsl:call-template name="copyCncatts"/>
+     <ul class="plain">
+     	 <xsl:copy-of select="@start"/>
+     	 <xsl:call-template name="copyCncatts"/>
        <xsl:apply-templates/>
      </ul>
    </xsl:template>
