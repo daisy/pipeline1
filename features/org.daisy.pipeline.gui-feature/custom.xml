@@ -31,7 +31,7 @@
 		    <fileset dir="${basedir}/../org.daisy.pipeline/licenses" excludes="UserAgreement.txt"/>
 		  </copy>
 		 <copy file="${basedir}/../org.daisy.pipeline/licenses/UserAgreement.txt" todir="${destination.temp.folder}/.." failonerror="true" overwrite="true"/>
-		 <copy file="${basedir}/../org.daisy.pipeline/doc/releasenotes/release-notes.txt" todir="${destination.temp.folder}/.." failonerror="true" overwrite="true"/>
+		 <copy file="${basedir}/../org.daisy.pipeline/doc/releasenotes/README.md" tofile="${destination.temp.folder}/../release-notes.txt" failonerror="true" overwrite="true"/>
 	</target>
 
 </project>
