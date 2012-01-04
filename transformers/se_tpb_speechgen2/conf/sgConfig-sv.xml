@@ -27,12 +27,20 @@
 		<item>level/hd</item>
 	</mergeAudio>
 	
-	<silence>
+	<!-- <silence>
 		<afterLast>2000</afterLast>
 		<afterFirst>800</afterFirst>
 		<beforeAnnouncement>300</beforeAnnouncement>
 		<afterAnnouncement>300</afterAnnouncement>
 		<afterRegularPhrase>700</afterRegularPhrase>
 	</silence>
-	
+	-->
+	<!-- shorter breaks wanted after headings -->
+	<silence>
+		<afterLast>1000</afterLast>
+		<afterFirst>200</afterFirst>
+		<beforeAnnouncement>75</beforeAnnouncement>
+		<afterAnnouncement>75</afterAnnouncement>
+		<afterRegularPhrase>175</afterRegularPhrase>
+	</silence>
 </sgConfig>
