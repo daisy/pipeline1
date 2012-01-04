@@ -111,6 +111,7 @@ public class TTSUtils {
 		init();
 	}	
 
+	
 	/**
 	 * A DOM containing text to read.
 	 * @param doc A part of the manuscript identified as a point of synchronization.
@@ -118,15 +119,16 @@ public class TTSUtils {
 	 * @throws TransformerRunException 
 	 */
 	public void expandAbbrs(Document doc) {
-		NodeList abbrs = XPathUtils.selectNodes(doc.getDocumentElement(), "//*[@exp]");
+		NodeList abbrs = XPathUtils.selectNodes(doc.getDocumentElement(), "//abbr");
 		// if supplied, use exp attributes instead of text nodes
 		for (int i = 0; i < abbrs.getLength(); i++) {	
 			Element elem = (Element) abbrs.item(i);
-			Node textNode = doc.createTextNode(elem.getAttribute("exp"));
+			Node textNode = doc.createTextNode(elem.getAttribute("title"));
 			elem.getParentNode().insertBefore(textNode, elem);
 			elem.getParentNode().removeChild(elem);
 		}
 	}
+	
 
 	/**
 	 * Parses roman numerals, that is, pagenum elements with attribute

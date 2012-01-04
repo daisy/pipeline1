@@ -28,11 +28,16 @@
 	</mergeAudio>
 	
 	<silence>
-		<afterLast>2000</afterLast>
+		<!-- <afterLast>2000</afterLast>
 		<afterFirst>800</afterFirst>
 		<beforeAnnouncement>300</beforeAnnouncement>
 		<afterAnnouncement>300</afterAnnouncement>
-		<afterRegularPhrase>200</afterRegularPhrase>
+		<afterRegularPhrase>200</afterRegularPhrase> -->
+		<afterLast>1000</afterLast>
+		<afterFirst>200</afterFirst>
+		<beforeAnnouncement>75</beforeAnnouncement>
+		<afterAnnouncement>75</afterAnnouncement>
+		<afterRegularPhrase>175</afterRegularPhrase>
 	</silence>
 	
 </sgConfig>

@@ -1763,7 +1763,7 @@ transformers/se_tpb_speechgen2/tts/ttsbuilder-configtest.rng -text
 transformers/se_tpb_speechgen2/tts/ttsbuilder.xml -text
 transformers/se_tpb_speechgen2/tts/util/RegexReplace.java -text
 transformers/se_tpb_speechgen2/tts/util/RomanNumeral.java -text
-transformers/se_tpb_speechgen2/tts/util/TTSUtils.java -text
+transformers/se_tpb_speechgen2/tts/util/TTSUtils.java -text svneol=unset#text/plain
 transformers/se_tpb_speechgen2/tts/util/YearAnnouncer.java -text
 transformers/se_tpb_speechgen2/xslt/filibuster.xsl -text
 transformers/se_tpb_speechgen2/xslt/loquendo-en.xsl -text
