@@ -76,7 +76,12 @@
 
   <xsl:template name="imprint">
     <xsl:text>\clearpage&#10;</xsl:text>
-    <xsl:text>Dieses Grossdruckbuch ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.&#10;</xsl:text>
+    <xsl:text>Dieses Grossdruckbuch ist die ausschliesslich für die Nutzung durch seh- und lesebehinderte Menschen bestimmte zugängliche Version eines urheberrechtlich geschützten Werks. Sie können es im Rahmen des Urheberrechts persönlich nutzen, dürfen es aber nicht weiter verbreiten oder öffentlich zugänglich machen.&#10;&#10;</xsl:text>
+    <xsl:if test="//dtb:meta[lower-case(@name)='prod:source']/@content = 'electronicData'">
+      <xsl:value-of select="if ($fontsize = '20pt') then '\vfill&#10;' else '\bigskip&#10;'"/>
+      <xsl:text>Wir danken dem Verlag für die freundliche Bereitstellung der elektronischen Textdaten.&#10;&#10;</xsl:text>
+    </xsl:if>
+    <xsl:if test="$fontsize = '25pt'">\clearpage&#10;<xsl:text></xsl:text></xsl:if>
     <xsl:text>\vfill&#10;</xsl:text>
     <xsl:text>Verlag, Satz und Druck:</xsl:text>
     <xsl:value-of select="if ($fontsize = '25pt') then '\\&#10;' else '\\[0.5cm]&#10;'"/>
