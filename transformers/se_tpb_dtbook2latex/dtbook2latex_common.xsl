@@ -155,7 +155,7 @@
 	<xsl:text>\defaultfontfeatures{Mapping=tex-text}&#10;</xsl:text>
 	<xsl:text>\setmainfont{</xsl:text><xsl:value-of select="$font"/><xsl:text>}&#10;</xsl:text>
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
-	<xsl:value-of select="concat('\hypersetup{pdftitle={', //dtb:meta[@name='dc:title' or @name='dc:Title']/@content, '}, pdfauthor={', //dtb:meta[@name='dc:creator' or @name='dc:Creator']/@content, '}}&#10;')"/>
+	<xsl:value-of select="concat('\hypersetup{pdftitle={', my:quoteSpecialChars(//dtb:meta[@name='dc:title' or @name='dc:Title']/@content), '}, pdfauthor={', my:quoteSpecialChars(//dtb:meta[@name='dc:creator' or @name='dc:Creator']/@content), '}}&#10;')"/>
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
 	<xsl:text>\usepackage{alphalph}&#10;&#10;</xsl:text>
 
