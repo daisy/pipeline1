@@ -136,9 +136,10 @@ public class XMLWordDetector extends XMLBreakDetector {
             } else if (event.getEventType() == XMLStreamConstants.DTD) {            
                 DTD dtd = (DTD)event;                
                 parseDoctype(dtd.getDocumentTypeDeclaration());
-                if ("".equals(breakSettings.getBreakElement().getPrefix()) && (breakSettings.getExpAttr()==null || "".equals(breakSettings.getExpAttr().getPrefix()))) {
+                //Romain Deltour 2012-03-19: why disable the DOCTYPE output depending on the expAttribute ?
+                //if ("".equals(breakSettings.getBreakElement().getPrefix()) && (breakSettings.getExpAttr()==null || "".equals(breakSettings.getExpAttr().getPrefix()))) {
                     writeEvent(event);
-                }
+                //}
                 doctypeSeen = true;
             } else if (event.isStartDocument()) { 
                 StartDocument sd = (StartDocument)event;
