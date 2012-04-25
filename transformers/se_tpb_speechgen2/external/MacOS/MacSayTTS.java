@@ -19,7 +19,10 @@
 package se_tpb_speechgen2.external.MacOS;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
@@ -60,7 +63,7 @@ public class MacSayTTS extends AbstractTTSAdapter {
 		if (voices != null) {
 			Iterator<String> it = Arrays.asList(voices.split(",")).iterator();
 			while (voiceName == null && it.hasNext()) {
-				String voice = it.next();
+				String voice = it.next().trim();
 				try {
 					File testFile = File.createTempFile("tmp", ".aiff");
 					testFile.delete();
@@ -92,21 +95,40 @@ public class MacSayTTS extends AbstractTTSAdapter {
 			TTSException {
 		String destName = destination.getAbsolutePath();
 		String aiffName = destName + ".aiff";
+		String txtName = destName + ".txt";
 		String[] cmd = null;
+		FileOutputStream fout=null;
+		OutputStreamWriter writer=null;
 		try {
+			// String to Text
+			fout = new FileOutputStream(txtName);
+			writer = new OutputStreamWriter(fout,
+					Charset.forName("UTF-8"));
+			writer.write(line);
+			writer.flush();
+			
+			// Text to AIFF
 			if (voiceName != null) {
-				cmd = new String[] { say, "-v", voiceName, "-o", aiffName, line };
+				cmd = new String[] { say, "-v", voiceName, "-o", aiffName, "-f", txtName };
 			} else {
-				cmd = new String[] { say, "-o", aiffName, line };
+				cmd = new String[] { say, "-o", aiffName, "-f", txtName };
 			}
 			Runtime.getRuntime().exec(cmd).waitFor();
+			
+			// AIFF to WAV
 			cmd = new String[] { sox, aiffName, "-t", "wav", destName };
 			destination.delete();
 			Runtime.getRuntime().exec(cmd).waitFor();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new TTSException(e.getMessage(), e);
 		} finally {
+			try {
+				if (writer!=null)	writer.close();
+				if (fout!=null)	fout.close();
+			} catch (IOException e) {}
 			(new File(aiffName)).delete();
+			(new File(txtName)).delete();
 		}
 	}
 
