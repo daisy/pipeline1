@@ -17,6 +17,7 @@
  */
 package se_tpb_speechgen2;
 
+import java.awt.TrayIcon.MessageType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -1221,7 +1222,7 @@ public class SpeechGen2 extends Transformer {
 			// Create new temp dir, add to tempDirs list
 			File dir = File.createTempFile("dir-", ".dir", outputDir);
 			dir.delete();
-			System.err.println("Creating new temp dir: " + dir);
+			sendMessage("Creating new temp dir: " + dir, MessageEvent.Type.DEBUG);
 			if (!dir.mkdirs()) {
 				throw new IOException("Cannot create temp dir " + dir.getAbsolutePath());
 			}
@@ -1648,12 +1649,12 @@ public class SpeechGen2 extends Transformer {
 		boolean success = true;
 		try {
 			for (File dir : tempDirs) {
-				System.err.println("Deleting temp dir: " + dir);
+				sendMessage("Deleting temp dir: " + dir, MessageEvent.Type.DEBUG);
 				success &= FileUtils.delete(dir);
 			}
 			return success;
 		} catch (IOException e) {
-			System.err.println("Cannot delete temp dir: " + e.getMessage());
+			sendMessage("Cannot delete temp dir: " + e.getMessage(), MessageEvent.Type.DEBUG);
 		}
 		return false;
 	}
