@@ -23,7 +23,7 @@
   <xsl:output method="xml" encoding="utf-8" indent="no"/>
 	
   <xsl:param name="number_of_volumes" select="1"/>
-  <xsl:param name="allowed_stretch" select="0.1"/>
+  <xsl:param name="allowed_stretch" select="0.15"/>
 
   <!-- Count the words in a given paragraph -->
   <xsl:function name="func:wc" as="xs:integer">
@@ -90,7 +90,7 @@
 
   <xsl:function name="func:notInsideBlock">
     <xsl:param name="p" as="element()"/>
-    <xsl:sequence select="not($p/ancestor::dtb:linegroup|$p/ancestor::dtb:poem|$p/ancestor::dtb:sidebar)"/>
+    <xsl:sequence select="not($p/ancestor::dtb:linegroup|$p/ancestor::dtb:poem|$p/ancestor::dtb:sidebar|$p/ancestor::dtb:blockquote)"/>
   </xsl:function>
 
   <!-- Replace a given split point of there are level1 or level2
