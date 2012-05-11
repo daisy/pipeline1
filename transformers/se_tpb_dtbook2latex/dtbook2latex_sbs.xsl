@@ -32,6 +32,16 @@
     <entry key="18">achtzehn</entry>
     <entry key="19">neunzehn</entry>
     <entry key="20">zwanzig</entry>
+    <entry key="21">einundzwanzig</entry>
+    <entry key="22">zweiundzwanzig</entry>
+    <entry key="23">dreiundzwanzig</entry>
+    <entry key="24">vierundzwanzig</entry>
+    <entry key="25">fünfundzwanzig</entry>
+    <entry key="26">sechsundzwanzig</entry>
+    <entry key="27">siebenundzwanzig</entry>
+    <entry key="28">achtundzwanzig</entry>
+    <entry key="29">neunundzwanzig</entry>
+    <entry key="30">dreissig</entry>
   </xsl:variable>
 
   <xsl:template name="current_volume_string">
@@ -80,8 +90,8 @@
     <xsl:if test="//dtb:meta[lower-case(@name)='prod:source']/@content = 'electronicData'">
       <xsl:value-of select="if ($fontsize = '20pt') then '\vfill&#10;' else '\bigskip&#10;'"/>
       <xsl:text>Wir danken dem Verlag für die freundliche Bereitstellung der elektronischen Textdaten.&#10;&#10;</xsl:text>
+      <xsl:if test="$fontsize = '25pt'">\clearpage&#10;<xsl:text></xsl:text></xsl:if>
     </xsl:if>
-    <xsl:if test="$fontsize = '25pt'">\clearpage&#10;<xsl:text></xsl:text></xsl:if>
     <xsl:text>\vfill&#10;</xsl:text>
     <xsl:text>Verlag, Satz und Druck:</xsl:text>
     <xsl:value-of select="if ($fontsize = '25pt') then '\\&#10;' else '\\[0.5cm]&#10;'"/>
@@ -179,7 +189,7 @@
    </xsl:template>
 
    <xsl:template match="dtb:level1[@class='titlepage']/dtb:level2[1]">
-     <xsl:text>\clearpage&#10;</xsl:text>
+     <xsl:text>\cleartorecto&#10;</xsl:text>
 
      <xsl:call-template name="author">
        <xsl:with-param name="font_size" select="'\normalsize'"/>
