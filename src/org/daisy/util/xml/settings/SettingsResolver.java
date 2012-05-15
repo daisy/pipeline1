@@ -135,7 +135,7 @@ public class SettingsResolver {
      * @throws UnsupportedDocumentTypeException if no match was found in the catalog
      */
     public URL parseDoctype(String doctype) throws UnsupportedDocumentTypeException {
-        Matcher matcher = dtdPattern.matcher(doctype);
+        Matcher matcher = dtdPattern.matcher(doctype.replace('\n',' '));
         String pub = "";
         String sys = "";
         if (matcher.matches()) {
