@@ -57,6 +57,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
     
     protected MultiHashMap baseInitialisms = new MultiHashMap(false);
     protected MultiHashMap baseAcronyms = new MultiHashMap(false);
+    private MultiHashMap baseAbbrs = new MultiHashMap(false);
     
     private boolean override = false;
     
@@ -78,6 +79,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         langSettingsMap.put("common", lscommon);
         baseInitialisms.putAll(lscommon.getInitialisms());
         baseAcronyms.putAll(lscommon.getAcronyms());
+        baseAbbrs.putAll(lscommon.getAbbrs());
         
         if (customLang != null) {
             //logger.info("Loading language: custom");
@@ -85,6 +87,7 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
             langSettingsMap.put("custom", lscustom);
             baseInitialisms.putAll(lscustom.getInitialisms());
             baseAcronyms.putAll(lscustom.getAcronyms());  
+            baseAbbrs.putAll(lscustom.getAbbrs());
             override = overrideLang;
         }
         
@@ -148,10 +151,13 @@ import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
         langSettings = (LangSettings)langSettingsMap.get(lang);   
         MultiHashMap newInitialisms = new MultiHashMap(baseInitialisms);
         MultiHashMap newAcronyms = new MultiHashMap(baseAcronyms);
+        MultiHashMap newAbbrs = new MultiHashMap(baseAbbrs);
         newInitialisms.putAll(langSettings.getInitialisms());
         newAcronyms.putAll(langSettings.getAcronyms());
+        newAbbrs.putAll(langSettings.getAbbrs());
         langSettings.setInitialisms(newInitialisms);
         langSettings.setAcronyms(newAcronyms);
+        langSettings.setAbbrs(newAbbrs);
         
         if (override) {
 	        LangSettings lscustom = (LangSettings)langSettingsMap.get("custom");        
