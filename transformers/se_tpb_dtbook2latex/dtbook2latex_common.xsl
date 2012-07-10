@@ -233,6 +233,15 @@
 	<!-- Make sure wrapped poetry lines are not indented -->
 	<xsl:text>\setlength{\vindent}{0em}&#10;</xsl:text>
 
+    <!-- New environment for nested pl-type lists -->
+    <xsl:text>\newenvironment{indentedlist}%&#10;</xsl:text>
+    <xsl:text>  {\begin{list}{}{%&#10;</xsl:text>
+    <xsl:text>    \setlength{\leftmargin}{1.5em}%&#10;</xsl:text>
+    <xsl:text>    \setlength{\rightmargin}{0pt}%&#10;</xsl:text>
+    <xsl:text>    \setlength{\labelwidth}{0pt}%&#10;</xsl:text>
+    <xsl:text>    \setlength{\itemindent}{0pt}}}%&#10;</xsl:text>
+    <xsl:text>  {\end{list}}&#10;</xsl:text>
+
 	<xsl:apply-templates/>
    </xsl:template>
 
@@ -748,13 +757,15 @@
    </xsl:template>
 
    <xsl:template match="dtb:list/dtb:hd">
-   	<xsl:text>\item \textbf{</xsl:text>
+	<xsl:text>\item \textbf{</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:list[@type='ol']">
-   	<xsl:text>\begin{enumerate}&#10;</xsl:text>
+    <xsl:text>\begin{enumerate}</xsl:text>
+    <xsl:value-of select="concat('[', if (index-of(('1','a','A','i', 'I'), string(@enum))) then string(@enum) else '1', '.]')"/>
+    <xsl:text>&#10;</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>\end{enumerate}&#10;</xsl:text>
    </xsl:template>
@@ -769,6 +780,12 @@
    	<xsl:text>\begin{trivlist}&#10;</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>\end{trivlist}&#10;</xsl:text>
+   </xsl:template>
+
+  <xsl:template match="dtb:list//dtb:list[@type='pl']">
+    <xsl:text>\begin{indentedlist}&#10;</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>\end{indentedlist}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:li">
