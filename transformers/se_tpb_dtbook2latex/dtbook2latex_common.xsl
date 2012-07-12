@@ -351,10 +351,13 @@
    <xsl:template name="author">
      <xsl:param name="font_size" select="'\large'"/>
      <xsl:value-of select="concat('{', $font_size, ' ')"/>
-     <xsl:for-each select="//dtb:meta[@name='dc:creator' or @name='dc:Creator']">
-       <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
-       <xsl:if test="not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
-     </xsl:for-each>
+     <xsl:variable name="author">
+       <xsl:for-each select="//dtb:meta[@name='dc:creator' or @name='dc:Creator']">
+	 <xsl:value-of select="my:quoteSpecialChars(string(@content))"/>
+	 <xsl:if test="not(position() = last())"><xsl:text>, </xsl:text></xsl:if>
+       </xsl:for-each>
+     </xsl:variable>
+     <xsl:sequence select="if (normalize-space($author) != '') then $author else '\ '"/>
      <xsl:text>}\\[1.5cm]&#10;</xsl:text>
    </xsl:template>
 

@@ -57,7 +57,10 @@
    <xsl:template name="author">
      <xsl:param name="font_size" select="'\large'"/>
      <xsl:value-of select="concat('{', $font_size, ' ')"/>
-     <xsl:apply-templates select="//dtb:docauthor" mode="cover"/>
+     <xsl:variable name="author">
+       <xsl:apply-templates select="//dtb:docauthor" mode="cover"/>
+     </xsl:variable>
+     <xsl:sequence select="if (normalize-space($author) != '') then $author else '\ '"/>
      <xsl:text>}\\[1.5cm]&#10;</xsl:text>
    </xsl:template>
 
