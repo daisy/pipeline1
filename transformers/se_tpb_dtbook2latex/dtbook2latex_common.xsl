@@ -881,20 +881,9 @@
    	<xsl:text>\end{verse}&#10;</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:poem/dtb:linegroup">
-   	<xsl:apply-templates select="*"/>
-   	<xsl:text>&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:poem/dtb:linegroup/dtb:line">
-   	<xsl:apply-templates/>
-	<xsl:if test="position() != last()"><xsl:text>\\</xsl:text></xsl:if>
-	<xsl:text>&#10;</xsl:text>
-   </xsl:template>
-
    <xsl:template match="dtb:poem/dtb:line|dtb:poem/dtb:author|dtb:poem/dtb:byline">
    	<xsl:apply-templates/>
-	<xsl:if test="position() != last()"><xsl:text>\\</xsl:text></xsl:if>
+     <xsl:if test="following-sibling::*"><xsl:text>\\</xsl:text></xsl:if>
 	<xsl:text>&#10;</xsl:text>
    </xsl:template>
 
@@ -935,9 +924,15 @@
    </xsl:template>
 
    <xsl:template match="dtb:linegroup">
-   	<xsl:apply-templates/>
+   	<xsl:apply-templates select="*"/>
 	<xsl:text>&#10;</xsl:text>
    </xsl:template>
+
+  <xsl:template match="dtb:linegroup/dtb:line">
+    <xsl:apply-templates/>
+    <xsl:if test="following-sibling::*"><xsl:text>\\</xsl:text></xsl:if>
+    <xsl:text>&#10;</xsl:text>
+  </xsl:template>
 
    <xsl:template match="dtb:line">
    	<xsl:apply-templates/>
