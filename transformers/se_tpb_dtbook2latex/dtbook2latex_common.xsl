@@ -471,6 +471,12 @@
      <xsl:text>\chapter*{\ }&#10;</xsl:text>
      <xsl:apply-templates/>
    </xsl:template>
+  
+  <!-- Insert an empty header if a level 2 has no h2 -->
+  <xsl:template match="dtb:level2[empty(dtb:h2)]">
+    <xsl:text>\section*{\ }&#10;</xsl:text>
+    <xsl:apply-templates/>
+  </xsl:template>
 
    <xsl:template match="dtb:level1">
    	<xsl:apply-templates/>
