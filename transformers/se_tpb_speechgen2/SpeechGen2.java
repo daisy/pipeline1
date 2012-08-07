@@ -17,7 +17,6 @@
  */
 package se_tpb_speechgen2;
 
-import java.awt.TrayIcon.MessageType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
