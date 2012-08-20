@@ -22,6 +22,16 @@
 			<example>file:///path/to/output/folder/</example>
 		</parameter>
 		
+		<parameter required="true" type="enum">
+			<name>locale</name>
+			<description>Context locale</description>
+			<example>en-US</example>
+			<enum>
+				<value>sv-SE</value>
+				<value>en-US</value>
+			</enum>
+		</parameter>
+		
 		<parameter required="false" type="string">
 			<name>identifier</name>
 			<description>Publication identifier</description>
@@ -39,15 +49,15 @@
 		<parameter required="false" type="enum">
 			<name>setup</name>
 			<description>Conversion setup</description>
-			<example>en-US</example>
+			<example>A4-w32</example>
 			<enum>
-				<value>sv-SE</value>
-				<value>sv-SE-FA44</value> <!-- Only implemented for braille -->
-				<value>en-US</value> <!-- Only implemented for text -->
+				<value>A4-w32</value>
+				<value>FA44-w42</value>
+				<value>w50</value>
 			</enum>
-			<default>sv-SE</default>
+			<default>A4-w32</default>
 		</parameter>
-		
+
 		<parameter required="false" type="enum">
 			<name>outputFormat</name>
 			<description>Output format</description>

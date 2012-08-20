@@ -29,9 +29,9 @@
 		</datatype>
 	</parameter>
 
-	<parameter name="setup" value="en-US" required="true">
-		<nicename>Conversion Setup</nicename>
-		<description>Conversion setup to apply - see documentation</description>
+	<parameter name="locale" value="en-US" required="true">
+		<nicename>Context locale</nicename>
+		<description>Context locale - see documentation</description>
 		<datatype>
 			<enum>
 			  <item nicename="English" value="en-US" />
@@ -39,7 +39,19 @@
 			</enum>
 		</datatype>
 	</parameter>
-
+	
+	<parameter name="setup" value="w50" required="true">
+		<nicename>Conversion Setup</nicename>
+		<description>Conversion setup to apply - see documentation</description>
+		<datatype>
+			<enum>
+			  <item nicename="32 characters wide" value="A4-w32" />
+			  <item nicename="42 characters wide" value="FA44-w42" />
+			  <item nicename="50 characters wide" value="w50" />
+			</enum>
+		</datatype>
+	</parameter>
+	
 	<parameter name="config" value="" required="false">
 		<nicename>Settings file</nicename>
 		<description>A file containing additional conversion settings.</description>
@@ -86,6 +98,11 @@
 		<parameter>
 			<name>setup</name>
 			<value>${setup}</value>
+		</parameter>
+		
+		<parameter>
+			<name>locale</name>
+			<value>${locale}</value>
 		</parameter>
 		
 		<parameter>
