@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.daisy.dotify.Dotify;
 import org.daisy.dotify.system.InternalTaskException;
 import org.daisy.dotify.system.TaskSystemFactory;
 import org.daisy.dotify.text.FilterLocale;
@@ -63,9 +64,8 @@ public class DTBook2PEF extends Transformer {
 
 		map = new HashMap<String, String>();
 		map.putAll(parameters);
-		org.daisy.dotify.Main dotify = new org.daisy.dotify.Main();
 		try {
-			dotify.run(input, output, setup, locale, map);
+			Dotify.run(input, output, setup, locale, map);
 		} catch (InternalTaskException e) {
 			throw new TransformerRunException("InternalTaskException", e);
 		} catch (IOException e) {
