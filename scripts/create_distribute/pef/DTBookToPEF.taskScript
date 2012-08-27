@@ -77,23 +77,10 @@
 		</parameter>
 	</task>
 
-	<task name="se_tpb_hyphenator" interactive="false">
-		<parameter>
-			<name>input</name>
-			<value>${input}</value>
-		</parameter>
-
-		<parameter>
-			<name>output</name>
-			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
-		</parameter>
-			
-	</task>
-
 	<task name="org_pef_dtbook2pef" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
+			<value>${input}</value>
 		</parameter>
 
 		<parameter>
