@@ -2,7 +2,6 @@
 	<name>Hyphenator</name>
 	<description>desc...</description>
 	<classname>se_tpb_hyphenator.Hyphenator</classname>
-	<jar>lib/texhyphj.jar</jar>
 	<license>LGPL</license>
 	<author>Joel Håkansson</author>
 	<support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>

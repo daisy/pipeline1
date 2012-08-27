@@ -224,6 +224,7 @@ lib/slf4j-api-1.5.6.jar -text
 lib/slf4j-log4j12-1.5.6.jar -text
 lib/stax-api-1.0.1.jar -text
 lib/tagsoup-1.2.jar -text
+lib/texhyphj.jar -text
 lib/tritonus_remaining-0.3.6.jar -text
 lib/tritonus_share-0.3.6.jar -text
 lib/wstx-lgpl-3.2.8.jar -text
@@ -1488,7 +1489,6 @@ transformers/se_tpb_hyphenator/HyphenReader.java -text
 transformers/se_tpb_hyphenator/Hyphenator.java -text
 transformers/se_tpb_hyphenator/HyphenatorErrorHandler.java -text
 transformers/se_tpb_hyphenator/hyphenation_tables.xml -text
-transformers/se_tpb_hyphenator/lib/texhyphj.jar -text
 transformers/se_tpb_hyphenator/rules/dehyph_x.tex -text
 transformers/se_tpb_hyphenator/rules/fihyph.tex -text
 transformers/se_tpb_hyphenator/rules/frhyph_x.tex -text

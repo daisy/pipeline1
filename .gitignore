@@ -103,7 +103,6 @@ transformers/se_tpb_filesetcreator/config/*.class
 transformers/se_tpb_filesetcreator/resource/*.class
 transformers/se_tpb_filesetcreator/templates/*.class
 transformers/se_tpb_hyphenator/*.class
-transformers/se_tpb_hyphenator/lib/*.class
 transformers/se_tpb_hyphenator/rules/*.class
 transformers/se_tpb_imageConverter/*.class
 transformers/se_tpb_nccNcxOnly/*.class
