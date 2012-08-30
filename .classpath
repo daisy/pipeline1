@@ -39,5 +39,6 @@
 	<classpathentry kind="lib" path="lib/brailleUtils-core-1.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/texhyphj.jar"/>
 	<classpathentry kind="lib" path="lib/dotify-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/dotify-translator-1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

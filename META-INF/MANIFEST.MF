@@ -16,6 +16,7 @@ Bundle-ClassPath:
  lib/commons-cli-1.1.jar,
  lib/commons-pool-1.4.jar,
  lib/dotify-2.0.jar,
+ lib/dotify-translator-1.0.jar
  lib/epubcheck-1.0.5.jar,
  lib/jing-saxon8-patch.jar,
  lib/icu4j-3_8.jar,
