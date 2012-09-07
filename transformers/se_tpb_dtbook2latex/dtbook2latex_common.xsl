@@ -24,6 +24,10 @@
   Regular', 'LMSans10 Regular' or 'LMTypewriter10 Regular'. Basically
   any installed TrueType or OpenType font -->
   <xsl:param name="font">LMRoman10 Regular</xsl:param>
+  <!-- Optional backup font and comma-separated list of Unicode ranges for which this font needs to be applied -->
+  <xsl:param name="backupFont">Arial Unicode MS</xsl:param>
+  <xsl:param name="backupUnicodeRanges"></xsl:param>
+  
   <xsl:param name="defaultLanguage">english</xsl:param>
   
   <xsl:param name="stocksize">a4paper</xsl:param>
@@ -154,6 +158,32 @@
 	<xsl:text>\usepackage{fontspec,xunicode,xltxtra}&#10;</xsl:text>
 	<xsl:text>\defaultfontfeatures{Mapping=tex-text}&#10;</xsl:text>
 	<xsl:text>\setmainfont{</xsl:text><xsl:value-of select="$font"/><xsl:text>}&#10;</xsl:text>
+
+     <xsl:if test="string-length($backupFont) > 0 and string-length($backupUnicodeRanges) > 0">
+       <xsl:variable name="all-unicode-ranges" select="doc('unicode-blocks.xml')/unicodeBlocks/block"/>
+       <xsl:variable name="included-unicode-ranges" as="xs:string*"
+         select="distinct-values(
+         for $cp in distinct-values(string-to-codepoints(string(/*)))
+         return $all-unicode-ranges[$cp &gt;= number(@start) and $cp &lt;= number(@end)]/@name)" />
+       <xsl:variable name="backup-unicode-ranges" as="xs:string*"
+         select="tokenize($backupUnicodeRanges, ',')[.=$included-unicode-ranges]"/>
+       <xsl:if test="$backup-unicode-ranges[1]">
+         <xsl:text>&#10;</xsl:text>
+         <xsl:text>%%Use a secondary font for some Unicode ranges&#10;</xsl:text>
+         <xsl:text>%%Warning: the package ucharclasses must be installed&#10;</xsl:text>
+         <xsl:text>\usepackage{ucharclasses}&#10;</xsl:text>
+         <xsl:text>\setDefaultTransitions{\fontspec{</xsl:text><xsl:value-of select="$font"/><xsl:text>}}{}&#10;</xsl:text>
+         <xsl:for-each select="$backup-unicode-ranges">
+           <xsl:text>\setTransitionTo{</xsl:text>
+           <xsl:value-of select="."/>
+           <xsl:text>}{\fontspec{</xsl:text>
+           <xsl:value-of select="$backupFont"/>
+           <xsl:text>}}&#10;</xsl:text>
+         </xsl:for-each>
+         <xsl:text>&#10;</xsl:text>
+       </xsl:if>
+     </xsl:if>
+ 
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
 	<xsl:value-of select="concat('\hypersetup{pdftitle={', my:quoteSpecialChars(//dtb:meta[@name='dc:title' or @name='dc:Title']/@content), '}, pdfauthor={', my:quoteSpecialChars(//dtb:meta[@name='dc:creator' or @name='dc:Creator']/@content), '}}&#10;')"/>
 	<xsl:text>\usepackage{float}&#10;</xsl:text>

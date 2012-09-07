@@ -1430,6 +1430,7 @@ transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_9.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/transformer.tdf -text
 transformers/se_tpb_dtbook2latex/dtbook2latex_common.xsl -text
 transformers/se_tpb_dtbook2latex/dtbook2latex_sbs.xsl -text
+transformers/se_tpb_dtbook2latex/unicode-blocks.xml -text
 transformers/se_tpb_dtbookFix/Category.java -text
 transformers/se_tpb_dtbookFix/CharsetExecutor.java -text
 transformers/se_tpb_dtbookFix/DTBookFix.java -text

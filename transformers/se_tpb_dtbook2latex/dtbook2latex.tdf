@@ -54,6 +54,20 @@
 		  </enum>
 		  <default>Tiresias LPfont</default>
 		</parameter>
+
+		<parameter type="string" direction="in" required="false">
+		  <name>backupFont</name>			
+		  <description>Optional secondary font to be used for specific Unicode ranges specified in backupUnicodeRanges. The ucharclasses package (http://ctan.org/tex-archive/macros/xetex/latex/ucharclasses) must be installed for this feature.</description>
+		  <example>Arial Unicode MS</example>
+		  <default>Arial Unicode MS</default>
+		</parameter>
+
+		<parameter type="string" direction="in" required="false">
+		  <name>backupUnicodeRanges</name>			
+		  <description>Comma-separated list of Unicode ranges (in camel case notation) for which the backup font must be applied.</description>
+		  <example>Arabic,Hebrew,Cyrillic,GreekAndCoptic</example>
+		  <default></default>
+		</parameter>
 		
 		<parameter type="enum" direction="in" required="false">
 		  <name>pageStyle</name>			
