@@ -91,7 +91,12 @@
   </xsl:function>
 
    <xsl:template match="/">
-      <xsl:apply-templates/>
+     <!-- Pass 1: Add volume-split DIVs -->
+     <xsl:variable name="pass1">
+       <xsl:apply-templates mode="volume-split"/>
+     </xsl:variable>
+     <!-- Pass 2 -->
+     <xsl:apply-templates select="$pass1/*"/>
    </xsl:template>
 
    <xsl:template match="dtb:dtbook">
@@ -700,7 +705,24 @@
      <xsl:call-template name="volumecover"/>
    </xsl:template>
 
-
+   <xsl:template match="@*|node()" mode="volume-split">
+     <xsl:if test="contains(@class, 'volume-split-point')">
+       <xsl:if test="'volume-split-point'=tokenize(@class, '\s+')">
+         <xsl:element name="div" namespace="http://www.daisy.org/z3986/2005/dtbook/">
+           <xsl:attribute name="class" select="'volume-split-point'"/>
+           <xsl:element name="p" namespace="http://www.daisy.org/z3986/2005/dtbook/"/>
+         </xsl:element>
+       </xsl:if>
+     </xsl:if>
+     <xsl:copy>
+       <xsl:apply-templates select="@*|node()" mode="volume-split"/>
+     </xsl:copy>
+   </xsl:template>
+  
+   <xsl:template match="@class[contains(., 'volume-split-point')]" mode="volume-split">
+     <xsl:attribute name="class" select="string-join(tokenize(., '\s+')[not(.='volume-split-point')], ' ')"/>
+   </xsl:template>
+  
    <xsl:template match="dtb:imggroup">
    	<!--
    	<xsl:text>\fbox{\fbox{\parbox{10cm}{</xsl:text>
