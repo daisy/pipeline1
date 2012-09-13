@@ -66,15 +66,14 @@
     <xsl:param name="split_point" as="element()"/>
     <xsl:param name="allowed_stretch_in_words" as="xs:double"/>
     <xsl:variable name="block_names" select="('level1', 'level2', 'linegroup', 'poem', 'sidebar', 'blockquote')"/>
-    <xsl:variable name="id" select="generate-id($split_point)"/>
     <xsl:variable name="blocks" select="$split_point/ancestor::dtb:*[local-name()=$block_names]"/>
     <xsl:choose>
       <xsl:when test="exists($blocks)">
         <xsl:variable name="moveBefore"
-          select="$blocks[sum(for $p in descendant::p[following::*[generate-id()=$id]] return func:wc($p))
-          + func:wc($split_point) &lt; $allowed_stretch_in_words][last()]"/>
+          select="$blocks[sum(for $p in (descendant::p intersect $split_point/preceding::*) return func:wc($p))
+          &lt; $allowed_stretch_in_words][last()]"/>
         <xsl:variable name="moveAfter"
-          select="$blocks[sum(for $p in descendant::p[preceding::*[generate-id()=$id]] return func:wc($p))
+          select="$blocks[sum(for $p in (descendant::p intersect ($split_point,$split_point/following::*)) return func:wc($p))
           &lt; $allowed_stretch_in_words][last()]"/>
         <xsl:choose>
           <xsl:when test="exists($moveBefore) and exists($moveAfter)">
