@@ -501,33 +501,49 @@
      <xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
-   <!-- Insert an empty header if a level 1 has no h1 -->
-   <xsl:template match="dtb:level1[empty(dtb:h1)]">
-     <xsl:text>\chapter*{\ }&#10;</xsl:text>
-     <xsl:apply-templates/>
-   </xsl:template>
-  
-  <!-- Insert an empty header if a level 2 has no h2 -->
-  <xsl:template match="dtb:level2[empty(dtb:h2)]">
-    <xsl:text>\section*{\ }&#10;</xsl:text>
+  <xsl:template match="dtb:level1">
+    <!-- Insert an empty header if a level 1 has no h1 -->
+    <xsl:if test="empty(dtb:h1)">
+      <xsl:text>\chapter*{\ }&#10;</xsl:text>
+    </xsl:if>
     <xsl:apply-templates/>
+    <xsl:if test="following::*[1][self::dtb:p]">
+      <xsl:text>\plainbreak{1}&#10;</xsl:text>
+    </xsl:if>
   </xsl:template>
-
-   <xsl:template match="dtb:level1">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
-   <xsl:template match="dtb:level2">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
-   <xsl:template match="dtb:level3">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
-   <xsl:template match="dtb:level4">
-   	<xsl:apply-templates/>
-   </xsl:template>
+  
+  <xsl:template match="dtb:level2">
+    <!-- Insert an empty header if a level 2 has no h2 -->
+    <xsl:if test="empty(dtb:h2)">
+      <xsl:text>\section*{\ }&#10;</xsl:text>
+    </xsl:if>
+    <xsl:apply-templates/>
+    <xsl:if test="following::*[1][self::dtb:p]">
+      <xsl:text>\plainbreak{1}&#10;</xsl:text>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template match="dtb:level3">
+    <!-- Insert an empty header if a level 3 has no h3 -->
+    <xsl:if test="empty(dtb:h3)">
+      <xsl:text>\subsection*{\ }&#10;</xsl:text>
+    </xsl:if>
+    <xsl:apply-templates/>
+    <xsl:if test="following::*[1][self::dtb:p]">
+      <xsl:text>\plainbreak{1}&#10;</xsl:text>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template match="dtb:level4">
+    <!-- Insert an empty header if a level 4 has no h4 -->
+    <xsl:if test="empty(dtb:h4)">
+      <xsl:text>\subsubsection*{\ }&#10;</xsl:text>
+    </xsl:if>
+    <xsl:apply-templates/>
+    <xsl:if test="following::*[1][self::dtb:p]">
+      <xsl:text>\plainbreak{1}&#10;</xsl:text>
+    </xsl:if>
+  </xsl:template>
 
    <xsl:template match="dtb:level5">
    	<xsl:apply-templates/>
