@@ -54,6 +54,22 @@
     </datatype>
   </parameter>
   
+  <parameter name="backupFont" value="Arial Unicode MS" required="false">
+    <nicename>Backup font</nicename>
+    <description>Optional secondary font to be used for specific Unicode ranges specified in backupUnicodeRanges. The package ucharclasses must be installed for this feature.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+  
+  <parameter name="backupUnicodeRanges" value="" required="false">
+    <nicename>Backup Unicode ranges</nicename>
+    <description>Comma-separated list of Unicode ranges (in camel case notation) for which the backup font must be applied.</description>
+    <datatype>
+      <string/>
+    </datatype>
+  </parameter>
+  
   <parameter name="pageStyle" value="plain" required="false">
     <nicename>Page style</nicename>
     <description>Style for the page. See the documentation for a detailed explanation.</description>
@@ -212,11 +228,21 @@
     <parameter>
       <name>fontsize</name>
       <value>${fontsize}</value>			
-    </parameter>				
+    </parameter>			
 
     <parameter>
       <name>font</name>
       <value>${font}</value>			
+    </parameter>	
+
+    <parameter>
+      <name>backupFont</name>
+      <value>${backupFont}</value>
+    </parameter>			
+
+    <parameter>
+      <name>backupUnicodeRanges</name>
+      <value>${backupUnicodeRanges}</value>
     </parameter>				
 
     <parameter>

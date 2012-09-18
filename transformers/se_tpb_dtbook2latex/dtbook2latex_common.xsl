@@ -24,6 +24,10 @@
   Regular', 'LMSans10 Regular' or 'LMTypewriter10 Regular'. Basically
   any installed TrueType or OpenType font -->
   <xsl:param name="font">LMRoman10 Regular</xsl:param>
+  <!-- Optional backup font and comma-separated list of Unicode ranges for which this font needs to be applied -->
+  <xsl:param name="backupFont">Arial Unicode MS</xsl:param>
+  <xsl:param name="backupUnicodeRanges"></xsl:param>
+  
   <xsl:param name="defaultLanguage">english</xsl:param>
   
   <xsl:param name="stocksize">a4paper</xsl:param>
@@ -87,7 +91,12 @@
   </xsl:function>
 
    <xsl:template match="/">
-      <xsl:apply-templates/>
+     <!-- Pass 1: Add volume-split DIVs -->
+     <xsl:variable name="pass1">
+       <xsl:apply-templates mode="volume-split"/>
+     </xsl:variable>
+     <!-- Pass 2 -->
+     <xsl:apply-templates select="$pass1/*"/>
    </xsl:template>
 
    <xsl:template match="dtb:dtbook">
@@ -154,6 +163,32 @@
 	<xsl:text>\usepackage{fontspec,xunicode,xltxtra}&#10;</xsl:text>
 	<xsl:text>\defaultfontfeatures{Mapping=tex-text}&#10;</xsl:text>
 	<xsl:text>\setmainfont{</xsl:text><xsl:value-of select="$font"/><xsl:text>}&#10;</xsl:text>
+
+     <xsl:if test="string-length($backupFont) > 0 and string-length($backupUnicodeRanges) > 0">
+       <xsl:variable name="all-unicode-ranges" select="doc('unicode-blocks.xml')/unicodeBlocks/block"/>
+       <xsl:variable name="included-unicode-ranges" as="xs:string*"
+         select="distinct-values(
+         for $cp in distinct-values(string-to-codepoints(string(/*)))
+         return $all-unicode-ranges[$cp &gt;= number(@start) and $cp &lt;= number(@end)]/@name)" />
+       <xsl:variable name="backup-unicode-ranges" as="xs:string*"
+         select="tokenize($backupUnicodeRanges, ',')[.=$included-unicode-ranges]"/>
+       <xsl:if test="$backup-unicode-ranges[1]">
+         <xsl:text>&#10;</xsl:text>
+         <xsl:text>%%Use a secondary font for some Unicode ranges&#10;</xsl:text>
+         <xsl:text>%%Warning: the package ucharclasses must be installed&#10;</xsl:text>
+         <xsl:text>\usepackage{ucharclasses}&#10;</xsl:text>
+         <xsl:text>\setDefaultTransitions{\fontspec{</xsl:text><xsl:value-of select="$font"/><xsl:text>}}{}&#10;</xsl:text>
+         <xsl:for-each select="$backup-unicode-ranges">
+           <xsl:text>\setTransitionTo{</xsl:text>
+           <xsl:value-of select="."/>
+           <xsl:text>}{\fontspec{</xsl:text>
+           <xsl:value-of select="$backupFont"/>
+           <xsl:text>}}&#10;</xsl:text>
+         </xsl:for-each>
+         <xsl:text>&#10;</xsl:text>
+       </xsl:if>
+     </xsl:if>
+ 
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
 	<xsl:value-of select="concat('\hypersetup{pdftitle={', my:quoteSpecialChars(//dtb:meta[@name='dc:title' or @name='dc:Title']/@content), '}, pdfauthor={', my:quoteSpecialChars(//dtb:meta[@name='dc:creator' or @name='dc:Creator']/@content), '}}&#10;')"/>
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
@@ -466,33 +501,49 @@
      <xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
-   <!-- Insert an empty header if a level 1 has no h1 -->
-   <xsl:template match="dtb:level1[empty(dtb:h1)]">
-     <xsl:text>\chapter*{\ }&#10;</xsl:text>
-     <xsl:apply-templates/>
-   </xsl:template>
-  
-  <!-- Insert an empty header if a level 2 has no h2 -->
-  <xsl:template match="dtb:level2[empty(dtb:h2)]">
-    <xsl:text>\section*{\ }&#10;</xsl:text>
+  <xsl:template match="dtb:level1">
+    <!-- Insert an empty header if a level 1 has no h1 -->
+    <xsl:if test="empty(dtb:h1)">
+      <xsl:text>\chapter*{\ }&#10;</xsl:text>
+    </xsl:if>
     <xsl:apply-templates/>
+    <xsl:if test="following::*[1][self::dtb:p]">
+      <xsl:text>\plainbreak{1}&#10;</xsl:text>
+    </xsl:if>
   </xsl:template>
-
-   <xsl:template match="dtb:level1">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
-   <xsl:template match="dtb:level2">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
-   <xsl:template match="dtb:level3">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
-   <xsl:template match="dtb:level4">
-   	<xsl:apply-templates/>
-   </xsl:template>
+  
+  <xsl:template match="dtb:level2">
+    <!-- Insert an empty header if a level 2 has no h2 -->
+    <xsl:if test="empty(dtb:h2)">
+      <xsl:text>\section*{\ }&#10;</xsl:text>
+    </xsl:if>
+    <xsl:apply-templates/>
+    <xsl:if test="following::*[1][self::dtb:p]">
+      <xsl:text>\plainbreak{1}&#10;</xsl:text>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template match="dtb:level3">
+    <!-- Insert an empty header if a level 3 has no h3 -->
+    <xsl:if test="empty(dtb:h3)">
+      <xsl:text>\subsection*{\ }&#10;</xsl:text>
+    </xsl:if>
+    <xsl:apply-templates/>
+    <xsl:if test="following::*[1][self::dtb:p]">
+      <xsl:text>\plainbreak{1}&#10;</xsl:text>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template match="dtb:level4">
+    <!-- Insert an empty header if a level 4 has no h4 -->
+    <xsl:if test="empty(dtb:h4)">
+      <xsl:text>\subsubsection*{\ }&#10;</xsl:text>
+    </xsl:if>
+    <xsl:apply-templates/>
+    <xsl:if test="following::*[1][self::dtb:p]">
+      <xsl:text>\plainbreak{1}&#10;</xsl:text>
+    </xsl:if>
+  </xsl:template>
 
    <xsl:template match="dtb:level5">
    	<xsl:apply-templates/>
@@ -670,7 +721,24 @@
      <xsl:call-template name="volumecover"/>
    </xsl:template>
 
-
+   <xsl:template match="@*|node()" mode="volume-split">
+     <xsl:if test="contains(@class, 'volume-split-point')">
+       <xsl:if test="'volume-split-point'=tokenize(@class, '\s+')">
+         <xsl:element name="div" namespace="http://www.daisy.org/z3986/2005/dtbook/">
+           <xsl:attribute name="class" select="'volume-split-point'"/>
+           <xsl:element name="p" namespace="http://www.daisy.org/z3986/2005/dtbook/"/>
+         </xsl:element>
+       </xsl:if>
+     </xsl:if>
+     <xsl:copy>
+       <xsl:apply-templates select="@*|node()" mode="volume-split"/>
+     </xsl:copy>
+   </xsl:template>
+  
+   <xsl:template match="@class[contains(., 'volume-split-point')]" mode="volume-split">
+     <xsl:attribute name="class" select="string-join(tokenize(., '\s+')[not(.='volume-split-point')], ' ')"/>
+   </xsl:template>
+  
    <xsl:template match="dtb:imggroup">
    	<!--
    	<xsl:text>\fbox{\fbox{\parbox{10cm}{</xsl:text>

@@ -21,7 +21,7 @@
        level1. -->  
 
   <xsl:output method="xml" encoding="utf-8" indent="no"/>
-	
+
   <xsl:param name="number_of_volumes" select="1"/>
   <xsl:param name="allowed_stretch" select="0.15"/>
 
@@ -43,144 +43,86 @@
     <xsl:variable name="currentWordCount" select="$wordsSoFar + func:wc($head)"/>
     <xsl:choose>
       <xsl:when test="empty($paragraphSequence)">
-	<xsl:sequence select="$paragraphSequence"/>
+        <xsl:sequence select="$paragraphSequence"/>
       </xsl:when>
       <xsl:when test="$wordsSoFar >= $wordsPerVolume">
-	<xsl:sequence select="$head,func:splitInternal(0, $wordsPerVolume, $tail)"/>
+        <xsl:sequence select="$head,func:splitInternal(0, $wordsPerVolume, $tail)"/>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:sequence select="func:splitInternal($currentWordCount, $wordsPerVolume, $tail)"/>
+        <xsl:sequence select="func:splitInternal($currentWordCount, $wordsPerVolume, $tail)"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-
+  
   <xsl:function name="func:split">
     <xsl:param name="wordsPerVolume" as="xs:double"/>
     <xsl:param name="paragraphSequence" as="element()*"/>
     <xsl:sequence select="func:splitInternal(0, $wordsPerVolume, $paragraphSequence)"/>
   </xsl:function>
-
-  <!-- Given a sequence of p, level1 and level2 find the closest
-       level1 or level2 within a certain threshold of words -->
-  <xsl:function name="func:findClosestLevel">
-    <xsl:param name="level"/>
-    <xsl:param name="wordsSoFar" as="xs:double"/>
-    <xsl:param name="allowed_stretch_in_words" as="xs:double"/>
-    <xsl:param name="paragraphSequence" as="element()*"/>
-    <xsl:variable name="head" select="$paragraphSequence[1]"/>
-    <xsl:variable name="tail" select="$paragraphSequence[position() gt 1]"/>
-    <xsl:variable name="currentWordCount" select="$wordsSoFar + func:wc($head)"/>
-    <xsl:choose>
-      <xsl:when test="empty($paragraphSequence)">
-	<xsl:sequence select="()"/>
-      </xsl:when>
-      <xsl:when test="$wordsSoFar >= $allowed_stretch_in_words">
-	<xsl:sequence select="()"/>
-      </xsl:when>
-      <xsl:when test="local-name($head)=$level">
-	<xsl:sequence select="$head,$wordsSoFar"/>
-      </xsl:when>
-      <xsl:otherwise>
-	<xsl:sequence select="func:findClosestLevel(
-			      $level, $currentWordCount, 
-			      $allowed_stretch_in_words, $tail)"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
-
-  <xsl:function name="func:notInsideBlock">
-    <xsl:param name="p" as="element()"/>
-    <xsl:sequence select="not($p/ancestor::dtb:linegroup|$p/ancestor::dtb:poem|$p/ancestor::dtb:sidebar|$p/ancestor::dtb:blockquote)"/>
-  </xsl:function>
-
-  <!-- Replace a given split point of there are level1 or level2
-       nearby -->
-  <xsl:function name="func:replaceWithClosestLevel">
+  
+  <!-- Given a p within a level1, level2, linegroup, poem, sidebar or blockquote,
+       move to the beginning/ending of that block if it's within a certain threshold of words -->
+  <xsl:function name="func:replaceWithClosestBlock" as="element()">
     <xsl:param name="split_point" as="element()"/>
     <xsl:param name="allowed_stretch_in_words" as="xs:double"/>
-    <xsl:variable name="closestLevel1Before" 
-		  select="func:findClosestLevel('level1', 0, $allowed_stretch_in_words, 
-			  reverse($split_point/preceding::dtb:level1|$split_point/preceding::dtb:p[func:notInsideBlock(.)]|$split_point/ancestor::dtb:level1))"/>
-    <xsl:variable name="closestLevel1After" 
-		  select="func:findClosestLevel('level1', 0, $allowed_stretch_in_words, 
-			  $split_point/following::dtb:level1|$split_point/following::dtb:p[func:notInsideBlock(.)])"/>
-    <xsl:variable name="closestLevel2Before" 
-		  select="func:findClosestLevel('level2', 0, $allowed_stretch_in_words, 
-			  reverse($split_point/preceding::dtb:level2|$split_point/preceding::dtb:p[func:notInsideBlock(.)]|$split_point/ancestor::dtb:level2))"/>
-    <xsl:variable name="closestLevel2After" 
-		  select="func:findClosestLevel('level2', 0, $allowed_stretch_in_words, 
-			  $split_point/following::dtb:level2|$split_point/following::dtb:p[func:notInsideBlock(.)])"/>
+    <xsl:variable name="block_names" select="('level1', 'level2', 'linegroup', 'poem', 'sidebar', 'blockquote')"/>
+    <xsl:variable name="blocks" select="$split_point/ancestor::dtb:*[local-name()=$block_names]"/>
     <xsl:choose>
-      <xsl:when test="exists($closestLevel1Before) and exists($closestLevel1After)">
-	<xsl:sequence select="if ($closestLevel1Before[2] le $closestLevel1After[2]) 
-			      then $closestLevel1Before[1]
-			      else $closestLevel1After[1]"/>
-      </xsl:when>
-      <xsl:when test="exists($closestLevel1Before)">
-	<xsl:sequence select="$closestLevel1Before[1]"/>
-      </xsl:when>
-      <xsl:when test="exists($closestLevel1After)">
-	<xsl:sequence select="$closestLevel1After[1]"/>
-      </xsl:when>
-      <xsl:when test="exists($closestLevel2Before) and exists($closestLevel2After)">
-	<xsl:sequence select="if ($closestLevel2Before[2] le $closestLevel2After[2]) 
-			      then $closestLevel2Before[1]
-			      else $closestLevel2After[1]"/>
-      </xsl:when>
-      <xsl:when test="exists($closestLevel2Before)">
-	<xsl:sequence select="$closestLevel2Before[1]"/>
-      </xsl:when>
-      <xsl:when test="exists($closestLevel2After)">
-	<xsl:sequence select="$closestLevel2After[1]"/>
+      <xsl:when test="exists($blocks)">
+        <xsl:variable name="moveBefore"
+          select="$blocks[sum(for $p in (descendant::p intersect $split_point/preceding::*) return func:wc($p))
+          &lt; $allowed_stretch_in_words][last()]"/>
+        <xsl:variable name="moveAfter"
+          select="$blocks[sum(for $p in (descendant::p intersect ($split_point,$split_point/following::*)) return func:wc($p))
+          &lt; $allowed_stretch_in_words][last()]"/>
+        <xsl:choose>
+          <xsl:when test="exists($moveBefore) and exists($moveAfter)">
+            <xsl:sequence select="if (count($moveBefore/ancestor::*) le count($moveAfter/ancestor::*)) 
+              then $moveBefore else $moveAfter/following::dtb:*[local-name()=($block_names,'p')][1]"/>
+          </xsl:when>
+          <xsl:when test="exists($moveBefore)">
+            <xsl:sequence select="$moveBefore"/>
+          </xsl:when>
+          <xsl:when test="exists($moveAfter)">
+            <xsl:sequence select="$moveAfter/following::dtb:*[local-name()=($block_names,'p')][1]"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:sequence select="$split_point"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-	<xsl:sequence select="$split_point"/>
+        <xsl:sequence select="$split_point"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-
+  
   <xsl:variable name="all_p" select="//dtb:p"/>
-
   <xsl:variable name="total_words" select="sum(for $p in $all_p return func:wc($p))"/>
   <xsl:variable name="words_per_volume" select="ceiling($total_words div number($number_of_volumes)) + 1"/>
-
-  <!-- Don't split volumes in a linegroup, poem or sidebar -->
-  <xsl:variable name="split_nodes" select="func:split($words_per_volume, $all_p[func:notInsideBlock(.)])"/>
-
+  <xsl:variable name="split_nodes" select="func:split($words_per_volume, $all_p)"/>
+  
   <xsl:param name="allowed_stretch_in_words" select="ceiling($words_per_volume * number($allowed_stretch))"/>
+  
   <xsl:variable name="valid_split_nodes"
-  		select="for $split_point in $split_nodes 
-			return func:replaceWithClosestLevel($split_point, $allowed_stretch_in_words)"/>
-
-  <xsl:template match="dtb:level1|dtb:level2">
-    <xsl:if test="some $node in $valid_split_nodes satisfies current() is $node">
-      <xsl:element name="div" namespace="http://www.daisy.org/z3986/2005/dtbook/">
-	<xsl:attribute name="class">volume-split-point</xsl:attribute>
-	<xsl:element name="p" namespace="http://www.daisy.org/z3986/2005/dtbook/"/>
-      </xsl:element>
-    </xsl:if>
+    select="for $split_point in $split_nodes 
+    return func:replaceWithClosestBlock($split_point, $allowed_stretch_in_words)"/>
+  
+  <xsl:template match="dtb:level1|dtb:level2|dtb:linegroup|dtb:poem|dtb:sidebar|dtb:blockquote|dtb:p">
     <xsl:copy>
-      <xsl:apply-templates select="@*|node()"/>
+      <xsl:apply-templates select="@*"/>
+      <xsl:if test="some $node in $valid_split_nodes satisfies current() is $node">
+        <xsl:attribute name="class" select="string-join((string(@class), 'volume-split-point'), ' ')"/>
+      </xsl:if>
+      <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
-
-  <xsl:template match="dtb:p">
-    <xsl:copy>
-      <xsl:apply-templates select="@*|node()"/>
-    </xsl:copy>
-    <xsl:if test="some $node in $valid_split_nodes satisfies current() is $node">
-      <xsl:element name="div" namespace="http://www.daisy.org/z3986/2005/dtbook/">
-	<xsl:attribute name="class">volume-split-point</xsl:attribute>
-	<xsl:element name="p" namespace="http://www.daisy.org/z3986/2005/dtbook/"/>
-      </xsl:element>
-    </xsl:if>
-  </xsl:template>
-
+  
   <!-- Copy all other elements and attributes -->
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
   </xsl:template>
-
+  
 </xsl:stylesheet>
