@@ -15,7 +15,7 @@ Bundle-ClassPath:
  lib/chardet.jar,
  lib/commons-cli-1.1.jar,
  lib/commons-pool-1.4.jar,
- lib/dotify-2.0.jar,
+ lib/dotify.jar,
  lib/dotify-translator.jar
  lib/epubcheck-1.0.5.jar,
  lib/jing-saxon8-patch.jar,

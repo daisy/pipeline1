@@ -206,8 +206,8 @@ lib/brailleUtils-core-1.1.0.jar -text
 lib/chardet.jar -text
 lib/commons-cli-1.1.jar -text
 lib/commons-pool-1.4.jar -text
-lib/dotify-2.0.jar -text
 lib/dotify-translator.jar -text
+lib/dotify.jar -text
 lib/epubcheck-1.0.5.jar -text
 lib/icu4j-3_8.jar -text
 lib/jing-saxon8-patch.jar -text
