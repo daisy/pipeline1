@@ -66,7 +66,7 @@
        http://data.daisy.org/projects/pipeline/doc/developer/tdf-grammar-v1.1.html -->
   <xsl:param name="replace_em_with_quote">false</xsl:param> 
 
-  <xsl:variable name="number_of_volumes" select="count(//dtb:div[@class='volume-split-point'])+1"/>
+  <xsl:variable name="number_of_volumes" select="count(//*['volume-split-point'=tokenize(@class, '\s+')])+1"/>
 
   <!-- Escape characters that have a special meaning to LaTeX (see The
        Comprehensive LaTeX Symbol List,
