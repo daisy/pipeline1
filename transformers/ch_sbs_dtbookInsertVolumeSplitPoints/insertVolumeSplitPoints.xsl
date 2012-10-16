@@ -70,10 +70,10 @@
     <xsl:choose>
       <xsl:when test="exists($blocks)">
         <xsl:variable name="moveBefore"
-          select="($blocks[sum(for $p in (descendant::p intersect $split_point/preceding::*) return func:wc($p))
+          select="($blocks[sum(for $p in (descendant::dtb:p intersect $split_point/preceding::*) return func:wc($p))
           &lt; $allowed_stretch_in_words])[1]"/>
         <xsl:variable name="moveAfter"
-          select="($blocks[sum(for $p in (descendant::p intersect ($split_point,$split_point/following::*)) return func:wc($p))
+          select="($blocks[sum(for $p in (descendant::dtb:p intersect ($split_point,$split_point/following::*)) return func:wc($p))
           &lt; $allowed_stretch_in_words])[1]"/>
         <xsl:choose>
           <xsl:when test="exists($moveBefore) and exists($moveAfter)">
