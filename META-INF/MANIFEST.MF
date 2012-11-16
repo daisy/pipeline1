@@ -15,7 +15,8 @@ Bundle-ClassPath:
  lib/chardet.jar,
  lib/commons-cli-1.1.jar,
  lib/commons-pool-1.4.jar,
- lib/dotify-1.0.jar,
+ lib/dotify.jar,
+ lib/dotify-translator.jar
  lib/epubcheck-1.0.5.jar,
  lib/jing-saxon8-patch.jar,
  lib/icu4j-3_8.jar,
@@ -32,6 +33,7 @@ Bundle-ClassPath:
  lib/slf4j-log4j12-1.5.6.jar,
  lib/stax-api-1.0.1.jar,
  lib/tagsoup-1.2.jar,
+ lib/texhyphj.jar,
  lib/tritonus_remaining-0.3.6.jar,
  lib/tritonus_share-0.3.6.jar,
  lib/xalan.jar,

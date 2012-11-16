@@ -36,14 +36,15 @@
 			<string regex="([0-9]{4}-[0-9]{2}-[0-9]{2})?"/>
 		</datatype>
 	</parameter>
-
-	<parameter name="setup" value="sv-SE" required="true">
+	
+	<parameter name="setup" value="A4-w32" required="true">
 		<nicename>Conversion Setup</nicename>
 		<description>Conversion setup to apply - see documentation</description>
 		<datatype>
 			<enum>
-			  <item nicename="Swedish - A4" value="sv-SE" />
-			  <item nicename="Swedish - FA44" value="sv-SE-FA44" />
+			  <item nicename="32 characters wide" value="A4-w32" />
+			  <item nicename="42 characters wide" value="FA44-w42" />
+			  <item nicename="50 characters wide" value="w50" />
 			</enum>
 		</datatype>
 	</parameter>
@@ -76,23 +77,10 @@
 		</parameter>
 	</task>
 
-	<task name="se_tpb_hyphenator" interactive="false">
-		<parameter>
-			<name>input</name>
-			<value>${input}</value>
-		</parameter>
-
-		<parameter>
-			<name>output</name>
-			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
-		</parameter>
-			
-	</task>
-
 	<task name="org_pef_dtbook2pef" interactive="false">
 		<parameter>
 			<name>input</name>
-			<value>${output}.pipeline_temp.00-hyphenator.xml</value>
+			<value>${input}</value>
 		</parameter>
 
 		<parameter>
@@ -113,6 +101,11 @@
 		<parameter>
 			<name>setup</name>
 			<value>${setup}</value>
+		</parameter>
+		
+		<parameter>
+			<name>locale</name>
+			<value>sv-SE</value>
 		</parameter>
 		
 		<parameter>
