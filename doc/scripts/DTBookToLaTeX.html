@@ -131,7 +131,6 @@
 	or <samp>letter</samp>. 
       </dd>
 
-
       <dt>Paper size</dt>
       <dd><strong>Optional.</strong> The paper size of the resulting
 	book can match the stock size, i.e. the size of the paper the
@@ -148,9 +147,18 @@
 	</dl>
       </dd>
 
-
       <dt>Line spacing</dt>
       <dd><strong>Optional.</strong> The line spacing to be used for the generated LaTeX.</dd>	
+
+      <dt>Footnote style</dt>
+      <dd><strong>Optional.</strong> Notes can be rendered in different ways. By default the are rendered as footnotes, i.e. on the same page. Alternatively you 
+      can place them at the end of the document or at the end of each chapter (i.e. level1). You can pick between the following options:
+	<dl>
+	  <dt>Plain Footnotes</dt><dd><strong>Optional (Default).</strong>Place the notes at the bottom of the page as footnotes.</dd>
+	  <dt>Document Endnotes</dt><dd><strong>Optional.</strong>Place the notes in a separate chapter at the end of the book, i.e. after rearmatter.</dd>
+	  <dt>Chapter Endnotes</dt><dd><strong>Optional.</strong>Place the notes at the end of the chapter (level1) in a separate "Endnote" section (level2).</dd>
+	</dl>
+      </dd>	
 
       <dt>XML Validation Report</dt>
       <dd><strong>Optional.</strong> Path to a file to store a validation XML report in.</dd>	

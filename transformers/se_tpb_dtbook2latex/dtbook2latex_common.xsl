@@ -66,7 +66,26 @@
        http://data.daisy.org/projects/pipeline/doc/developer/tdf-grammar-v1.1.html -->
   <xsl:param name="replace_em_with_quote">false</xsl:param> 
 
+  <!-- Place the notes at the end instead of on the same page.
+       Possible values are none, document and chapter -->
+  <xsl:param name="endnotes">none</xsl:param> 
+
   <xsl:variable name="number_of_volumes" select="count(//*['volume-split-point'=tokenize(@class, '\s+')])+1"/>
+
+  <!-- Localization -->
+
+  <!-- This is used to set some words and phrases which are generated -->
+  <!-- automatically. Many translations are provided by the babel package -->
+  <!-- but a few which are defined by the memoir class have to be localized -->
+  <!-- explicitely, such as Notes, Abstract, etc. See section 18.20 of the -->
+  <!-- memoir manual and section 23 for example of the babel documentation -->
+  <xsl:template match="*" mode="localizeWords">
+    <xsl:choose>
+      <xsl:when test="lang('de')">
+	<xsl:text>\renewcommand*{\notesname}{Anmerkungen}&#10;</xsl:text>
+      </xsl:when>
+    </xsl:choose>
+  </xsl:template>
 
   <!-- Escape characters that have a special meaning to LaTeX (see The
        Comprehensive LaTeX Symbol List,
@@ -235,22 +254,40 @@
 	<!-- Set the depth of the toc based on how many nested lic there are in the frontmatter -->	
 	<xsl:call-template name="setmaxtocdepth"/>
 
-	<!-- footnote styling -->
-	<!-- Use the normal font -->
-	<xsl:text>\renewcommand{\foottextfont}{\normalsize}&#10;</xsl:text>
-	<!-- add some space after the footnote marker -->
-	<xsl:text>\footmarkstyle{\textsuperscript{#1} }&#10;</xsl:text>
-	<!-- paragraph indenting -->
-	<xsl:text>\setlength{\footmarkwidth}{0ex}&#10;</xsl:text>
-	<xsl:text>\setlength{\footmarksep}{\footmarkwidth}&#10;</xsl:text>
-	<!-- space between footnotes -->
-	<xsl:text>\setlength{\footnotesep}{\onelineskip}&#10;</xsl:text>
-
-	<!-- rule -->
-	<xsl:text>\renewcommand{\footnoterule}{%&#10;</xsl:text>
-	<xsl:text>\kern-3pt%&#10;</xsl:text>
-	<xsl:text>\hrule height 1.5pt&#10;</xsl:text>
-	<xsl:text>\kern 2.6pt}&#10;</xsl:text>
+	<xsl:choose>
+	  <xsl:when test="$endnotes = 'none'">
+	    <!-- footnote styling -->
+	    <!-- Use the normal font -->
+	    <xsl:text>\renewcommand{\foottextfont}{\normalsize}&#10;</xsl:text>
+	    <!-- add some space after the footnote marker -->
+	    <xsl:text>\footmarkstyle{\textsuperscript{#1} }&#10;</xsl:text>
+	    <!-- paragraph indenting -->
+	    <xsl:text>\setlength{\footmarkwidth}{0ex}&#10;</xsl:text>
+	    <xsl:text>\setlength{\footmarksep}{\footmarkwidth}&#10;</xsl:text>
+	    <!-- space between footnotes -->
+	    <xsl:text>\setlength{\footnotesep}{\onelineskip}&#10;</xsl:text>
+	    
+	    <!-- rule -->
+	    <xsl:text>\renewcommand{\footnoterule}{%&#10;</xsl:text>
+	    <xsl:text>\kern-3pt%&#10;</xsl:text>
+	    <xsl:text>\hrule height 1.5pt&#10;</xsl:text>
+	    <xsl:text>\kern 2.6pt}&#10;</xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <!-- endnotes -->
+	    <xsl:text>\makepagenote&#10;</xsl:text>
+	    <!-- Make the numbering of the notes continuous -->
+	    <xsl:text>\continuousnotenums&#10;</xsl:text>
+	    <xsl:if test="$endnotes = 'chapter'">
+	      <xsl:text>\renewcommand{\notedivision}{\section{\notesname}}&#10;</xsl:text>
+	      <xsl:text>\renewcommand{\pagenotesubhead}[3]{}&#10;</xsl:text>
+	    </xsl:if>
+	    <xsl:if test="$endnotes='document' and ($pageStyle='plain' or $pageStyle='withPageNums')">
+	      <!-- do not number the sections in the footnote chapter -->
+	      <xsl:text>\renewcommand{\pagenotesubhead}[3]{\section*{#3}}&#10;</xsl:text>
+	    </xsl:if>
+	  </xsl:otherwise>
+	</xsl:choose>
 
 	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
 	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
@@ -264,10 +301,10 @@
 
 	<!-- Increase the spacing in toc -->
 	<xsl:text>\setlength{\cftparskip}{0.25\onelineskip}&#10;</xsl:text>
-
+	
 	<!-- Make sure wrapped poetry lines are not indented -->
 	<xsl:text>\setlength{\vindent}{0em}&#10;</xsl:text>
-
+	
     <!-- New environment for nested pl-type lists -->
     <xsl:text>\newenvironment{indentedlist}%&#10;</xsl:text>
     <xsl:text>  {\begin{list}{}{%&#10;</xsl:text>
@@ -276,8 +313,9 @@
     <xsl:text>    \setlength{\labelwidth}{0pt}%&#10;</xsl:text>
     <xsl:text>    \setlength{\itemindent}{0pt}}}%&#10;</xsl:text>
     <xsl:text>  {\end{list}}&#10;</xsl:text>
-
-	<xsl:apply-templates/>
+    
+    <xsl:apply-templates select="." mode="localizeWords"/>
+    <xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template name="iso639toBabel">
@@ -291,6 +329,7 @@
    	 <xsl:when test="matches($iso639Code, 'en-[Uu][Ss]')">USenglish</xsl:when>
    	 <xsl:when test="matches($iso639Code, 'en-[Uu][Kk]')">UKenglish</xsl:when>
    	 <xsl:when test="matches($iso639Code, 'en(-.+)?')">english</xsl:when>
+   	 <xsl:when test="matches($iso639Code, 'de-1901')">german</xsl:when>
    	 <xsl:when test="matches($iso639Code, 'de(-.+)?')">ngerman</xsl:when>
 	 <xsl:otherwise>
 	   <xsl:message>
@@ -464,6 +503,9 @@
 	  <xsl:text>\raggedright&#10;</xsl:text>
 	</xsl:if>
 	<xsl:apply-templates/>
+	<xsl:if test="//dtb:noteref and $endnotes = 'document'">
+	  <xsl:text>\printpagenotes&#10;</xsl:text>
+	</xsl:if>
 	<xsl:text>\end{document}&#10;</xsl:text>
    </xsl:template>
 
@@ -507,6 +549,9 @@
       <xsl:text>\chapter*{\ }&#10;</xsl:text>
     </xsl:if>
     <xsl:apply-templates/>
+    <xsl:if test=".//dtb:noteref and $endnotes = 'chapter'">
+      <xsl:text>\printpagenotes*&#10;</xsl:text>
+    </xsl:if>
     <xsl:if test="following::*[1][self::dtb:p]">
       <xsl:text>\plainbreak{1}&#10;</xsl:text>
     </xsl:if>
@@ -660,11 +705,20 @@
      <xsl:variable name="refText">
        <xsl:apply-templates select="//dtb:note[@id=translate(current()/@idref,'#','')]" mode="footnotes"/>
      </xsl:variable>
-     <xsl:text>\footnotemark</xsl:text>
-     <xsl:text>\footnotetext{</xsl:text>
-     <xsl:if test="$alignment='left'"><xsl:text>\raggedright </xsl:text></xsl:if>
-     <xsl:value-of select="string($refText)"/>
-     <xsl:text>}</xsl:text>
+     <xsl:choose>
+       <xsl:when test="$endnotes = 'none'">
+	 <xsl:text>\footnotemark</xsl:text>
+	 <xsl:text>\footnotetext{</xsl:text>
+	 <xsl:if test="$alignment='left'"><xsl:text>\raggedright </xsl:text></xsl:if>
+	 <xsl:value-of select="string($refText)"/>
+	 <xsl:text>}</xsl:text>
+       </xsl:when>
+       <xsl:otherwise>
+	 <xsl:text>\pagenote{</xsl:text>
+	 <xsl:value-of select="string($refText)"/>
+	 <xsl:text>}</xsl:text>
+       </xsl:otherwise>
+     </xsl:choose>
    </xsl:template>
 
    <xsl:template match="dtb:img">

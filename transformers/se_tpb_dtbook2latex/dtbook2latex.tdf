@@ -191,6 +191,18 @@
 		  <default>false</default>
 		</parameter>
 
+		<parameter type="enum" direction="in" required="false">
+		  <name>endnotes</name>			
+		  <description>Put notes at the end of the chapter or at the end of the document instead of putting them on the same page like footnotes</description>
+		  <example>chapter</example>
+		  <enum>
+		    <value>none</value>
+		    <value>document</value>
+		    <value>chapter</value>
+		  </enum>
+		  <default>none</default>
+		</parameter>
+
 		<parameter required="true" direction="out" type="application/x-latex">
 			<name>out</name>
 			<description>The output LaTeX document</description>
