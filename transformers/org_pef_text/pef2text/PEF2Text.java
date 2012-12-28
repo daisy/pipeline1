@@ -16,9 +16,18 @@ import org.daisy.braille.embosser.EmbosserWriter;
 import org.daisy.braille.embosser.UnsupportedWidthException;
 import org.daisy.braille.facade.PEFConverterFacade;
 import org.daisy.braille.pef.PEFHandler;
+import org.daisy.braille.pef.PEFHandler.Alignment;
 import org.daisy.braille.pef.Range;
-import org.daisy.paper.PageFormat;
+import org.daisy.braille.tools.Length;
+import org.daisy.paper.Paper;
 import org.daisy.paper.PaperCatalog;
+import org.daisy.paper.RollPaper;
+import org.daisy.paper.RollPaperFormat;
+import org.daisy.paper.SheetPaper;
+import org.daisy.paper.SheetPaperFormat;
+import org.daisy.paper.SheetPaperFormat.Orientation;
+import org.daisy.paper.TractorPaper;
+import org.daisy.paper.TractorPaperFormat;
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.transformer.Transformer;
 import org.daisy.pipeline.exception.TransformerRunException;
@@ -53,9 +62,11 @@ public class PEF2Text extends Transformer {
         String table = parameters.remove("table");
         String pad = parameters.remove("pad");
         String alignmentOffset = parameters.remove("alignmentOffset");
-        String mirrorAlign = parameters.remove("mirrorAlign");
-        String paperWidthFallback = parameters.remove("paperWidthFallback");
         String papersize = parameters.remove("papersize");
+        String orientation = parameters.remove("orientation");
+        String cutLength = parameters.remove("cut-length");
+        String cutLengthUnits = parameters.remove("cut-length-units");
+        String alignment = parameters.remove("alignment");
         String cellWidth = parameters.remove("cellWidth");
         String cellHeight = parameters.remove("cellHeight");
         String copiesStr = parameters.remove("copies");
@@ -72,7 +83,37 @@ public class PEF2Text extends Transformer {
 		}
 		if (papersize != null && !"".equals(papersize)) {
 			PaperCatalog pc = PaperCatalog.newInstance();
-			em.setFeature(EmbosserFeatures.PAGE_FORMAT, new PageFormat(pc.get(papersize)));
+			Paper p = pc.get(papersize);
+			switch (p.getType()) {
+			case SHEET:
+				em.setFeature(EmbosserFeatures.PAGE_FORMAT, 
+						new SheetPaperFormat((SheetPaper)p, Orientation.valueOf(orientation)));
+				break;
+			case ROLL:
+				Length len;
+				double val = Double.parseDouble(cutLength);
+				switch (Length.UnitsOfLength.valueOf(cutLengthUnits.toUpperCase())) {
+					case CENTIMETER:
+						len = Length.newCentimeterValue(val);
+						break;
+					case MILLIMETER:
+						len = Length.newMillimeterValue(val);
+						break;
+					case INCH:
+						len = Length.newInchValue(val);
+						break;
+					default:
+						len = null;	
+				}
+				em.setFeature(EmbosserFeatures.PAGE_FORMAT,
+						new RollPaperFormat((RollPaper)p, len));
+				break;
+			case TRACTOR:
+				em.setFeature(EmbosserFeatures.PAGE_FORMAT,
+						new TractorPaperFormat((TractorPaper)p));
+			default:
+				throw new RuntimeException("Error in code.");
+			}
 		}
 		em.setFeature("breaks", breaks);
 		if (range!=null && !"".equals(range)) {
@@ -86,7 +127,7 @@ public class PEF2Text extends Transformer {
         File orIn = new File(parameters.remove("xml"));
 		File[] in = getInput(orIn);
 		boolean emboss = deviceName!=null && !"".equals(deviceName);
-		boolean align = "true".equals(mirrorAlign);
+		Alignment align = Alignment.valueOf(alignment.toUpperCase());
 		int offset = Integer.parseInt(alignmentOffset);
 		int copies = 1;
 		if (copiesStr != null && !"".equals(copiesStr)) {
@@ -107,14 +148,14 @@ public class PEF2Text extends Transformer {
 					try {
 						EmbosserWriter embosserObj = em.newEmbosserWriter(bd);
 						for (int j=0; j<copies; j++) {
-							convert(input, embosserObj, rangeObj, paperWidthFallback, align, offset);
+							convert(input, embosserObj, rangeObj, align, offset);
 						}
 					} catch (TransformerRunException e) {
 						output = TempFile.create();
 						FileOutputStream os = new FileOutputStream(output);
 						try {
 							EmbosserWriter embosserObj = em.newEmbosserWriter(os);
-							convert(input, embosserObj, rangeObj, paperWidthFallback, align, offset);
+							convert(input, embosserObj, rangeObj, align, offset);
 							if (emboss) {
 								progress((i-0.5)/(double)in.length);
 								for (int j=0; j<copies; j++) {
@@ -142,7 +183,7 @@ public class PEF2Text extends Transformer {
 						}
 					}
 					// if output is defined, use "single file" method, even if this means that some embossers cannot be supported.
-					convert(input, output, em, rangeObj, paperWidthFallback, align, offset);
+					convert(input, output, em, rangeObj, align, offset);
 					if (emboss) {
 						progress((i-0.5)/(double)in.length);
 						for (int j=0; j<copies; j++) {
@@ -177,21 +218,22 @@ public class PEF2Text extends Transformer {
 		}
 	}
 	
-	private void convert(File input, File output, Embosser em, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException, UnsupportedWidthException {
+	private void convert(File input, File output, Embosser em, Range rangeObj, Alignment align, int offset) throws TransformerRunException, UnsupportedWidthException {
 		try {
 			EmbosserWriter embosserObj = em.newEmbosserWriter(new FileOutputStream(output));
-			convert(input, embosserObj, rangeObj, paperWidthFallback, align, offset);
+			convert(input, embosserObj, rangeObj, align, offset);
 		} catch (FileNotFoundException e) {
 			throw new TransformerRunException(e.getMessage(), e);
 		}
 	}
 	
-	private void convert(File input, EmbosserWriter embosserObj, Range rangeObj, String paperWidthFallback, boolean align, int offset) throws TransformerRunException, UnsupportedWidthException {
+	private void convert(File input, EmbosserWriter embosserObj, Range rangeObj, Alignment align, int offset) throws TransformerRunException, UnsupportedWidthException {
 		try {
 			PEFHandler ph = new PEFHandler.Builder(embosserObj)
 				.range(rangeObj)
-				.alignmentFallback(paperWidthFallback)
-				.mirrorAlignment(align)
+				//.alignmentFallback(paperWidthFallback)
+				//.mirrorAlignment(align)
+				.align(align)
 				.offset(offset)
 				.build();
 			PEFConverterFacade.parsePefFile(input, ph);

@@ -201,8 +201,8 @@ launchers/pipeline-plugin.sh -text
 launchers/pipeline.sh -text
 lib/batik-css.jar -text
 lib/batik-util.jar -text
-lib/brailleUtils-catalog-1.1.0.jar -text
-lib/brailleUtils-core-1.1.0.jar -text
+lib/brailleUtils-catalog.jar -text
+lib/brailleUtils-core.jar -text
 lib/chardet.jar -text
 lib/commons-cli-1.1.jar -text
 lib/commons-pool-1.4.jar -text
@@ -210,12 +210,12 @@ lib/dotify-translator.jar -text
 lib/dotify.jar -text
 lib/epubcheck-1.0.5.jar -text
 lib/icu4j-3_8.jar -text
-lib/jing-saxon8-patch.jar -text
+lib/isorelax.jar -text
+lib/jing.jar -text
 lib/jl1.0.jar -text
 lib/junit-4.7.jar -text
 lib/log4j-1.2.15.jar -text
 lib/louisFat.jar -text
-lib/onvdl.jar -text
 lib/sac.jar -text
 lib/saxon.jar -text
 lib/saxon8-dom.jar -text
@@ -231,6 +231,7 @@ lib/tritonus_share-0.3.6.jar -text
 lib/wstx-lgpl-3.2.8.jar -text
 lib/xalan.jar -text
 lib/xercesImpl.jar -text
+lib/xml-apis.jar -text
 lib/zedval.jar -text svneol=unset#unset
 licenses/CeCILL-BLicense/CeCILL-B.txt -text
 licenses/MITLicense/MITLicense.txt -text svneol=unset#text/plain
@@ -1214,7 +1215,6 @@ transformers/org_pef_dist/lib/dist.jar -text
 transformers/org_pef_dist/transformer.tdf -text
 transformers/org_pef_dtbook2pef/DTBook2PEF.java -text
 transformers/org_pef_dtbook2pef/transformer.tdf -text
-transformers/org_pef_pefFileMerger/NumeralSortString.java -text
 transformers/org_pef_pefFileMerger/PEFFileMerger.java -text
 transformers/org_pef_pefFileMerger/transformer.tdf -text
 transformers/org_pef_pefFileSplitter/PEFFileSplitter.java -text

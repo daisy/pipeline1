@@ -72,15 +72,17 @@
 		</datatype>
 	</parameter>
 	
-	<parameter name="paperWidthFallback" value="center_left" required="false">
-		<nicename>Paper width error handling</nicename>
+	<parameter name="alignment" value="center_outer" required="false">
+		<nicename>Text Alignment</nicename>
 		<description>Select a fallback action to use when the selected paper is wider than the width specified in the file</description>
 		<datatype>
 			<enum>
-			  <item nicename="Align left" value="left" />
-			  <item nicename="Align center, round off towards the left edge" value="center_left" />
-			  <item nicename="Align center, round off towards the right edge" value="center_right" />
-			  <item nicename="Align right" value="right" />
+			  <item nicename="Left" value="left" />
+			  <item nicename="Inner edge" value="inner" />
+			  <item nicename="Outer edge" value="outer" />
+			  <item nicename="Center, round off towards the inner edge" value="center_inner" />
+			  <item nicename="Center, round off towards the outer edge" value="center_outer" />
+			  <item nicename="Right" value="right" />
 			  <item nicename="Abort" value="abort" />
 			</enum>
 		</datatype>
@@ -93,12 +95,35 @@
 			<string regex="[0-9]"/>
 		</datatype>
 	</parameter>
-
-	<parameter name="mirrorAlign" value="true" required="false">
-		<nicename>Mirror recto-verso alignment</nicename>
-		<description>If checked, left-hand pages will have the opposite alignment compared to right-hand pages</description>
+	
+	<parameter name="orientation" value="DEFAULT" required="false">
+		<nicename>Paper orientation</nicename>
+		<description>Sheet paper needs an orientation (value is ignored for other paper types)</description>
 		<datatype>
-			<boolean/>
+			<enum>
+				<item nicename="Default" value="DEFAULT" />
+			 	<item nicename="Reversed" value="REVERSED" />
+			</enum>
+		</datatype>
+	</parameter>
+	
+	<parameter name="cut-length" value="21" required="false">
+		<nicename>Paper cut length</nicename>
+		<description>Roll paper needs a cut length (value is ignored for other paper types)</description>
+		<datatype>
+			<string regex="[1-9][0-9]*(\.[0-9]+)?"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="cut-length-units" value="CENTIMETER" required="false">
+		<nicename>Paper cut length units</nicename>
+		<description>Roll paper needs a cut length unit (value is ignored for other paper types)</description>
+		<datatype>
+			<enum>
+				<item nicename="Centimeter" value="CENTIMETER" />
+			 	<item nicename="Millimeter" value="MILLIMETER" />
+			 	<item nicename="Inch" value="INCH" />
+			</enum>
 		</datatype>
 	</parameter>
 	
@@ -159,11 +184,6 @@
 		</parameter>
 
 		<parameter>
-			<name>paperWidthFallback</name>
-			<value>${paperWidthFallback}</value>
-		</parameter>
-
-		<parameter>
 			<name>pageRange</name>
 			<value>${pageRange}</value>
 		</parameter>
@@ -174,13 +194,28 @@
 		</parameter>
 		
 		<parameter>
-			<name>mirrorAlign</name>
-			<value>${mirrorAlign}</value>
+			<name>alignment</name>
+			<value>${alignment}</value>
 		</parameter>
-		
+
 		<parameter>
 			<name>copies</name>
 			<value>${copies}</value>
+		</parameter>
+		
+		<parameter>
+			<name>orientation</name>
+			<value>${orientation}</value>
+		</parameter>
+		
+		<parameter>
+			<name>cut-length</name>
+			<value>${cut-length}</value>
+		</parameter>
+		
+		<parameter>
+			<name>cut-length-units</name>
+			<value>${cut-length-units}</value>
 		</parameter>
 
 	</task>

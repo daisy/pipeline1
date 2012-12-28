@@ -11,10 +11,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-pool-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/epubcheck-1.0.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/icu4j-3_8.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jing-saxon8-patch.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jl1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.15.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/onvdl.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/sac.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/saxon.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/saxon8.jar"/>
@@ -35,10 +33,13 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="lib/junit-4.7.jar"/>
 	<classpathentry kind="lib" path="transformers/int_vspiewak_odt2daisy/lib/odt2daisy.jar"/>
-	<classpathentry kind="lib" path="lib/brailleUtils-catalog-1.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/brailleUtils-core-1.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/brailleUtils-catalog.jar"/>
+	<classpathentry kind="lib" path="lib/brailleUtils-core.jar"/>
 	<classpathentry kind="lib" path="lib/texhyphj.jar"/>
 	<classpathentry kind="lib" path="lib/dotify.jar"/>
 	<classpathentry kind="lib" path="lib/dotify-translator.jar"/>
+	<classpathentry kind="lib" path="lib/isorelax.jar"/>
+	<classpathentry kind="lib" path="lib/jing.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

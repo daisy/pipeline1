@@ -22,19 +22,52 @@
 		<description>Select the make and model of the target embosser</description>
 		<datatype>
 			<enum>
-				<item nicename="Braillo 200 (firmware 000.17 or later)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_200"/>
-				<item nicename="Braillo 270 (firmware 12 to 16)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_270"/>
-				<item nicename="Braillo 400S (firmware 000.17 or later)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_400_S"/>
-				<item nicename="Braillo 400SR (firmware 000.17 or later)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_400_SR"/>
-				<item nicename="Braillo 440SW (four page mode)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SW_4P"/>
-				<item nicename="Braillo 440SW (two page mode)" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SW_2P"/>
-				<item nicename="Braillo 440SWSF" value="com_braillo.BrailloEmbosserProvider.EmbosserType.BRAILLO_440_SWSF"/>
-				<item nicename="Index Braille - 3.30 Basic V2" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC"/>
-				<item nicename="Index Braille - 9.20 Everest V2" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST"/>
-				<item nicename="Index Braille - Basic &quot;blue bar&quot;" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_BLUE_BAR"/>
-				<item nicename="Index Braille - Basic-D V3" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_D_V3"/>
-				<item nicename="Index Braille - Everest V3" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST_V3"/>
-			</enum>
+<item nicename="Cidat - Impacto 600" value="es_once_cidat.CidatEmbosserProvider.EmbosserType.IMPACTO_600"/>
+<item nicename="Cidat - Impacto Texto" value="es_once_cidat.CidatEmbosserProvider.EmbosserType.IMPACTO_TEXTO"/>
+<item nicename="Cidat - Portathiel Blue" value="es_once_cidat.CidatEmbosserProvider.EmbosserType.PORTATHIEL_BLUE"/>
+<item nicename="Enabling Technologies - Bookmaker" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.BOOKMAKER"/>
+<item nicename="Enabling Technologies - Braille Express 100" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.BRAILLE_EXPRESS_100"/>
+<item nicename="Enabling Technologies - Braille Express 150" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.BRAILLE_EXPRESS_150"/>
+<item nicename="Enabling Technologies - BraillePlace" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.BRAILLE_PLACE"/>
+<item nicename="Enabling Technologies - ET" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.ET"/>
+<item nicename="Enabling Technologies - Juliet Classic" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.JULIET_CLASSIC"/>
+<item nicename="Enabling Technologies - Juliet Pro" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.JULIET_PRO"/>
+<item nicename="Enabling Technologies - Juliet Pro 60" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.JULIET_PRO_60"/>
+<item nicename="Enabling Technologies - Marathon" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.MARATHON"/>
+<item nicename="Enabling Technologies - Romeo 25" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.ROMEO_25"/>
+<item nicename="Enabling Technologies - Romeo Attache" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.ROMEO_ATTACHE"/>
+<item nicename="Enabling Technologies - Romeo Attache Pro" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.ROMEO_ATTACHE_PRO"/>
+<item nicename="Enabling Technologies - Romeo Pro 50" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.ROMEO_PRO_50"/>
+<item nicename="Enabling Technologies - Romeo Pro LE Narrow" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.ROMEO_PRO_LE_NARROW"/>
+<item nicename="Enabling Technologies - Romeo Pro LE Wide" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.ROMEO_PRO_LE_WIDE"/>
+<item nicename="Enabling Technologies - Thomas" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.THOMAS"/>
+<item nicename="Enabling Technologies - Thomas Pro" value="com_brailler.EnablingTechnologiesEmbosserProvider.EmbosserType.THOMAS_PRO"/>
+<item nicename="Index 4Waves Pro" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_4WAVES_PRO_V3"/>
+<item nicename="Index 4X4 Pro V2" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_4X4_PRO_V2"/>
+<item nicename="Index 4X4 Pro V3" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_4X4_PRO_V3"/>
+<item nicename="Index Basic Blue-Bar" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_BLUE_BAR"/>
+<item nicename="Index Basic-D V2" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_D_V2"/>
+<item nicename="Index Basic-D V3" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_D_V3"/>
+<item nicename="Index Basic-D V4" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_D_V4"/>
+<item nicename="Index Basic-S V2" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_S_V2"/>
+<item nicename="Index Basic-S V3" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BASIC_S_V3"/>
+<item nicename="Index Braille Box" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_BRAILLE_BOX_V4"/>
+<item nicename="Index Everest-D V2" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST_D_V2"/>
+<item nicename="Index Everest-D V3" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST_D_V3"/>
+<item nicename="Index Everest-D V4" value="com_indexbraille.IndexEmbosserProvider.EmbosserType.INDEX_EVEREST_D_V4"/>
+<item nicename="Mountbatten LS" value="pl_com_harpo.HarpoEmbosserProvider.EmbosserType.MOUNTBATTEN_LS"/>
+<item nicename="Mountbatten Pro" value="pl_com_harpo.HarpoEmbosserProvider.EmbosserType.MOUNTBATTEN_PRO"/>
+<item nicename="Mountbatten Writer+" value="pl_com_harpo.HarpoEmbosserProvider.EmbosserType.MOUNTBATTEN_WRITER_PLUS"/>
+<item nicename="ViewPlus - Cub" value="com_viewplus.ViewPlusEmbosserProvider.EmbosserType.CUB"/>
+<item nicename="ViewPlus - Cub Jr." value="com_viewplus.ViewPlusEmbosserProvider.EmbosserType.CUB_JR"/>
+<item nicename="ViewPlus - Elite 150" value="com_viewplus.ViewPlusEmbosserProvider.EmbosserType.ELITE_150"/>
+<item nicename="ViewPlus - Elite 200" value="com_viewplus.ViewPlusEmbosserProvider.EmbosserType.ELITE_200"/>
+<item nicename="ViewPlus - EmFuse" value="com_viewplus.ViewPlusEmbosserProvider.EmbosserType.EMFUSE"/>
+<item nicename="ViewPlus - Emprint SpotDot" value="com_viewplus.ViewPlusEmbosserProvider.EmbosserType.EMPRINT_SPOTDOT"/>
+<item nicename="ViewPlus - Max" value="com_viewplus.ViewPlusEmbosserProvider.EmbosserType.MAX"/>
+<item nicename="ViewPlus - Premier 100" value="com_viewplus.ViewPlusEmbosserProvider.EmbosserType.PREMIER_100"/>
+<item nicename="ViewPlus - Premier 80" value="com_viewplus.ViewPlusEmbosserProvider.EmbosserType.PREMIER_80"/>
+<item nicename="ViewPlus - Pro Gen II" value="com_viewplus.ViewPlusEmbosserProvider.EmbosserType.PRO_GEN_II"/>			</enum>
 		</datatype>
 	</parameter>
 	
@@ -64,15 +97,17 @@
 		</datatype>
 	</parameter>
 	
-	<parameter name="paperWidthFallback" value="center_left" required="false">
-		<nicename>Paper width error handling</nicename>
+	<parameter name="alignment" value="center_outer" required="false">
+		<nicename>Text Alignment</nicename>
 		<description>Select a fallback action to use when the selected paper is wider than the width specified in the file</description>
 		<datatype>
 			<enum>
-			  <item nicename="Align left" value="left" />
-			  <item nicename="Align center, round off towards the left edge" value="center_left" />
-			  <item nicename="Align center, round off towards the right edge" value="center_right" />
-			  <item nicename="Align right" value="right" />
+			  <item nicename="Left" value="left" />
+			  <item nicename="Inner edge" value="inner" />
+			  <item nicename="Outer edge" value="outer" />
+			  <item nicename="Center, round off towards the inner edge" value="center_inner" />
+			  <item nicename="Center, round off towards the outer edge" value="center_outer" />
+			  <item nicename="Right" value="right" />
 			  <item nicename="Abort" value="abort" />
 			</enum>
 		</datatype>
@@ -85,12 +120,35 @@
 			<string regex="[0-9]"/>
 		</datatype>
 	</parameter>
-
-	<parameter name="mirrorAlign" value="true" required="false">
-		<nicename>Mirror recto-verso alignment</nicename>
-		<description>If checked, left-hand pages will have the opposite alignment compared to right-hand pages</description>
+	
+	<parameter name="orientation" value="DEFAULT" required="false">
+		<nicename>Paper orientation</nicename>
+		<description>Sheet paper needs an orientation (value is ignored for other paper types)</description>
 		<datatype>
-			<boolean/>
+			<enum>
+				<item nicename="Default" value="DEFAULT" />
+			 	<item nicename="Reversed" value="REVERSED" />
+			</enum>
+		</datatype>
+	</parameter>
+	
+	<parameter name="cut-length" value="21" required="false">
+		<nicename>Paper cut length</nicename>
+		<description>Roll paper needs a cut length (value is ignored for other paper types)</description>
+		<datatype>
+			<string regex="[1-9][0-9]*(\.[0-9]+)?"/>
+		</datatype>
+	</parameter>
+	
+	<parameter name="cut-length-units" value="CENTIMETER" required="false">
+		<nicename>Paper cut length units</nicename>
+		<description>Roll paper needs a cut length unit (value is ignored for other paper types)</description>
+		<datatype>
+			<enum>
+				<item nicename="Centimeter" value="CENTIMETER" />
+			 	<item nicename="Millimeter" value="MILLIMETER" />
+			 	<item nicename="Inch" value="INCH" />
+			</enum>
 		</datatype>
 	</parameter>
 	
@@ -151,11 +209,6 @@
 		</parameter>
 
 		<parameter>
-			<name>paperWidthFallback</name>
-			<value>${paperWidthFallback}</value>
-		</parameter>
-
-		<parameter>
 			<name>pageRange</name>
 			<value>${pageRange}</value>
 		</parameter>
@@ -166,13 +219,28 @@
 		</parameter>
 		
 		<parameter>
-			<name>mirrorAlign</name>
-			<value>${mirrorAlign}</value>
+			<name>alignment</name>
+			<value>${alignment}</value>
 		</parameter>
 
 		<parameter>
 			<name>copies</name>
 			<value>${copies}</value>
+		</parameter>
+		
+		<parameter>
+			<name>orientation</name>
+			<value>${orientation}</value>
+		</parameter>
+		
+		<parameter>
+			<name>cut-length</name>
+			<value>${cut-length}</value>
+		</parameter>
+
+		<parameter>
+			<name>cut-length-units</name>
+			<value>${cut-length-units}</value>
 		</parameter>
 
 	</task>

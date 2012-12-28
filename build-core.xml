@@ -27,14 +27,7 @@
 	<!-- ================================================================== -->
 	<!-- Fileset definitions                                                -->
 	<!-- ================================================================== -->
-		
-	<!-- Jars required by the util library. The fileset.utilJars fileset is
-	     split into two separate patternsets since the order of the JARs
-	     is important when constructing the classpath (path.utilJars below)
-	     and the fileset itself is unordered. -->
-	<patternset id="patternset.utilJars.1">
-		<include name="jing-saxon8-patch.jar"/>
-	</patternset>
+
 	<patternset id="patternset.utilJars.2">
 		<include name="batik-css.jar"/>
 		<include name="batik-util.jar"/>
@@ -48,7 +41,8 @@
 		<include name="jl1.0.jar"/>
 		<include name="junit-4.7.jar"/>
 		<include name="log4j-1.2.15.jar"/>
-		<include name="onvdl.jar"/>
+		<include name="jing.jar"/>
+		<include name="xml-apis.jar"/>
 		<include name="sac.jar"/>
 		<include name="saxon.jar"/>
 		<include name="saxon8.jar"/>
@@ -64,14 +58,14 @@
 		<include name="xalan.jar"/>
 		<include name="xercesImpl.jar"/>			
 		<include name="zedval.jar"/>
-		<include name="brailleUtils-core-1.1.0.jar"/>
+		<include name="brailleUtils-core.jar"/>
+		<include name="brailleUtils-catalog.jar"/>
 		<include name="dotify.jar"/>
 		<include name="dotify-translator.jar"/>
 		<include name="texhyphj.jar"/>
 	</patternset>
 	
 	<fileset dir="${base.dir}/lib" id="fileset.utilJars">
-		<patternset refid="patternset.utilJars.1"/>
 		<patternset refid="patternset.utilJars.2"/>
 	</fileset>
 	
@@ -91,9 +85,6 @@
 	<!-- ================================================================== -->
 	
 	<path id="path.utilJars">
-		<fileset dir="${base.dir}/lib">
-			<patternset refid="patternset.utilJars.1"/>
-		</fileset>
 		<fileset dir="${base.dir}/lib">
 			<patternset refid="patternset.utilJars.2"/>
 		</fileset>
