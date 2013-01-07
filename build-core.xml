@@ -34,7 +34,7 @@
 		<include name="chardet.jar"/>
 		<include name="commons-cli-1.1.jar"/>
 		<include name="commons-pool-1.4.jar"/>
-		<include name="epubcheck-1.0.5.jar"/>
+		<include name="epubcheck-3.0.jar"/>
 		<include name="icu4j-3_8.jar"/>		
         <!-- <include name="icu4j-charsets.jar"/> -->    
 		<include name="jaudiotagger.jar"/>

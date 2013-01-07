@@ -9,7 +9,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/chardet.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-cli-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-pool-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/epubcheck-1.0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/epubcheck-3.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/icu4j-3_8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jl1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.15.jar"/>

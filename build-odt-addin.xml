@@ -21,7 +21,7 @@
 			<include name="batik-util.jar"/>
 			<include name="chardet.jar"/>
 			<include name="commons-cli-1.1.jar"/>
-			<include name="epubcheck-1.0.5.jar"/>
+			<include name="epubcheck-3.0.jar"/>
 			<include name="icu4j-3_8.jar"/>		
 			<include name="jl1.0.jar"/>
 			<include name="log4j-1.2.15.jar"/>

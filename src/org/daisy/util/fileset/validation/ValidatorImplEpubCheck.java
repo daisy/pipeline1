@@ -31,6 +31,7 @@ import org.daisy.util.fileset.validation.message.ValidatorWarningMessage;
 
 import com.adobe.epubcheck.api.EpubCheck;
 import com.adobe.epubcheck.api.Report;
+import com.adobe.epubcheck.util.FeatureEnum;
 
 /**
  * A bridge for the EpubCheck library to realize a OPS/EPUB {@link org.daisy.util.fileset.validation.Validator}
@@ -98,20 +99,45 @@ class ValidatorImplEpubCheck extends ValidatorImplAbstract implements Validator,
 	 * (non-Javadoc)
 	 * @see com.adobe.epubcheck.api.Report#error(java.lang.String, int, java.lang.String)
 	 */
-	public void error(String resource, int line, String message) {
+	public void error(String resource, int line, int column, String message) {
 		this.mValidatorListener.report(this, 
 				new ValidatorErrorMessage(
-						FilenameOrFileURI.toURI(resource),message,line,-1));		
+						FilenameOrFileURI.toURI(resource),message,line,column));		
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see com.adobe.epubcheck.api.Report#warning(java.lang.String, int, java.lang.String)
 	 */
-	public void warning(String resource, int line, String message) {
+	public void warning(String resource, int line, int column, String message) {
 		this.mValidatorListener.report(this, 
 				new ValidatorWarningMessage(
-						FilenameOrFileURI.toURI(resource),message,line,-1));
+						FilenameOrFileURI.toURI(resource),message,line,column));
+	}
+
+	public void exception(String arg0, Exception arg1) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public int getErrorCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getExceptionCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getWarningCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void info(String resource, FeatureEnum feature, String value) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
