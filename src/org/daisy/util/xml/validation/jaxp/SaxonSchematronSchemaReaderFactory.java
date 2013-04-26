@@ -17,7 +17,7 @@
  */
 package org.daisy.util.xml.validation.jaxp;
 
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXTransformerFactory;
 
 import com.thaiopensource.validate.schematron.SchematronSchemaReaderFactory;
 
@@ -29,7 +29,7 @@ import com.thaiopensource.validate.schematron.SchematronSchemaReaderFactory;
  */
 public class SaxonSchematronSchemaReaderFactory extends SchematronSchemaReaderFactory {
 	@Override
-	public TransformerFactory newTransformerFactory() {
+	public SAXTransformerFactory newTransformerFactory() {
 		net.sf.saxon.TransformerFactoryImpl fac = new net.sf.saxon.TransformerFactoryImpl();
 		
 		try{

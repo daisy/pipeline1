@@ -106,7 +106,9 @@
     <xsl:variable name="tmp6" select="replace($tmp5, ' ((\.{3}|…)\p{P})', ' $1')"/>
     <!-- [ and ] can sometimes be interpreted as the start or the end of an optional argument -->
     <xsl:variable name="tmp7" select="replace(replace($tmp6, '\[', '\\lbrack{}'), '\]', '\\rbrack{}')"/>
-    <xsl:value-of select="$tmp7"/>
+    <!-- << and >> is apparently treated as a shorthand and is not handled by our shorthand disabling code -->
+    <xsl:variable name="tmp8" select="replace(replace($tmp7, '&lt;&lt;', '{&lt;}&lt;'), '&gt;&gt;', '{&gt;}&gt;')"/>
+    <xsl:value-of select="$tmp8"/>
   </xsl:function>
 
    <xsl:template match="/">

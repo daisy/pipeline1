@@ -13,16 +13,14 @@
 	<!-- ================================================================== -->
 	
 	<fileset dir="${base.dir}/lib" id="fileset.addin.jars">
-		<patternset id="patternset.utilJars.1">
-			<include name="jing-saxon8-patch.jar"/>
-		</patternset>
 		<patternset id="patternset.utilJars.2">
 			<include name="batik-css.jar"/>
 			<include name="batik-util.jar"/>
 			<include name="commons-cli-1.1.jar"/>
 			<include name="icu4j-3_8.jar"/>
 			<include name="jl1.0.jar"/>
-			<include name="onvdl.jar"/>
+			<include name="jing.jar"/>
+			<include name="xml-apis.jar"/>
 			<include name="sac.jar"/>
 			<include name="saxon.jar"/>
 			<include name="saxon8.jar"/>

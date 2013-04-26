@@ -93,6 +93,17 @@
 			</enum>
 			<default>false</default>
 		</parameter>
+
+		<parameter required="false" type="enum">
+			<name>keepTempFilesOnSuccess</name>
+			<description>Keep temporary files even when processing is successful.</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
 		
 		<parameter required="false" type="application/xml">
 			<name>tempFilesDirectory</name>

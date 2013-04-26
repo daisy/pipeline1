@@ -2,17 +2,32 @@
 <paramGroup>
 
 	<parameter name="papersize" value="org_daisy.ISO216PaperProvider.PaperSize.A4" required="true">
-		<nicename>Paper size</nicename>
-		<description>Set the size of the paper</description>
+		<nicename>Paper</nicename>
+		<description>Set the size and type of paper</description>
 		<datatype>
 			<enum>
-				<item nicename="11.5 inch x 11 inch" value="org_daisy.NorthAmericaPaperProvider.PaperSize.W11500THOU_X_H11INCH"/>
-				<item nicename="210 mm wide, 10 inch high" value="org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H10INCH"/>
-				<item nicename="210 mm wide, 11 inch high" value="org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H11INCH"/>
-				<item nicename="210 mm wide, 12 inch high" value="org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H12INCH"/>
-				<item nicename="A4" value="org_daisy.ISO216PaperProvider.PaperSize.A4"/>
-				<item nicename="FA44" value="se_tpb.FA44PaperProvider.PaperSize.FA44"/>
-				<item nicename="Letter" value="org_daisy.NorthAmericaPaperProvider.PaperSize.LETTER"/>
+<item nicename="Sheet: 11.5 inch x 11 inch" value="org_daisy.NorthAmericaPaperProvider.PaperSize.W11500THOU_X_H11INCH"/>
+<item nicename="Sheet: A3" value="org_daisy.ISO216PaperProvider.PaperSize.A3"/>
+<item nicename="Sheet: A4" value="org_daisy.ISO216PaperProvider.PaperSize.A4"/>
+<item nicename="Sheet: A5" value="org_daisy.ISO216PaperProvider.PaperSize.A5"/>
+<item nicename="Sheet: B3" value="org_daisy.ISO216PaperProvider.PaperSize.B3"/>
+<item nicename="Sheet: B4" value="org_daisy.ISO216PaperProvider.PaperSize.B4"/>
+<item nicename="Sheet: B5" value="org_daisy.ISO216PaperProvider.PaperSize.B5"/>
+<item nicename="Sheet: FA44" value="se_tpb.FA44PaperProvider.PaperSize.FA44"/>
+<item nicename="Sheet: Junior Legal" value="org_daisy.NorthAmericaPaperProvider.PaperSize.JUNIOR_LEGAL"/>
+<item nicename="Sheet: Ledger" value="org_daisy.NorthAmericaPaperProvider.PaperSize.LEDGER"/>
+<item nicename="Sheet: Legal" value="org_daisy.NorthAmericaPaperProvider.PaperSize.LEGAL"/>
+<item nicename="Sheet: Letter" value="org_daisy.NorthAmericaPaperProvider.PaperSize.LETTER"/>
+<item nicename="Sheet: Tabloid" value="org_daisy.NorthAmericaPaperProvider.PaperSize.TABLOID"/>
+<item nicename="Roll: 21 cm wide" value="org_daisy.RollPaperProvider.PaperSize.W21CM"/>
+<item nicename="Roll: 24 cm wide" value="org_daisy.RollPaperProvider.PaperSize.W24CM"/>
+<item nicename="Roll: 28 cm wide" value="org_daisy.RollPaperProvider.PaperSize.W28CM"/>
+<item nicename="Roll: 33 cm wide" value="org_daisy.RollPaperProvider.PaperSize.W33CM"/>
+<item nicename="Tractor: 210 mm x 10 inch" value="org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H10INCH"/>
+<item nicename="Tractor: 210 mm x 11 inch" value="org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H11INCH"/>
+<item nicename="Tractor: 210 mm x 12 inch" value="org_daisy.TractorPaperProvider.PaperSize.W210MM_X_H12INCH"/>
+<item nicename="Tractor: 240 mm x 12 inch" value="org_daisy.TractorPaperProvider.PaperSize.W240MM_X_H12INCH"/>
+<item nicename="Tractor: 280 mm x 12 inch" value="org_daisy.TractorPaperProvider.PaperSize.W280MM_X_H12INCH"/>
 			</enum>
 		</datatype>
 	</parameter>
