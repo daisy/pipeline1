@@ -128,6 +128,12 @@
 	<xsl:value-of select="concat($fontsize, ',', $stocksize, ',')"/>
 	<xsl:text>extrafontsizes,twoside,showtrims,openright]{memoir}&#10;</xsl:text>
 	<xsl:text>\usepackage{calc}&#10;</xsl:text>
+	<!-- Tables -->
+	<xsl:if test="//dtb:table">
+	  <!-- tables with variable width columns balanced -->
+	  <xsl:text>\usepackage{tabulary}&#10;</xsl:text>
+	  <xsl:text>\setlength{\arrayrulewidth}{2.25pt}&#10;</xsl:text>
+	</xsl:if>
 	<xsl:choose>
 	  <xsl:when test="($paperheight ne '') and ($paperwidth ne '')">
 	    <xsl:value-of select="concat('\settrimmedsize{',$paperheight,'}{',$paperwidth,'}{*}&#10;')"/>
@@ -751,10 +757,6 @@
    	<!--<xsl:apply-templates/>-->
    </xsl:template>
    
-   <xsl:template match="dtb:table/dtb:caption">
-   	<!--<xsl:apply-templates/>-->
-   </xsl:template>
-   
    <xsl:template match="dtb:caption" mode="captionOnly">
    	<!--<xsl:text>\caption{</xsl:text>-->
    	<xsl:apply-templates mode="textOnly"/>
@@ -951,23 +953,27 @@
    </xsl:template>
 
    <xsl:template match="dtb:table">
-   	<xsl:text>\begin{table}[H]</xsl:text>
-   	<xsl:apply-templates select="dtb:caption" mode="captionOnly"/>
-   	<xsl:text>\begin{tabular}{</xsl:text>
-   	<xsl:variable name="numcols">
-   		<xsl:value-of select="count(descendant::dtb:tr[1]/*[self::dtb:td or self::dtb:th])"/>
-   	</xsl:variable>
-   	<xsl:for-each select="descendant::dtb:tr[1]/*[self::dtb:td or self::dtb:th]">
-   		<xsl:text>|p{</xsl:text>
-   		<xsl:value-of select="10 div $numcols"/>
-   		<xsl:text>cm}</xsl:text>
-   	</xsl:for-each>
-   	<xsl:text>|} \hline&#10;</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>\end{tabular}&#10;</xsl:text>
-   	<xsl:text>\end{table}&#10;</xsl:text>
+     <xsl:text>\begin{table}[H]&#10;</xsl:text>
+     <xsl:text>\begin{tabulary}{\textwidth}{|</xsl:text>
+     <xsl:variable name="numcols">
+       <xsl:value-of select="max(for $row in descendant::dtb:tr return count($row/(dtb:td|dtb:th)))"/>
+     </xsl:variable>
+     <!-- make all columns left justified and let tabulary deal with spacing of the table -->
+     <xsl:value-of select="string-join((for $col in 1 to $numcols return 'L'),'|')"/>
+     <xsl:text>|} \hline&#10;</xsl:text>
+     <!-- Make sure the table is in the right order and also handle tables without tbody -->
+     <xsl:apply-templates select="dtb:thead, dtb:tbody, dtb:tfoot, dtb:tr"/>
+     <xsl:text>\end{tabulary}&#10;</xsl:text>
+     <xsl:apply-templates select="dtb:caption"/>
+     <xsl:text>\end{table}&#10;</xsl:text>
    </xsl:template>
 
+   <xsl:template match="dtb:table/dtb:caption">
+     <xsl:text>\caption{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;</xsl:text>
+   </xsl:template>
+   
    <xsl:template match="dtb:tbody">
    	<xsl:apply-templates/>
    </xsl:template>
@@ -989,7 +995,9 @@
    	<xsl:if test="preceding-sibling::dtb:th">
    		<xsl:text> &amp; </xsl:text>
    	</xsl:if>
+   	<xsl:text>\textbf{</xsl:text>
    	<xsl:apply-templates/>
+   	<xsl:text>}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:td">
@@ -1075,7 +1083,7 @@
      <xsl:variable name="num">
        <xsl:apply-templates/>
      </xsl:variable>
-     <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}&#10;'"/>
+     <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}&#10;')"/>
    </xsl:template>
 
    <xsl:template match="dtb:prodnote">
