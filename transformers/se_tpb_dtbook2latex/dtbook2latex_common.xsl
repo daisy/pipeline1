@@ -1156,15 +1156,15 @@
    </xsl:template>
 
    <xsl:template match="dtb:sup">
- 	<xsl:text>$^{</xsl:text>
+ 	<xsl:text>\textsuperscript{</xsl:text>
    	<xsl:apply-templates/>
-   	<xsl:text>}$</xsl:text>
+   	<xsl:text>}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:sub">
-   	<xsl:text>$_{</xsl:text>
+   	<xsl:text>\textsubscript{</xsl:text>
    	<xsl:apply-templates/>
-   	<xsl:text>}$</xsl:text>
+   	<xsl:text>}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:span">
