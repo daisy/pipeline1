@@ -1070,7 +1070,10 @@
    </xsl:template>
 
    <xsl:template match="dtb:linenum">
-   	<xsl:apply-templates/>
+     <xsl:variable name="num">
+       <xsl:apply-templates/>
+     </xsl:variable>
+     <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}&#10;'"/>
    </xsl:template>
 
    <xsl:template match="dtb:prodnote">
