@@ -729,16 +729,12 @@
    </xsl:template>
 
    <xsl:template match="dtb:img">
-   	<!--<xsl:apply-templates/>-->
-   	<!--<xsl:text>\begin{picture}(5,2)&#10;</xsl:text>
-   	<xsl:text>\setlength{\fboxsep}{0.25cm}&#10;</xsl:text>
-   	<xsl:text>\put(0,0){\framebox(5,2){}}&#10;</xsl:text>
-   	<xsl:text>\put(1,1){\fbox{Missing image}}&#10;</xsl:text>
-   	<xsl:text>\end{picture}&#10;</xsl:text>
-   	-->
-   	<xsl:text>\includegraphics{</xsl:text>
-   	<xsl:value-of select="@src"/>
-   	<xsl:text>}&#10;&#10;</xsl:text>
+     <xsl:text>\begin{figure}[htb]&#10;</xsl:text>
+     <xsl:text>\includegraphics[scale=1.3]{</xsl:text>
+     <xsl:value-of select="@src"/>
+     <xsl:text>}&#10;</xsl:text>
+     <xsl:apply-templates select="dtb:caption"/>
+     <xsl:text>\end{figure}&#10;&#10;</xsl:text>   	
    </xsl:template>
 
    <xsl:template match="dtb:h1/dtb:img|dtb:h2/dtb:img|dtb:h3/dtb:img|dtb:h4/dtb:img|dtb:h5/dtb:img|dtb:h6/dtb:img">
