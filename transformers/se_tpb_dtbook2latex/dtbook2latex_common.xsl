@@ -132,7 +132,9 @@
 	<xsl:if test="//dtb:table">
 	  <!-- tables with variable width columns balanced -->
 	  <xsl:text>\usepackage{tabulary}&#10;</xsl:text>
-	  <xsl:text>\setlength{\arrayrulewidth}{2.25pt}&#10;</xsl:text>
+	  <xsl:text>\usepackage{colortbl}&#10;</xsl:text>
+	  <xsl:text>\arrayrulecolor{black!60}&#10;</xsl:text>
+	  <xsl:text>\setlength{\arrayrulewidth}{0.5mm}&#10;</xsl:text>
 	</xsl:if>
 	<xsl:choose>
 	  <xsl:when test="($paperheight ne '') and ($paperwidth ne '')">
@@ -218,7 +220,7 @@
      
      <xsl:if test="//dtb:sidebar">
        <xsl:text>\usepackage{tcolorbox}&#10;</xsl:text>
-       <xsl:text>\tcbset{colframe=black!80,colback=white,arc=0mm,float}&#10;</xsl:text>
+       <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float}&#10;</xsl:text>
      </xsl:if>
 
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
