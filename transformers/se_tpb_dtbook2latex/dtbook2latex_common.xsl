@@ -209,7 +209,12 @@
          <xsl:text>&#10;</xsl:text>
        </xsl:if>
      </xsl:if>
- 
+     
+     <xsl:if test="//dtb:sidebar">
+       <xsl:text>\usepackage{tcolorbox}&#10;</xsl:text>
+       <xsl:text>\tcbset{colframe=black!80,colback=white,arc=0mm,float}&#10;</xsl:text>
+     </xsl:if>
+
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
 	<xsl:value-of select="concat('\hypersetup{pdftitle={', my:quoteSpecialChars(//dtb:meta[@name='dc:title' or @name='dc:Title']/@content), '}, pdfauthor={', my:quoteSpecialChars(//dtb:meta[@name='dc:creator' or @name='dc:Creator']/@content), '}}&#10;')"/>
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
@@ -859,9 +864,16 @@
    </xsl:template>
 
    <xsl:template match="dtb:sidebar">
-   	<xsl:text>\fbox{\parbox{10cm}{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}}&#10;&#10;</xsl:text>
+     <xsl:text>\begin{tcolorbox}[floatplacement=htb]&#10;</xsl:text>
+     <xsl:text>\raggedright&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:sidebar/dtb:hd">
+     <xsl:text>\textbf{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:hd">
@@ -881,12 +893,6 @@
      <xsl:text>]{</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>}&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:sidebar/dtb:hd">
-   	<xsl:text>\textbf{</xsl:text>
-	<xsl:apply-templates/>
-	<xsl:text>}&#10;&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:list/dtb:hd">
@@ -1077,7 +1083,11 @@
    </xsl:template>
 
    <xsl:template match="dtb:prodnote">
-   	<xsl:text>\marginpar{\framebox[5mm]{!}}&#10;</xsl:text>
+     <xsl:text>\begin{tcolorbox}[colback=black!10,floatplacement=h!]</xsl:text>
+     <xsl:text>&#10;\raggedright&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+
    </xsl:template>
 
    <xsl:template match="dtb:rearmatter">
