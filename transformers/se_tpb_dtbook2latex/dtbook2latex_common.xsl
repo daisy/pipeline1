@@ -220,6 +220,7 @@
      
      <xsl:if test="//dtb:sidebar">
        <xsl:text>\usepackage{tcolorbox}&#10;</xsl:text>
+       <xsl:text>\tcbuselibrary{breakable}&#10;</xsl:text>
        <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float}&#10;</xsl:text>
      </xsl:if>
 
@@ -761,6 +762,13 @@
    	<xsl:text>}</xsl:text>
    </xsl:template>
 
+   <xsl:template match="dtb:table//dtb:img|dtb:sidebar//dtb:img" priority="10">
+     <!-- images inside tables and sidebars do not float -->
+     <xsl:text>\includegraphics[scale=1.3]{</xsl:text>
+     <xsl:value-of select="@src"/>
+     <xsl:text>}&#10;&#10;</xsl:text>
+   </xsl:template>
+
    <xsl:template match="dtb:caption">
    	<xsl:apply-templates/>
    </xsl:template>
@@ -874,7 +882,16 @@
    </xsl:template>
 
    <xsl:template match="dtb:sidebar">
-     <xsl:text>\begin{tcolorbox}[floatplacement=htb]&#10;</xsl:text>
+     <xsl:text>\begin{tcolorbox}[breakable,floatplacement=htbp]&#10;</xsl:text>
+     <xsl:text>\raggedright&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:sidebar//dtb:sidebar">
+     <!-- a nested sidebar should obviously not float and cannot be
+          breakable due to limitations of tcolorbox -->
+     <xsl:text>\begin{tcolorbox}[nofloat]&#10;</xsl:text>
      <xsl:text>\raggedright&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{tcolorbox}&#10;</xsl:text>
