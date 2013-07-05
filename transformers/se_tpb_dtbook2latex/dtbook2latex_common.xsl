@@ -230,6 +230,16 @@
 
 	<!-- avoid overfull \hbox (which is a serious problem with large fonts) -->
 	<xsl:text>\sloppy&#10;</xsl:text>
+	
+	<!-- Use sloppybottom to avoid widow lines. According to the memoir manual (3.5
+	     Sloppybottom) \topskip must have been increased beforehand for this to work -->
+	<xsl:text>\setlength{\topskip}{1.6\topskip}&#10;</xsl:text>
+	<xsl:text>\checkandfixthelayout&#10;</xsl:text>
+	<xsl:text>\sloppybottom&#10;&#10;</xsl:text>
+ 
+	<!-- eliminate widows and orphans -->
+	<xsl:text>\clubpenalty=10000&#10;</xsl:text>
+	<xsl:text>\widowpenalty=10000&#10;</xsl:text>
 
 	<!-- avoid random stretches in the middle of a page, if need be stretch at the bottom -->
 	<xsl:text>\raggedbottom&#10;</xsl:text>
