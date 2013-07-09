@@ -136,6 +136,8 @@
 	  <xsl:text>\arrayrulecolor{black!60}&#10;</xsl:text>
 	  <xsl:text>\setlength{\arrayrulewidth}{0.5mm}&#10;</xsl:text>
 	</xsl:if>
+	<!-- Make sure captions are left justified -->
+	<xsl:text>\captionstyle{\raggedright}&#10;</xsl:text>
 	<xsl:choose>
 	  <xsl:when test="($paperheight ne '') and ($paperwidth ne '')">
 	    <xsl:value-of select="concat('\settrimmedsize{',$paperheight,'}{',$paperwidth,'}{*}&#10;')"/>
@@ -752,12 +754,15 @@
      <xsl:text>\includegraphics[scale=1.3]{</xsl:text>
      <xsl:value-of select="@src"/>
      <xsl:text>}&#10;</xsl:text>
-     <xsl:apply-templates select="dtb:caption"/>
+     <!-- a caption is associated with an image through an imgref attribute or a bit less formal
+          simply by following it immediately -->
+     <xsl:apply-templates
+	 select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]" mode="referenced-caption" />
      <xsl:text>\end{figure}&#10;&#10;</xsl:text>   	
    </xsl:template>
 
    <xsl:template match="dtb:h1/dtb:img|dtb:h2/dtb:img|dtb:h3/dtb:img|dtb:h4/dtb:img|dtb:h5/dtb:img|dtb:h6/dtb:img">
-   	<xsl:text>\includegraphics{</xsl:text>
+   	<xsl:text>\includegraphics[scale=1.3]{</xsl:text>
    	<xsl:value-of select="@src"/>
    	<xsl:text>}</xsl:text>
    </xsl:template>
@@ -767,21 +772,27 @@
      <xsl:text>\includegraphics[scale=1.3]{</xsl:text>
      <xsl:value-of select="@src"/>
      <xsl:text>}&#10;&#10;</xsl:text>
+     <!-- a caption is associated with an image through an imgref attribute or a bit less formal
+          simply by following it immediately -->
+     <xsl:apply-templates
+	 select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]" mode="referenced-caption">
+       <xsl:with-param name="from-within-table" select="true()"/>
+     </xsl:apply-templates>
    </xsl:template>
 
    <xsl:template match="dtb:caption">
-   	<xsl:apply-templates/>
+     <!-- Ignore captions that aren't inside a table or not referenced -->
    </xsl:template>
 
-   <xsl:template match="dtb:imggroup/dtb:caption">
-   	<!--<xsl:apply-templates/>-->
-   </xsl:template>
-   
-   <xsl:template match="dtb:caption" mode="captionOnly">
-   	<!--<xsl:text>\caption{</xsl:text>-->
-   	<xsl:apply-templates mode="textOnly"/>
-   	<xsl:text>&#10;</xsl:text>
-   	<!--<xsl:text>}&#10;</xsl:text>-->
+   <xsl:template match="dtb:caption" mode="referenced-caption">
+     <xsl:param name="from-within-table" select="false()"/>
+     <xsl:if test="not($from-within-table)">
+       <xsl:text>\caption{</xsl:text>
+     </xsl:if>
+     <xsl:apply-templates/>
+     <xsl:if test="not($from-within-table)">
+       <xsl:text>}&#10;</xsl:text>
+     </xsl:if>
    </xsl:template>
 
    <!-- What's the point of a div? Usually you want some visual clue
@@ -819,15 +830,21 @@
    </xsl:template>
   
    <xsl:template match="dtb:imggroup">
-   	<!--
-   	<xsl:text>\fbox{\fbox{\parbox{10cm}{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}}}</xsl:text>
-   	-->
-   	<xsl:text>\begin{figure}[H]&#10;</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:apply-templates select="dtb:caption" mode="captionOnly"/>
-   	<xsl:text>\end{figure}&#10;</xsl:text>   	
+     <!-- By default as we scale the images we probably do not have
+          enough space on the page to group images, i.e. put them next
+          to each other. So it is probably best to just let them float
+          as if they weren't even in a imggroup. One way to indicate
+          that they are grouped would be to place them inside a frame
+          or put rules above and below, but this visualization will
+          break down if we let them float and will have other text in
+          between the images. -->
+     <!-- The use case where you have one caption for multiple images
+          is currently supported by using the imgref attribute as
+          mentioned in the standard. The use case as mentioned in the
+          nordic markup requirements that a caption is for the whole
+          imggroup when it doesn't follow an image is currently not
+          supported. -->
+     <xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template match="dtb:annotation">
@@ -948,7 +965,7 @@
 	<xsl:text>\end{trivlist}&#10;</xsl:text>
    </xsl:template>
 
-  <xsl:template match="dtb:list//dtb:list[@type='pl']">
+  <xsl:template match="dtb:list//dtb:list[@type='pl']" priority="10">
     <xsl:text>\begin{indentedlist}&#10;</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\end{indentedlist}&#10;</xsl:text>
