@@ -1,4 +1,5 @@
 * text=auto !eol
+/.dir-locals.el -text
 /.project -text svneol=unset#text/plain
 META-INF/MANIFEST.MF -text
 META-INF/services/javax.xml.validation.SchemaFactory -text
