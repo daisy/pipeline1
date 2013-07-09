@@ -169,26 +169,13 @@
 
    	<xsl:text>\usepackage{graphicx}&#10;</xsl:text>
    	<xsl:call-template name="findLanguage"/>
-	<!-- The Babel package defines what they call shorthands.
-	     These are usefull if you handcraft your LaTeX. But they
-	     are not wanted in the case where the LaTeX is generated,
-	     as they change "o into ö for example. The following
-	     disables this feature. See
-	     http://newsgroups.derkeiler.com/Archive/Comp/comp.text.tex/2005-10/msg00146.html
-	     -->
-	<xsl:text>%% disable babel shorthands&#10;</xsl:text>
-	<xsl:text>\makeatletter&#10;</xsl:text>
-	<xsl:text>\def\active@prefix#1#2{%&#10;</xsl:text>
-	<xsl:text>  \ifx\protect\@typeset@protect&#10;</xsl:text>
-	<xsl:text>    \string#1%&#10;</xsl:text>
-	<xsl:text>  \else&#10;</xsl:text>
-	<xsl:text>    \ifx\protect\@unexpandable@protect&#10;</xsl:text>
-	<xsl:text>      \noexpand#1%&#10;</xsl:text>
-	<xsl:text>    \else&#10;</xsl:text>
-	<xsl:text>      \protect#1%&#10;</xsl:text>
-	<xsl:text>    \fi&#10;</xsl:text>
-	<xsl:text>  \fi}&#10;</xsl:text>
-	<xsl:text>\makeatother&#10;</xsl:text>
+	<!-- The Babel package defines what they call shorthands. These are usefull
+	     if you handcraft your LaTeX. But they are not wanted in the case where
+	     the LaTeX is generated, as they change "o into ö for example. The
+	     following disables this feature. See
+	     http://tex.stackexchange.com/questions/28522/disable-babels-shorthands.
+	     This works for Babel 3.8m -->
+	<xsl:text>\def\languageshorthands#1{}&#10;</xsl:text>
    	<xsl:text>\setlength{\parskip}{1.5ex}&#10;</xsl:text>
    	<xsl:text>\setlength{\parindent}{0ex}&#10;</xsl:text>
 	<xsl:text>\usepackage{fontspec,xunicode,xltxtra}&#10;</xsl:text>
