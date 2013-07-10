@@ -72,6 +72,17 @@
 
   <xsl:variable name="number_of_volumes" select="count(//*['volume-split-point'=tokenize(@class, '\s+')])+1"/>
 
+  <xsl:variable name="includegraphics-command" >
+    <xsl:variable name="magic-number" select="3"/>
+    <xsl:variable name="scale-factor">
+      <xsl:sequence select="if ($fontsize='14pt') then round-half-to-even(14 div 12, 1) else 
+			    if ($fontsize='17pt') then round-half-to-even(17 div 12, 1) else 
+			    if ($fontsize='20pt') then round-half-to-even(20 div 12, 1) else
+			    if ($fontsize='25pt') then round-half-to-even(25 div 12, 1) else 1"/>
+    </xsl:variable>
+    <xsl:sequence select="concat('\includegraphics[scale=',$scale-factor*$magic-number,']{')"/>
+  </xsl:variable>
+
   <!-- Localization -->
 
   <!-- This is used to set some words and phrases which are generated -->
@@ -738,7 +749,7 @@
 
    <xsl:template match="dtb:img">
      <xsl:text>\begin{figure}[htb]&#10;</xsl:text>
-     <xsl:text>\includegraphics[scale=1.3]{</xsl:text>
+     <xsl:value-of select="$includegraphics-command"/>
      <xsl:value-of select="@src"/>
      <xsl:text>}&#10;</xsl:text>
      <!-- a caption is associated with an image through an imgref attribute or a bit less formal
@@ -749,14 +760,14 @@
    </xsl:template>
 
    <xsl:template match="dtb:h1/dtb:img|dtb:h2/dtb:img|dtb:h3/dtb:img|dtb:h4/dtb:img|dtb:h5/dtb:img|dtb:h6/dtb:img">
-   	<xsl:text>\includegraphics[scale=1.3]{</xsl:text>
+     <xsl:value-of select="$includegraphics-command"/>
    	<xsl:value-of select="@src"/>
    	<xsl:text>}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:table//dtb:img|dtb:sidebar//dtb:img" priority="10">
      <!-- images inside tables and sidebars do not float -->
-     <xsl:text>\includegraphics[scale=1.3]{</xsl:text>
+     <xsl:value-of select="$includegraphics-command"/>
      <xsl:value-of select="@src"/>
      <xsl:text>}&#10;&#10;</xsl:text>
      <!-- a caption is associated with an image through an imgref attribute or a bit less formal
