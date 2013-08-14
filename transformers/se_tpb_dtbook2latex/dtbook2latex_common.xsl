@@ -72,6 +72,17 @@
 
   <xsl:variable name="number_of_volumes" select="count(//*['volume-split-point'=tokenize(@class, '\s+')])+1"/>
 
+  <xsl:variable name="includegraphics-command" >
+    <xsl:variable name="magic-number" select="3"/>
+    <xsl:variable name="scale-factor">
+      <xsl:sequence select="if ($fontsize='14pt') then round-half-to-even(14 div 12, 1) else 
+			    if ($fontsize='17pt') then round-half-to-even(17 div 12, 1) else 
+			    if ($fontsize='20pt') then round-half-to-even(20 div 12, 1) else
+			    if ($fontsize='25pt') then round-half-to-even(25 div 12, 1) else 1"/>
+    </xsl:variable>
+    <xsl:sequence select="concat('\includegraphics[scale=',$scale-factor*$magic-number,']{')"/>
+  </xsl:variable>
+
   <!-- Localization -->
 
   <!-- This is used to set some words and phrases which are generated -->
@@ -128,6 +139,16 @@
 	<xsl:value-of select="concat($fontsize, ',', $stocksize, ',')"/>
 	<xsl:text>extrafontsizes,twoside,showtrims,openright]{memoir}&#10;</xsl:text>
 	<xsl:text>\usepackage{calc}&#10;</xsl:text>
+	<!-- Tables -->
+	<xsl:if test="//dtb:table">
+	  <!-- tables with variable width columns balanced -->
+	  <xsl:text>\usepackage{tabulary}&#10;</xsl:text>
+	  <xsl:text>\usepackage{colortbl}&#10;</xsl:text>
+	  <xsl:text>\arrayrulecolor{black!60}&#10;</xsl:text>
+	  <xsl:text>\setlength{\arrayrulewidth}{0.5mm}&#10;</xsl:text>
+	</xsl:if>
+	<!-- Make sure captions are left justified -->
+	<xsl:text>\captionstyle{\raggedright}&#10;</xsl:text>
 	<xsl:choose>
 	  <xsl:when test="($paperheight ne '') and ($paperwidth ne '')">
 	    <xsl:value-of select="concat('\settrimmedsize{',$paperheight,'}{',$paperwidth,'}{*}&#10;')"/>
@@ -159,26 +180,13 @@
 
    	<xsl:text>\usepackage{graphicx}&#10;</xsl:text>
    	<xsl:call-template name="findLanguage"/>
-	<!-- The Babel package defines what they call shorthands.
-	     These are usefull if you handcraft your LaTeX. But they
-	     are not wanted in the case where the LaTeX is generated,
-	     as they change "o into ö for example. The following
-	     disables this feature. See
-	     http://newsgroups.derkeiler.com/Archive/Comp/comp.text.tex/2005-10/msg00146.html
-	     -->
-	<xsl:text>%% disable babel shorthands&#10;</xsl:text>
-	<xsl:text>\makeatletter&#10;</xsl:text>
-	<xsl:text>\def\active@prefix#1#2{%&#10;</xsl:text>
-	<xsl:text>  \ifx\protect\@typeset@protect&#10;</xsl:text>
-	<xsl:text>    \string#1%&#10;</xsl:text>
-	<xsl:text>  \else&#10;</xsl:text>
-	<xsl:text>    \ifx\protect\@unexpandable@protect&#10;</xsl:text>
-	<xsl:text>      \noexpand#1%&#10;</xsl:text>
-	<xsl:text>    \else&#10;</xsl:text>
-	<xsl:text>      \protect#1%&#10;</xsl:text>
-	<xsl:text>    \fi&#10;</xsl:text>
-	<xsl:text>  \fi}&#10;</xsl:text>
-	<xsl:text>\makeatother&#10;</xsl:text>
+	<!-- The Babel package defines what they call shorthands. These are usefull
+	     if you handcraft your LaTeX. But they are not wanted in the case where
+	     the LaTeX is generated, as they change "o into ö for example. The
+	     following disables this feature. See
+	     http://tex.stackexchange.com/questions/28522/disable-babels-shorthands.
+	     This works for Babel 3.8m -->
+	<xsl:text>\def\languageshorthands#1{}&#10;</xsl:text>
    	<xsl:text>\setlength{\parskip}{1.5ex}&#10;</xsl:text>
    	<xsl:text>\setlength{\parindent}{0ex}&#10;</xsl:text>
 	<xsl:text>\usepackage{fontspec,xunicode,xltxtra}&#10;</xsl:text>
@@ -209,7 +217,13 @@
          <xsl:text>&#10;</xsl:text>
        </xsl:if>
      </xsl:if>
- 
+     
+     <xsl:if test="//dtb:sidebar">
+       <xsl:text>\usepackage{tcolorbox}&#10;</xsl:text>
+       <xsl:text>\tcbuselibrary{breakable}&#10;</xsl:text>
+       <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float}&#10;</xsl:text>
+     </xsl:if>
+
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
 	<xsl:value-of select="concat('\hypersetup{pdftitle={', my:quoteSpecialChars(//dtb:meta[@name='dc:title' or @name='dc:Title']/@content), '}, pdfauthor={', my:quoteSpecialChars(//dtb:meta[@name='dc:creator' or @name='dc:Creator']/@content), '}}&#10;')"/>
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
@@ -217,6 +231,16 @@
 
 	<!-- avoid overfull \hbox (which is a serious problem with large fonts) -->
 	<xsl:text>\sloppy&#10;</xsl:text>
+	
+	<!-- Use sloppybottom to avoid widow lines. According to the memoir manual (3.5
+	     Sloppybottom) \topskip must have been increased beforehand for this to work -->
+	<xsl:text>\setlength{\topskip}{1.6\topskip}&#10;</xsl:text>
+	<xsl:text>\checkandfixthelayout&#10;</xsl:text>
+	<xsl:text>\sloppybottom&#10;&#10;</xsl:text>
+ 
+	<!-- eliminate widows and orphans -->
+	<xsl:text>\clubpenalty=10000&#10;</xsl:text>
+	<xsl:text>\widowpenalty=10000&#10;</xsl:text>
 
 	<!-- avoid random stretches in the middle of a page, if need be stretch at the bottom -->
 	<xsl:text>\raggedbottom&#10;</xsl:text>
@@ -724,41 +748,49 @@
    </xsl:template>
 
    <xsl:template match="dtb:img">
-   	<!--<xsl:apply-templates/>-->
-   	<!--<xsl:text>\begin{picture}(5,2)&#10;</xsl:text>
-   	<xsl:text>\setlength{\fboxsep}{0.25cm}&#10;</xsl:text>
-   	<xsl:text>\put(0,0){\framebox(5,2){}}&#10;</xsl:text>
-   	<xsl:text>\put(1,1){\fbox{Missing image}}&#10;</xsl:text>
-   	<xsl:text>\end{picture}&#10;</xsl:text>
-   	-->
-   	<xsl:text>\includegraphics{</xsl:text>
-   	<xsl:value-of select="@src"/>
-   	<xsl:text>}&#10;&#10;</xsl:text>
+     <xsl:text>\begin{figure}[htb]&#10;</xsl:text>
+     <xsl:value-of select="$includegraphics-command"/>
+     <xsl:value-of select="@src"/>
+     <xsl:text>}&#10;</xsl:text>
+     <!-- a caption is associated with an image through an imgref attribute or a bit less formal
+          simply by following it immediately -->
+     <xsl:apply-templates
+	 select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]" mode="referenced-caption" />
+     <xsl:text>\end{figure}&#10;&#10;</xsl:text>   	
    </xsl:template>
 
    <xsl:template match="dtb:h1/dtb:img|dtb:h2/dtb:img|dtb:h3/dtb:img|dtb:h4/dtb:img|dtb:h5/dtb:img|dtb:h6/dtb:img">
-   	<xsl:text>\includegraphics{</xsl:text>
+     <xsl:value-of select="$includegraphics-command"/>
    	<xsl:value-of select="@src"/>
    	<xsl:text>}</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:caption">
-   	<xsl:apply-templates/>
+   <xsl:template match="dtb:table//dtb:img|dtb:sidebar//dtb:img" priority="10">
+     <!-- images inside tables and sidebars do not float -->
+     <xsl:value-of select="$includegraphics-command"/>
+     <xsl:value-of select="@src"/>
+     <xsl:text>}&#10;&#10;</xsl:text>
+     <!-- a caption is associated with an image through an imgref attribute or a bit less formal
+          simply by following it immediately -->
+     <xsl:apply-templates
+	 select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]" mode="referenced-caption">
+       <xsl:with-param name="from-within-table" select="true()"/>
+     </xsl:apply-templates>
    </xsl:template>
 
-   <xsl:template match="dtb:imggroup/dtb:caption">
-   	<!--<xsl:apply-templates/>-->
+   <xsl:template match="dtb:caption">
+     <!-- Ignore captions that aren't inside a table or not referenced -->
    </xsl:template>
-   
-   <xsl:template match="dtb:table/dtb:caption">
-   	<!--<xsl:apply-templates/>-->
-   </xsl:template>
-   
-   <xsl:template match="dtb:caption" mode="captionOnly">
-   	<!--<xsl:text>\caption{</xsl:text>-->
-   	<xsl:apply-templates mode="textOnly"/>
-   	<xsl:text>&#10;</xsl:text>
-   	<!--<xsl:text>}&#10;</xsl:text>-->
+
+   <xsl:template match="dtb:caption" mode="referenced-caption">
+     <xsl:param name="from-within-table" select="false()"/>
+     <xsl:if test="not($from-within-table)">
+       <xsl:text>\caption{</xsl:text>
+     </xsl:if>
+     <xsl:apply-templates/>
+     <xsl:if test="not($from-within-table)">
+       <xsl:text>}&#10;</xsl:text>
+     </xsl:if>
    </xsl:template>
 
    <!-- What's the point of a div? Usually you want some visual clue
@@ -796,15 +828,21 @@
    </xsl:template>
   
    <xsl:template match="dtb:imggroup">
-   	<!--
-   	<xsl:text>\fbox{\fbox{\parbox{10cm}{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}}}</xsl:text>
-   	-->
-   	<xsl:text>\begin{figure}[H]&#10;</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:apply-templates select="dtb:caption" mode="captionOnly"/>
-   	<xsl:text>\end{figure}&#10;</xsl:text>   	
+     <!-- By default as we scale the images we probably do not have
+          enough space on the page to group images, i.e. put them next
+          to each other. So it is probably best to just let them float
+          as if they weren't even in a imggroup. One way to indicate
+          that they are grouped would be to place them inside a frame
+          or put rules above and below, but this visualization will
+          break down if we let them float and will have other text in
+          between the images. -->
+     <!-- The use case where you have one caption for multiple images
+          is currently supported by using the imgref attribute as
+          mentioned in the standard. The use case as mentioned in the
+          nordic markup requirements that a caption is for the whole
+          imggroup when it doesn't follow an image is currently not
+          supported. -->
+     <xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template match="dtb:annotation">
@@ -859,9 +897,25 @@
    </xsl:template>
 
    <xsl:template match="dtb:sidebar">
-   	<xsl:text>\fbox{\parbox{10cm}{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}}&#10;&#10;</xsl:text>
+     <xsl:text>\begin{tcolorbox}[breakable,floatplacement=htbp]&#10;</xsl:text>
+     <xsl:text>\raggedright&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:sidebar//dtb:sidebar">
+     <!-- a nested sidebar should obviously not float and cannot be
+          breakable due to limitations of tcolorbox -->
+     <xsl:text>\begin{tcolorbox}[nofloat]&#10;</xsl:text>
+     <xsl:text>\raggedright&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:sidebar/dtb:hd">
+     <xsl:text>\textbf{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:hd">
@@ -881,12 +935,6 @@
      <xsl:text>]{</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>}&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:sidebar/dtb:hd">
-   	<xsl:text>\textbf{</xsl:text>
-	<xsl:apply-templates/>
-	<xsl:text>}&#10;&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:list/dtb:hd">
@@ -915,7 +963,7 @@
 	<xsl:text>\end{trivlist}&#10;</xsl:text>
    </xsl:template>
 
-  <xsl:template match="dtb:list//dtb:list[@type='pl']">
+  <xsl:template match="dtb:list//dtb:list[@type='pl']" priority="10">
     <xsl:text>\begin{indentedlist}&#10;</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\end{indentedlist}&#10;</xsl:text>
@@ -949,23 +997,27 @@
    </xsl:template>
 
    <xsl:template match="dtb:table">
-   	<xsl:text>\begin{table}[H]</xsl:text>
-   	<xsl:apply-templates select="dtb:caption" mode="captionOnly"/>
-   	<xsl:text>\begin{tabular}{</xsl:text>
-   	<xsl:variable name="numcols">
-   		<xsl:value-of select="count(descendant::dtb:tr[1]/*[self::dtb:td or self::dtb:th])"/>
-   	</xsl:variable>
-   	<xsl:for-each select="descendant::dtb:tr[1]/*[self::dtb:td or self::dtb:th]">
-   		<xsl:text>|p{</xsl:text>
-   		<xsl:value-of select="10 div $numcols"/>
-   		<xsl:text>cm}</xsl:text>
-   	</xsl:for-each>
-   	<xsl:text>|} \hline&#10;</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>\end{tabular}&#10;</xsl:text>
-   	<xsl:text>\end{table}&#10;</xsl:text>
+     <xsl:text>\begin{table}[H]&#10;</xsl:text>
+     <xsl:text>\begin{tabulary}{\textwidth}{|</xsl:text>
+     <xsl:variable name="numcols">
+       <xsl:value-of select="max(for $row in descendant::dtb:tr return count($row/(dtb:td|dtb:th)))"/>
+     </xsl:variable>
+     <!-- make all columns left justified and let tabulary deal with spacing of the table -->
+     <xsl:value-of select="string-join((for $col in 1 to $numcols return 'L'),'|')"/>
+     <xsl:text>|} \hline&#10;</xsl:text>
+     <!-- Make sure the table is in the right order and also handle tables without tbody -->
+     <xsl:apply-templates select="dtb:thead, dtb:tbody, dtb:tfoot, dtb:tr"/>
+     <xsl:text>\end{tabulary}&#10;</xsl:text>
+     <xsl:apply-templates select="dtb:caption"/>
+     <xsl:text>\end{table}&#10;</xsl:text>
    </xsl:template>
 
+   <xsl:template match="dtb:table/dtb:caption">
+     <xsl:text>\caption{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;</xsl:text>
+   </xsl:template>
+   
    <xsl:template match="dtb:tbody">
    	<xsl:apply-templates/>
    </xsl:template>
@@ -987,7 +1039,9 @@
    	<xsl:if test="preceding-sibling::dtb:th">
    		<xsl:text> &amp; </xsl:text>
    	</xsl:if>
+   	<xsl:text>\textbf{</xsl:text>
    	<xsl:apply-templates/>
+   	<xsl:text>}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:td">
@@ -1070,11 +1124,18 @@
    </xsl:template>
 
    <xsl:template match="dtb:linenum">
-   	<xsl:apply-templates/>
+     <xsl:variable name="num">
+       <xsl:apply-templates/>
+     </xsl:variable>
+     <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}&#10;')"/>
    </xsl:template>
 
    <xsl:template match="dtb:prodnote">
-   	<xsl:text>\marginpar{\framebox[5mm]{!}}&#10;</xsl:text>
+     <xsl:text>\begin{tcolorbox}[colback=black!10,floatplacement=h!]</xsl:text>
+     <xsl:text>&#10;\raggedright&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+
    </xsl:template>
 
    <xsl:template match="dtb:rearmatter">
@@ -1137,15 +1198,15 @@
    </xsl:template>
 
    <xsl:template match="dtb:sup">
- 	<xsl:text>$^{</xsl:text>
+ 	<xsl:text>\textsuperscript{</xsl:text>
    	<xsl:apply-templates/>
-   	<xsl:text>}$</xsl:text>
+   	<xsl:text>}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:sub">
-   	<xsl:text>$_{</xsl:text>
+   	<xsl:text>\textsubscript{</xsl:text>
    	<xsl:apply-templates/>
-   	<xsl:text>}$</xsl:text>
+   	<xsl:text>}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:span">

@@ -9,6 +9,7 @@
 		exclude-result-prefixes="dtb my">
   
   <xsl:import href="dtbook2latex_common.xsl"/>
+  <xsl:import href="dtbook2latex_nordic.xsl"/>
 
   <xsl:variable name="language-map">
     <entry key="0">null</entry>
