@@ -1053,7 +1053,7 @@
    	<xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:td[@colspan &gt; 1]">
+   <xsl:template match="dtb:td[@colspan &gt; 1]|dtb:th[@colspan &gt; 1]">
      <xsl:if test="preceding-sibling::dtb:td">
        <xsl:text> &amp; </xsl:text>
      </xsl:if>
