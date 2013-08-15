@@ -143,6 +143,8 @@
 	<xsl:if test="//dtb:table">
 	  <!-- tables with variable width columns balanced -->
 	  <xsl:text>\usepackage{tabulary}&#10;</xsl:text>
+	  <!-- we need the xcolor package to be able to define colors such as black!60 -->
+	  <xsl:text>\usepackage{xcolor}&#10;</xsl:text>
 	  <xsl:text>\usepackage{colortbl}&#10;</xsl:text>
 	  <xsl:text>\arrayrulecolor{black!60}&#10;</xsl:text>
 	  <xsl:text>\setlength{\arrayrulewidth}{0.5mm}&#10;</xsl:text>
@@ -1049,6 +1051,15 @@
    		<xsl:text> &amp; </xsl:text>
    	</xsl:if>
    	<xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:td[@colspan &gt; 1]">
+     <xsl:if test="preceding-sibling::dtb:td">
+       <xsl:text> &amp; </xsl:text>
+     </xsl:if>
+       <xsl:text>\multicolumn{</xsl:text><xsl:value-of select="@colspan"/><xsl:text>}{l|}{</xsl:text>
+     <xsl:apply-templates/>
+       <xsl:text>}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:colgroup">
