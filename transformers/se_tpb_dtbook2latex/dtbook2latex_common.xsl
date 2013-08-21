@@ -150,9 +150,6 @@
 	  <xsl:text>\usepackage{colortbl}&#10;</xsl:text>
 	  <xsl:text>\arrayrulecolor{black!60}&#10;</xsl:text>
 	  <xsl:text>\setlength{\arrayrulewidth}{0.5mm}&#10;</xsl:text>
-	  <!-- <xsl:if test="//(dtb:td|dtb:th)[@rowspan &gt; 1]"> -->
-	  <!--   <xsl:text>\usepackage{multirow}&#10;</xsl:text> -->
-	  <!-- </xsl:if> -->
 	</xsl:if>
 	<!-- Make sure captions are left justified -->
 	<xsl:text>\captionstyle{\raggedright}&#10;</xsl:text>
@@ -1110,24 +1107,6 @@
      <xsl:apply-templates/>
      <xsl:text>}}</xsl:text>
    </xsl:template>
-
-   <!-- <xsl:template match="dtb:td[@rowspan &gt; 1]"> -->
-   <!--   <xsl:if test="preceding-sibling::dtb:td"> -->
-   <!--     <xsl:text> &amp; </xsl:text> -->
-   <!--   </xsl:if> -->
-   <!--   <xsl:text>\multirow{</xsl:text><xsl:value-of select="@rowspan"/><xsl:text>}{*}{</xsl:text> -->
-   <!--   <xsl:apply-templates/> -->
-   <!--   <xsl:text>}</xsl:text> -->
-   <!-- </xsl:template> -->
-
-   <!-- <xsl:template match="dtb:th[@rowspan &gt; 1]"> -->
-   <!--   <xsl:if test="preceding-sibling::dtb:th"> -->
-   <!--     <xsl:text> &amp; </xsl:text> -->
-   <!--   </xsl:if> -->
-   <!--   <xsl:text>\multirow{</xsl:text><xsl:value-of select="@rowspan"/><xsl:text>}{*}{\textbf{</xsl:text> -->
-   <!--   <xsl:apply-templates/> -->
-   <!--   <xsl:text>}}</xsl:text> -->
-   <!-- </xsl:template> -->
 
    <xsl:template match="dtb:colgroup">
    	<xsl:apply-templates/>
