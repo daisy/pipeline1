@@ -8,6 +8,8 @@
 		extension-element-prefixes="my"
 		exclude-result-prefixes="dtb my">
   
+  <xsl:include href="table-utils.xsl"/>
+
   <xsl:output method="text" encoding="utf-8" indent="no"/>
   <xsl:strip-space elements="*"/>
   <xsl:preserve-space elements="dtb:line dtb:address dtb:div dtb:title dtb:author dtb:note dtb:byline dtb:dateline 
@@ -148,6 +150,9 @@
 	  <xsl:text>\usepackage{colortbl}&#10;</xsl:text>
 	  <xsl:text>\arrayrulecolor{black!60}&#10;</xsl:text>
 	  <xsl:text>\setlength{\arrayrulewidth}{0.5mm}&#10;</xsl:text>
+	  <!-- <xsl:if test="//(dtb:td|dtb:th)[@rowspan &gt; 1]"> -->
+	  <!--   <xsl:text>\usepackage{multirow}&#10;</xsl:text> -->
+	  <!-- </xsl:if> -->
 	</xsl:if>
 	<!-- Make sure captions are left justified -->
 	<xsl:text>\captionstyle{\raggedright}&#10;</xsl:text>
@@ -999,21 +1004,52 @@
    </xsl:template>
 
    <xsl:template match="dtb:table">
+     <xsl:variable name="normalized-table">
+       <xsl:apply-templates mode="normalize-table" select="."/>
+     </xsl:variable>
      <xsl:text>\begin{table}[H]&#10;</xsl:text>
      <xsl:text>\begin{tabulary}{\textwidth}{|</xsl:text>
      <xsl:variable name="numcols">
-       <xsl:value-of select="max(for $row in descendant::dtb:tr return count($row/(dtb:td|dtb:th)))"/>
+       <xsl:value-of select="max(for $row in $normalized-table//dtb:tr return count($row/(dtb:td|dtb:th)))"/>
      </xsl:variable>
      <!-- make all columns left justified and let tabulary deal with spacing of the table -->
      <xsl:value-of select="string-join((for $col in 1 to $numcols return 'L'),'|')"/>
      <xsl:text>|} \hline&#10;</xsl:text>
      <!-- Make sure the table is in the right order and also handle tables without tbody -->
-     <xsl:apply-templates select="dtb:thead, dtb:tbody, dtb:tfoot, dtb:tr"/>
+     <xsl:apply-templates select="$normalized-table/dtb:table/dtb:thead, $normalized-table/dtb:table/dtb:tbody, $normalized-table/dtb:table/dtb:tfoot, $normalized-table/dtb:table/dtb:tr"/>
      <xsl:text>\end{tabulary}&#10;</xsl:text>
      <xsl:apply-templates select="dtb:caption"/>
      <xsl:text>\end{table}&#10;</xsl:text>
    </xsl:template>
 
+  <xsl:template match="dtb:table" mode="normalize-table">
+    <xsl:variable name="dtb:tr" as="element()*">
+      <xsl:call-template name="dtb:insert-covered-table-cells">
+        <xsl:with-param name="table_cells" select="dtb:tr/(dtb:td|dtb:th)"/>
+        <xsl:with-param name="insert_if_colspan" select="false()" tunnel="yes"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:copy>
+      <xsl:apply-templates mode="#current" select="(dtb:thead, $dtb:tr, dtb:tbody, dtb:tfoot)"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="dtb:thead|dtb:tbody|dtb:tfoot" mode="normalize-table">
+    <xsl:variable name="dtb:tr" as="element()*">
+      <xsl:call-template name="dtb:insert-covered-table-cells">
+        <xsl:with-param name="table_cells" select="dtb:tr/(dtb:td|dtb:th)"/>
+        <xsl:with-param name="insert_if_colspan" select="false()" tunnel="yes"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:copy>
+      <xsl:apply-templates mode="#current" select="$dtb:tr"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="dtb:tr" mode="normalize-table">
+    <xsl:sequence select="."/>
+  </xsl:template>
+  
    <xsl:template match="dtb:table/dtb:caption">
      <xsl:text>\caption{</xsl:text>
      <xsl:apply-templates/>
@@ -1034,7 +1070,11 @@
 
    <xsl:template match="dtb:tr">
    	<xsl:apply-templates/>
-   	<xsl:text>\\ \hline&#10;</xsl:text>
+   	  <xsl:text>\\ </xsl:text>
+   	<xsl:if test="not(following-sibling::dtb:tr[1]//(dtb:td|dtb:th)[@covered-table-cell='yes'])">
+   	  <xsl:text>\hline</xsl:text>
+   	</xsl:if>
+   	  <xsl:text>&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:th">
@@ -1047,20 +1087,47 @@
    </xsl:template>
 
    <xsl:template match="dtb:td">
-   	<xsl:if test="preceding-sibling::dtb:td">
-   		<xsl:text> &amp; </xsl:text>
-   	</xsl:if>
-   	<xsl:apply-templates/>
-   </xsl:template>
-
-   <xsl:template match="dtb:td[@colspan &gt; 1]|dtb:th[@colspan &gt; 1]">
      <xsl:if test="preceding-sibling::dtb:td">
        <xsl:text> &amp; </xsl:text>
      </xsl:if>
-       <xsl:text>\multicolumn{</xsl:text><xsl:value-of select="@colspan"/><xsl:text>}{l|}{</xsl:text>
      <xsl:apply-templates/>
-       <xsl:text>}</xsl:text>
    </xsl:template>
+
+   <xsl:template match="dtb:td[@colspan &gt; 1]">
+     <xsl:if test="preceding-sibling::dtb:td">
+       <xsl:text> &amp; </xsl:text>
+     </xsl:if>
+     <xsl:text>\multicolumn{</xsl:text><xsl:value-of select="@colspan"/><xsl:text>}{l|}{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:th[@colspan &gt; 1]">
+     <xsl:if test="preceding-sibling::dtb:th">
+       <xsl:text> &amp; </xsl:text>
+     </xsl:if>
+     <xsl:text>\multicolumn{</xsl:text><xsl:value-of select="@colspan"/><xsl:text>}{l|}{\textbf{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}}</xsl:text>
+   </xsl:template>
+
+   <!-- <xsl:template match="dtb:td[@rowspan &gt; 1]"> -->
+   <!--   <xsl:if test="preceding-sibling::dtb:td"> -->
+   <!--     <xsl:text> &amp; </xsl:text> -->
+   <!--   </xsl:if> -->
+   <!--   <xsl:text>\multirow{</xsl:text><xsl:value-of select="@rowspan"/><xsl:text>}{*}{</xsl:text> -->
+   <!--   <xsl:apply-templates/> -->
+   <!--   <xsl:text>}</xsl:text> -->
+   <!-- </xsl:template> -->
+
+   <!-- <xsl:template match="dtb:th[@rowspan &gt; 1]"> -->
+   <!--   <xsl:if test="preceding-sibling::dtb:th"> -->
+   <!--     <xsl:text> &amp; </xsl:text> -->
+   <!--   </xsl:if> -->
+   <!--   <xsl:text>\multirow{</xsl:text><xsl:value-of select="@rowspan"/><xsl:text>}{*}{\textbf{</xsl:text> -->
+   <!--   <xsl:apply-templates/> -->
+   <!--   <xsl:text>}}</xsl:text> -->
+   <!-- </xsl:template> -->
 
    <xsl:template match="dtb:colgroup">
    	<xsl:apply-templates/>
