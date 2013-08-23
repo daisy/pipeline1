@@ -520,12 +520,11 @@
    </xsl:template>
 
    <xsl:template match="dtb:head">
-   	<xsl:apply-templates/>
+     <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:meta">
-   	<xsl:apply-templates/>
-   </xsl:template>
+   <!-- Ignore meta data and links -->
+   <xsl:template match="dtb:meta|dtb:link"/>
 
    <xsl:template match="dtb:book">
 	<xsl:text>\begin{document}&#10;</xsl:text>
