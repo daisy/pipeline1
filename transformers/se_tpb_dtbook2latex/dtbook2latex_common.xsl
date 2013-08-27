@@ -1107,12 +1107,8 @@
      <xsl:text>}}</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:colgroup">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
-   <xsl:template match="dtb:col">
-   	<xsl:apply-templates/>
+   <xsl:template match="dtb:colgroup|dtb:col">
+     <!-- ignore -->
    </xsl:template>
 
    <xsl:template match="dtb:poem">
