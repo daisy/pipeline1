@@ -334,7 +334,12 @@
 	
 	<!-- Make sure wrapped poetry lines are not indented -->
 	<xsl:text>\setlength{\vindent}{0em}&#10;</xsl:text>
-	
+
+	<!-- Poem titles should be left aligned (instead of centered) -->
+	<xsl:if test="//dtb:poem/dtb:title">
+	  <xsl:text>\renewcommand*{\PoemTitlefont}{\normalfont\large}&#10;</xsl:text>
+	</xsl:if>
+
     <!-- New environment for nested pl-type lists -->
     <xsl:text>\newenvironment{indentedlist}%&#10;</xsl:text>
     <xsl:text>  {\begin{list}{}{%&#10;</xsl:text>
@@ -1124,7 +1129,9 @@
    </xsl:template>
 
    <xsl:template match="dtb:poem/dtb:title">
-   	<xsl:apply-templates/>
+     <xsl:text>\PoemTitle*[]{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:cite/dtb:title">
