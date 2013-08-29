@@ -416,14 +416,7 @@
 
      <xsl:if test="$max_toc_depth &gt; 0">
        <xsl:text>\maxtocdepth{</xsl:text>
-       <xsl:choose>
-	 <xsl:when test="$max_toc_depth=1"><xsl:text>chapter</xsl:text></xsl:when>
-	 <xsl:when test="$max_toc_depth=2"><xsl:text>section</xsl:text></xsl:when>
-	 <xsl:when test="$max_toc_depth=3"><xsl:text>subsection</xsl:text></xsl:when>
-	 <xsl:when test="$max_toc_depth=4"><xsl:text>subsubsection</xsl:text></xsl:when>
-	 <xsl:when test="$max_toc_depth=5"><xsl:text>paragraph</xsl:text></xsl:when>
-	 <xsl:when test="$max_toc_depth>5"><xsl:text>subparagraph</xsl:text></xsl:when>
-       </xsl:choose>
+       <xsl:value-of select="substring($level_to_section_map/entry[@key=concat('level',$max_toc_depth)],2)"/>
        <xsl:text>}&#10;</xsl:text>
      </xsl:if>
    </xsl:template>
@@ -671,52 +664,14 @@
   	<xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:h1">
-   	<xsl:text>\chapter[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:h2">
-   	<xsl:text>\section[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:h3">
-   	<xsl:text>\subsection[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:h4">
-   	<xsl:text>\subsubsection[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:h5">
-   	<xsl:text>\paragraph[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:h6">
-   	<xsl:text>\subparagraph[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
+   <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
+     <xsl:variable name="level" select="local-name(ancestor::dtb:*[matches(local-name(),'^level[1-6]$')][1])"/>
+     <xsl:value-of select="$level_to_section_map/entry[@key=$level]"/>
+     <xsl:text>[</xsl:text>
+     <xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
+     <xsl:text>]{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:bridgehead">
@@ -945,14 +900,7 @@
      <xsl:variable name="level">
        <xsl:value-of select="count(ancestor::dtb:level)"/>
      </xsl:variable>
-     <xsl:choose>
-       <xsl:when test="$level=1"><xsl:text>\chapter</xsl:text></xsl:when>
-       <xsl:when test="$level=2"><xsl:text>\section</xsl:text></xsl:when>
-       <xsl:when test="$level=3"><xsl:text>\subsection</xsl:text></xsl:when>
-       <xsl:when test="$level=4"><xsl:text>\subsubsection</xsl:text></xsl:when>
-       <xsl:when test="$level=5"><xsl:text>\paragraph</xsl:text></xsl:when>
-       <xsl:when test="$level>5"><xsl:text>\subparagraph</xsl:text></xsl:when>
-     </xsl:choose>
+     <xsl:value-of select="$level_to_section_map/entry[@key=concat('level',$level)]"/>
      <xsl:text>[</xsl:text>
      <xsl:value-of select="text()"/>
      <xsl:text>]{</xsl:text>
