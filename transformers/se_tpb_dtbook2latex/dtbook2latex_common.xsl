@@ -85,6 +85,15 @@
     <xsl:sequence select="concat('\includegraphics[scale=',$scale-factor*$magic-number,']{')"/>
   </xsl:variable>
 
+  <xsl:variable name="level_to_section_map">
+    <entry key="level1">\chapter</entry>
+    <entry key="level2">\section</entry>
+    <entry key="level3">\subsection</entry>
+    <entry key="level4">\subsubsection</entry>
+    <entry key="level5">\paragraph</entry>
+    <entry key="level6">\subparagraph</entry>
+  </xsl:variable>
+
   <!-- Localization -->
 
   <!-- This is used to set some words and phrases which are generated -->
@@ -710,8 +719,14 @@
    	<xsl:text>}&#10;</xsl:text>   
    </xsl:template>
 
-  <xsl:template match="dtb:bridgehead">
-  	<xsl:apply-templates/>
+   <xsl:template match="dtb:bridgehead">
+     <xsl:variable name="level" select="local-name(ancestor::dtb:*[matches(local-name(),'^level[1-6]$')][1])"/>
+     <xsl:value-of select="$level_to_section_map/entry[@key=$level]"/>
+     <xsl:text>*[</xsl:text>
+     <xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
+     <xsl:text>]{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;</xsl:text>   
    </xsl:template>
 
    <xsl:template match="dtb:list[not(@type)]">
