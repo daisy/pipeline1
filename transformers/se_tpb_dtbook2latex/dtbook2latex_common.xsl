@@ -675,11 +675,14 @@
    </xsl:template>
 
    <xsl:template match="dtb:bridgehead">
-     <xsl:variable name="level" select="local-name(ancestor::dtb:*[matches(local-name(),'^level[1-6]$')][1])"/>
+     <!-- a bridgehead inside level{N} is displayed like a h{N+1} (without the toc entry) -->
+     <xsl:variable name="level" 
+		   select="concat('level',number(substring-after(local-name(ancestor::dtb:*[matches(local-name(),'^level[1-6]$')][1]),'level'))+1)"/>
+     <!-- FIXME: This will fail if we are inside a level6. I guess we should define a LaTeX
+          command \subsubparagraph*, give it some styling and add it to level_to_section_map
+          -->
      <xsl:value-of select="$level_to_section_map/entry[@key=$level]"/>
-     <xsl:text>*[</xsl:text>
-     <xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-     <xsl:text>]{</xsl:text>
+     <xsl:text>*{</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>}&#10;</xsl:text>   
    </xsl:template>
