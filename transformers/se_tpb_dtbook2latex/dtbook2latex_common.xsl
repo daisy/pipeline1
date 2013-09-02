@@ -231,6 +231,10 @@
        </xsl:if>
      </xsl:if>
      
+     <xsl:if test="//dtb:samp[@xml:space='preserve']">
+       <xsl:text>\usepackage{alltt}&#10;</xsl:text>
+     </xsl:if>
+
      <xsl:if test="//dtb:sidebar">
        <xsl:text>\usepackage{tcolorbox}&#10;</xsl:text>
        <xsl:text>\tcbuselibrary{breakable}&#10;</xsl:text>
@@ -1127,9 +1131,20 @@
    </xsl:template>
 
    <xsl:template match="dtb:samp">
-   	<xsl:text>\texttt{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}</xsl:text>
+     <xsl:text>\texttt{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:samp[@xml:space='preserve']">
+     <xsl:text>\begin{alltt}</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{alltt}</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:samp[@xml:space='preserve']//text()">
+     <!-- escape backslash and curly braces -->
+     <xsl:value-of select="replace(replace(., '\\', '\\textbackslash '), '(\{|\})', '\\$1')"/>
    </xsl:template>
 
    <xsl:template match="dtb:linegroup">
