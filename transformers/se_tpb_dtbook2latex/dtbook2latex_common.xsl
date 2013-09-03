@@ -543,7 +543,7 @@
 	  <xsl:text>\raggedright&#10;</xsl:text>
 	</xsl:if>
 	<xsl:apply-templates/>
-	<xsl:if test="//dtb:noteref and $endnotes = 'document'">
+	<xsl:if test="//(dtb:noteref|dtb:annoref) and $endnotes = 'document'">
 	  <xsl:text>\printpagenotes&#10;</xsl:text>
 	</xsl:if>
 	<xsl:text>\end{document}&#10;</xsl:text>
@@ -589,7 +589,7 @@
       <xsl:text>\chapter*{\ }&#10;</xsl:text>
     </xsl:if>
     <xsl:apply-templates/>
-    <xsl:if test=".//dtb:noteref and $endnotes = 'chapter'">
+    <xsl:if test=".//(dtb:noteref|dtb:annoref) and $endnotes = 'chapter'">
       <xsl:text>\printpagenotes*&#10;</xsl:text>
     </xsl:if>
     <xsl:if test="following::*[1][self::dtb:p]">
@@ -712,10 +712,14 @@
      <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:noteref">
+   <xsl:template match="dtb:noteref|dtb:annoref">
      <xsl:variable name="refText">
-       <xsl:apply-templates select="//dtb:note[@id=translate(current()/@idref,'#','')]" mode="footnotes"/>
+       <xsl:apply-templates select="//(dtb:note|dtb:annotation)[@id=translate(current()/@idref,'#','')]" mode="footnotes"/>
      </xsl:variable>
+     <xsl:if test="self::dtb:annoref">
+       <!-- for annorefs we want to keep the content -->
+       <xsl:apply-templates/>
+     </xsl:if>
      <xsl:choose>
        <xsl:when test="$endnotes = 'none'">
 	 <xsl:text>\footnotemark</xsl:text>
@@ -830,10 +834,6 @@
      <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:annotation">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
    <xsl:template match="dtb:author">	
    	<xsl:apply-templates/>
    </xsl:template>
@@ -868,15 +868,15 @@
   	<xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:note">
+   <xsl:template match="dtb:note|dtb:annotation">
    	<!--<xsl:apply-templates/>-->
    </xsl:template>
 
-   <xsl:template match="dtb:note" mode="footnotes">
+   <xsl:template match="dtb:note|dtb:annotation" mode="footnotes">
      <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:note/dtb:p">
+   <xsl:template match="dtb:note/dtb:p|dtb:annotation/dtb:p">
      <xsl:apply-templates/>
      <xsl:if test="position() != last()"><xsl:text>&#10;&#10;</xsl:text></xsl:if>
    </xsl:template>
@@ -1244,10 +1244,6 @@
    </xsl:template>
 
    <xsl:template match="dtb:a[@href]">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
-  <xsl:template match="dtb:annoref">
    	<xsl:apply-templates/>
    </xsl:template>
 
