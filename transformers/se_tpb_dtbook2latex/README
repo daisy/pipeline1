@@ -1,0 +1,107 @@
+
+* Goals
+The idea of large print is to make the content accessible for people
+with a visual impairment. This in general means that there is a
+simple structure to the layout, everything is flushed left and a
+special font is used.
+
+* Implementation
+** Code
+In LaTeX code is typically rendered using the listings package. The
+package pretty prints the code based on the language. However as we
+are dealing with DTBook chances are that it is not known which
+programming language we are dealing with. Instead we probably have
+nested strong and em that reflect the original rendering in the book.
+All we want is a faithful representation of the original. For that
+most likely the alltt package is best.
+
+An additional challenge is that it is not quite clear when to render a
+code fragment as an inline or as a block. The structuring guidelines
+say that code can be both but the schema indicates that it can only be
+inside a p anyway.
+
+For now we use the same implementation as for dtb:samp, so for inline
+code use xml:space='default'.
+
+** Annotation
+Annotations are generally used for things that are printed in the
+margin of the print book. In a large print book it is not desirable
+to use the margin as this makes the layout less clear and with the
+large font there isn't much room in the margin anyway.
+
+So it seems more adequate to treat annotations as another form of
+footnotes or maybe even sidebar that could be placed at the bottom of
+the page or float somewhere near the annoref.
+
+** bdo
+Is not supported at the moment. There is a question on StackExchange
+that seems to indicate that there are possibilities to support this
+(http://tex.stackexchange.com/questions/38421/right-to-left-text-in-latex-reversed-numbers-and-parentheses),
+so I'd accept patches.
+
+** Bridgehead
+In the context of LaTeX a bridgehead inside a level{N} can basically
+be treated like a h{N+1}. 
+
+** Dfn
+In theory we could treat the dfn tag as an indication that this word
+should go in some index and have LaTeX generate this index for us.
+However in the interest of having a faithful rendering of the
+original we do not do this. Indexes are created differently (see
+http://www.daisy.org/z3986/structure/SG-DAISY3/part2-major.html#index).
+ 
+** Samp
+The [[http://www.daisy.org/z3986/structure/SG-DAISY3/part2-block.html#sample][structuring guidelines]] are a bit hazy about the use of ~samp~. Are
+you supposed to embed inline markup like newlines and bold inside samp
+or is the spacing preserved? The current implementation uses the
+~xml:space~ attribute to decide whether the spacing is to be preserved.
+The DTBook schema sets the default of ~xml:space~ to 'preserve', so if
+you omit it it defaults to 'preserve'. If you want to manually lay out
+the content then use ~xml:space='default'~ as follows:
+
+#+BEGIN_EXAMPLE
+<samp xml:space='default'>
+First Name:________________________ Middle Initial:_______<br/>
+Last Name:___________________________<br/>
+Address:_______________________________________________________<br/>
+City:______________________ State:_______ Zip:________________<br/>
+Social Security Number:____________________________<br/>
+Bank Name:____________________________________<br/>
+</samp>
+#+END_EXAMPLE
+
+or alternatively
+
+#+BEGIN_EXAMPLE
+<samp>
+First Name:________________________ Middle Initial:_______
+Last Name:___________________________
+Address:_______________________________________________________
+City:______________________ State:_______ Zip:________________
+Social Security Number:____________________________
+Bank Name:____________________________________
+</samp>
+#+END_EXAMPLE
+
+* Limitations
+It is generally not so easy to lay out something on a fixed page where
+you can have any input and want to use a large font. So there are
+probably many cases where the content will go off the page. This
+usually occurs where you have advanced content inside tables, large
+tables. If you want you can go in and fix the LaTeX code, on the other
+hand if you have some automated work flow where you just run your
+DTBook through you might have to life with these deficiencies or move
+to a format that is not bound by the limitations of a physical medium
+such as paper. In other words move to something like DTB or EPUB.
+
+* History
+This code was originally developed by Linus Ericson as a prototype.
+Christian Egli took it and enhanced it for use in production at SBS.
+For a long time only a subset of DTBook was in production at SBS and
+hence only a subset of the converter was really battle tested. By now
+it should support all of DTBook fairly well
+
+
+# Local Variables:
+# mode: org
+# End:
