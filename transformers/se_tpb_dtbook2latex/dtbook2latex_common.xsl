@@ -1112,37 +1112,25 @@
    	<xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:code">
-   	<xsl:text>\texttt{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:kbd">
-   	<xsl:text>\texttt{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}</xsl:text>
-   </xsl:template>
-
    <xsl:template match="dtb:q">
    	<xsl:text>\textsl{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:samp">
+   <xsl:template match="dtb:samp|dtb:code|dtb:kbd">
      <xsl:text>\texttt{</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>}</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:samp[@xml:space='preserve']">
+   <xsl:template match="dtb:samp[@xml:space='preserve']|dtb:code[@xml:space='preserve']">
      <xsl:text>\begin{alltt}</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{alltt}</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:samp[@xml:space='preserve']//text()">
+   <xsl:template match="dtb:samp[@xml:space='preserve']//text()|dtb:code[@xml:space='preserve']//text()">
      <!-- escape backslash and curly braces -->
      <xsl:value-of select="replace(replace(., '\\', '\\textbackslash '), '(\{|\})', '\\$1')"/>
    </xsl:template>
