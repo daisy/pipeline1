@@ -235,10 +235,10 @@
        <xsl:text>\usepackage{alltt}&#10;</xsl:text>
      </xsl:if>
 
-     <xsl:if test="//dtb:sidebar">
+     <xsl:if test="//dtb:sidebar|//dtb:prodnote">
        <xsl:text>\usepackage{tcolorbox}&#10;</xsl:text>
        <xsl:text>\tcbuselibrary{breakable}&#10;</xsl:text>
-       <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float}&#10;</xsl:text>
+       <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float,parbox=false}&#10;</xsl:text>
      </xsl:if>
 
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
@@ -1169,6 +1169,13 @@
    <xsl:template match="dtb:prodnote">
      <xsl:text>\begin{tcolorbox}[colback=black!10,floatplacement=h!]</xsl:text>
      <xsl:text>&#10;\raggedright&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:p/dtb:prodnote">
+     <!-- inline prodnote -->
+     <xsl:text>\begin{tcolorbox}[colback=black!10,nofloat,after={}]</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{tcolorbox}&#10;</xsl:text>
    </xsl:template>
