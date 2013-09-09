@@ -665,7 +665,14 @@
    </xsl:template>
 
    <xsl:template match="dtb:address">
-  	<xsl:apply-templates/>
+     <xsl:apply-templates/>
+     <xsl:text>&#10;</xsl:text>
+   </xsl:template>
+   
+   <xsl:template match="dtb:address/dtb:line">
+     <xsl:apply-templates/>
+     <xsl:if test="following-sibling::*"><xsl:text>\\</xsl:text></xsl:if>
+     <xsl:text>&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
@@ -860,12 +867,13 @@
     <xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
 
-  <xsl:template match="dtb:dateline">
-  	<xsl:apply-templates/>
+   <xsl:template match="dtb:dateline">
+     <xsl:apply-templates/>
+     <xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
 
-  <xsl:template match="dtb:epigraph">
-  	<xsl:apply-templates/>
+   <xsl:template match="dtb:epigraph">
+     <xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template match="dtb:note|dtb:annotation">
@@ -1163,7 +1171,6 @@
      <xsl:text>&#10;\raggedright&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{tcolorbox}&#10;</xsl:text>
-
    </xsl:template>
 
    <xsl:template match="dtb:rearmatter">
