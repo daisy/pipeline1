@@ -83,6 +83,26 @@ Bank Name:____________________________________
 </samp>
 #+END_EXAMPLE
 
+** Prodnote
+Prodnotes come in two flavours: inline and block. 
+
+The block variant seems in many ways like a side bar and is therefore
+rendered in a similar way with a box around it. To distinguish it from
+a sidebar it has a slightly different, gray background. This in itself
+might be a sin from the visual impairment point of view, but we need a
+way to visualy distinguish them from sidebar. Maybe we could just add
+a title to them saying something like "Producers Note", but this seems
+to heavy weight and would require a way to customize the title.
+
+The LaTeX environment tcolorbox provides all the facilities to do
+this. For inline prodnotes it is not really an ideal solution however,
+as it typesets the prodnote in its own paragraph and makes it
+non-breakable. A solution for inline prodnotes could be to treat them
+like footnotes, but it doesn't seem very desirable to typeset block
+and inline prodnotes differently. So for now inline prodnotes are set
+in a separate paragraph like their block context brother. However they
+are not floating, i.e. interrupt the current paragraph immediately.
+
 * Limitations
 It is generally not so easy to lay out something on a fixed page where
 you can have any input and want to use a large font. So there are
