@@ -103,6 +103,16 @@ and inline prodnotes differently. So for now inline prodnotes are set
 in a separate paragraph like their block context brother. However they
 are not floating, i.e. interrupt the current paragraph immediately.
 
+** Caption
+In the context of large print we assume that no automatic text should
+be generated for captions, i.e. we do not want the usual LaTeX style
+of "Table 4:...". Instead we want just the content of the caption. For
+that we use the \legend macro from the memoir class. Since all the
+text is left justified and we would like to stay away from italics
+there is no visual clue that something is a caption. It looks just
+like a normal paragraph.
+
+
 * Limitations
 It is generally not so easy to lay out something on a fixed page where
 you can have any input and want to use a large font. So there are

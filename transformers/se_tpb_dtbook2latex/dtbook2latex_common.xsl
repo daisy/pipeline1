@@ -770,7 +770,6 @@
           simply by following it immediately -->
      <xsl:apply-templates
 	 select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]" mode="referenced-caption">
-       <xsl:with-param name="from-within-table" select="true()"/>
      </xsl:apply-templates>
    </xsl:template>
 
@@ -779,14 +778,11 @@
    </xsl:template>
 
    <xsl:template match="dtb:caption" mode="referenced-caption">
-     <xsl:param name="from-within-table" select="false()"/>
-     <xsl:if test="not($from-within-table)">
-       <xsl:text>\caption{</xsl:text>
-     </xsl:if>
-     <xsl:apply-templates/>
-     <xsl:if test="not($from-within-table)">
-       <xsl:text>}&#10;</xsl:text>
-     </xsl:if>
+     <xsl:variable name="caption">
+       <xsl:apply-templates/>
+     </xsl:variable>
+     <xsl:value-of select="concat('\legend{',$caption,'}&#10;')"/>
+     <xsl:value-of select="concat('\addcontentsline{lof}{figure}{',$caption,'}&#10;')"/>
    </xsl:template>
 
    <!-- What's the point of a div? Usually you want some visual clue
@@ -1030,9 +1026,11 @@
   </xsl:template>
   
    <xsl:template match="dtb:table/dtb:caption">
-     <xsl:text>\caption{</xsl:text>
-     <xsl:apply-templates/>
-     <xsl:text>}&#10;</xsl:text>
+     <xsl:variable name="caption">
+       <xsl:apply-templates/>
+     </xsl:variable>
+     <xsl:value-of select="concat('\legend{',$caption,'}&#10;')"/>
+     <xsl:value-of select="concat('\addcontentsline{lot}{table}{',$caption,'}&#10;')"/>
    </xsl:template>
    
    <xsl:template match="dtb:tbody">
