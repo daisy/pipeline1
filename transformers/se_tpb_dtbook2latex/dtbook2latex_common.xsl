@@ -241,6 +241,11 @@
        <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float,parbox=false}&#10;</xsl:text>
      </xsl:if>
 
+     <xsl:if test="//dtb:linenum">
+       <!-- Make sure the linenums are always on the left -->
+       <xsl:text>\sideparmargin{left}&#10;</xsl:text>
+     </xsl:if>
+
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
 	<xsl:value-of select="concat('\hypersetup{pdftitle={', my:quoteSpecialChars(//dtb:meta[@name='dc:title' or @name='dc:Title']/@content), '}, pdfauthor={', my:quoteSpecialChars(//dtb:meta[@name='dc:creator' or @name='dc:Creator']/@content), '}}&#10;')"/>
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
@@ -1161,7 +1166,12 @@
      <xsl:variable name="num">
        <xsl:apply-templates/>
      </xsl:variable>
-     <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}&#10;')"/>
+     <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}')"/>
+   </xsl:template>
+
+   <xsl:template match="dtb:line//text()[(preceding-sibling::*|preceding-sibling::text())[1]/self::dtb:linenum]">
+     <!-- trim whitespace after the linenum element -->
+     <xsl:value-of select="my:quoteSpecialChars(replace(string(current()), '^\s+(.*)$', '$1'))"/>
    </xsl:template>
 
    <xsl:template match="dtb:prodnote">
