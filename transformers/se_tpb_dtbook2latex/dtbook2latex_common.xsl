@@ -82,7 +82,7 @@
 			    if ($fontsize='20pt') then round-half-to-even(20 div 12, 1) else
 			    if ($fontsize='25pt') then round-half-to-even(25 div 12, 1) else 1"/>
     </xsl:variable>
-    <xsl:sequence select="concat('\includegraphics[scale=',$scale-factor*$magic-number,']{')"/>
+    <xsl:sequence select="concat('\maxsizebox{\textwidth}{\textheight}{\includegraphics[scale=',$scale-factor*$magic-number,']{')"/>
   </xsl:variable>
 
   <xsl:variable name="level_to_section_map">
@@ -192,6 +192,8 @@
 	<xsl:text>\trimLmarks&#10;&#10;</xsl:text>
 
    	<xsl:text>\usepackage{graphicx}&#10;</xsl:text>
+	<!-- Make sure images never get larger than the textwidth and the textheight -->
+   	<xsl:text>\usepackage{adjustbox}&#10;</xsl:text>
    	<xsl:call-template name="findLanguage"/>
 	<!-- The Babel package defines what they call shorthands. These are usefull
 	     if you handcraft your LaTeX. But they are not wanted in the case where
@@ -752,7 +754,7 @@
      <xsl:text>\begin{figure}[htb]&#10;</xsl:text>
      <xsl:value-of select="$includegraphics-command"/>
      <xsl:value-of select="@src"/>
-     <xsl:text>}&#10;</xsl:text>
+     <xsl:text>}}&#10;</xsl:text>
      <!-- a caption is associated with an image through an imgref attribute or a bit less formal
           simply by following it immediately -->
      <xsl:apply-templates
@@ -763,14 +765,14 @@
    <xsl:template match="dtb:h1/dtb:img|dtb:h2/dtb:img|dtb:h3/dtb:img|dtb:h4/dtb:img|dtb:h5/dtb:img|dtb:h6/dtb:img">
      <xsl:value-of select="$includegraphics-command"/>
    	<xsl:value-of select="@src"/>
-   	<xsl:text>}</xsl:text>
+   	<xsl:text>}}</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:table//dtb:img|dtb:sidebar//dtb:img" priority="10">
      <!-- images inside tables and sidebars do not float -->
      <xsl:value-of select="$includegraphics-command"/>
      <xsl:value-of select="@src"/>
-     <xsl:text>}&#10;&#10;</xsl:text>
+     <xsl:text>}}&#10;&#10;</xsl:text>
      <!-- a caption is associated with an image through an imgref attribute or a bit less formal
           simply by following it immediately -->
      <xsl:apply-templates

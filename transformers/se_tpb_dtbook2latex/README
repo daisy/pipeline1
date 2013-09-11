@@ -112,6 +112,13 @@ text is left justified and we would like to stay away from italics
 there is no visual clue that something is a caption. It looks just
 like a normal paragraph.
 
+** Images
+Images are scaled proportionaly to the chossen font size. Let's assume
+the chosen font size is 20pt and the "normal" font size would be 12pt,
+so we calculate a scaling factor of 20/12. We then multiply this with
+a magic number (3) to get the scaling factor. The adjustbox package is
+used to make sure no image is wider than the width of the text and
+higher than the height of the text.
 
 * Limitations
 It is generally not so easy to lay out something on a fixed page where
