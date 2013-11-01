@@ -893,7 +893,7 @@
    </xsl:template>
 
    <xsl:template match="dtb:sidebar">
-     <xsl:text>\begin{tcolorbox}[breakable,floatplacement=htbp]&#10;</xsl:text>
+     <xsl:text>\begin{tcolorbox}[breakable,floatplacement=htp!]&#10;</xsl:text>
      <xsl:text>\raggedright&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{tcolorbox}&#10;</xsl:text>
