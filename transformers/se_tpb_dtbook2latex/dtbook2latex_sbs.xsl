@@ -227,4 +227,17 @@
 	<xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
 
+   <!-- The span@class='linenum' is a "proprietary extension" of SBS if you will
+        that allows to markup books where you have very long passages of numbered
+        lines, i.e. basically spanning the whole book. Linegroup and line is not
+        suited for this as you can no longer markup paragraphs, blockquotes or
+        anything else for that matter. -->
+   <xsl:template match="dtb:span[@class='linenum']">   
+     <xsl:variable name="num">
+       <xsl:apply-templates/>
+     </xsl:variable>
+     <xsl:text>\\&#10;</xsl:text>
+     <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}')"/>
+   </xsl:template>
+
 </xsl:stylesheet>
