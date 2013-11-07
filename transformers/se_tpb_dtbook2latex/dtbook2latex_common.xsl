@@ -74,7 +74,9 @@
 
   <xsl:variable name="number_of_volumes" select="count(//*['volume-split-point'=tokenize(@class, '\s+')])+1"/>
 
-  <xsl:variable name="includegraphics-command" >
+  <xsl:function name="my:includegraphics-command" as="xs:string">
+    <xsl:param name="src" as="xs:string"/>
+    <xsl:param name="with_caption" as="xs:boolean"/>
     <xsl:variable name="magic-number" select="3"/>
     <xsl:variable name="scale-factor">
       <xsl:sequence select="if ($fontsize='14pt') then round-half-to-even(14 div 12, 1) else 
@@ -82,8 +84,13 @@
 			    if ($fontsize='20pt') then round-half-to-even(20 div 12, 1) else
 			    if ($fontsize='25pt') then round-half-to-even(25 div 12, 1) else 1"/>
     </xsl:variable>
-    <xsl:sequence select="concat('\maxsizebox{\textwidth}{\textheight}{\includegraphics[scale=',$scale-factor*$magic-number,']{')"/>
-  </xsl:variable>
+    <!-- FIXME: The following code calculates the available height for an image. If there is
+         a caption we assume that it will take up one line. This assumption can of course
+         fail, but we basically have no way of knowing how many lines a caption will take
+         from xslt (aside from crude guesses). -->
+    <xsl:variable name="height" select="if ($with_caption) then '\textheight-\baselineskip' else '\textheight'"/>
+    <xsl:sequence select="concat('\maxsizebox{\textwidth}{',$height,'}{\includegraphics[scale=',$scale-factor*$magic-number,']{',$src,'}}')"/>
+  </xsl:function>
 
   <xsl:variable name="level_to_section_map">
     <entry key="level1">\chapter</entry>
@@ -751,32 +758,26 @@
    </xsl:template>
 
    <xsl:template match="dtb:img">
+     <xsl:variable name="captions" select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]"/>
      <xsl:text>\begin{figure}[htb]&#10;</xsl:text>
-     <xsl:value-of select="$includegraphics-command"/>
-     <xsl:value-of select="@src"/>
-     <xsl:text>}}&#10;</xsl:text>
+     <xsl:value-of select="my:includegraphics-command(@src, exists($captions))"/>
      <!-- a caption is associated with an image through an imgref attribute or a bit less formal
           simply by following it immediately -->
-     <xsl:apply-templates
-	 select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]" mode="referenced-caption" />
+     <xsl:apply-templates select="$captions" mode="referenced-caption" />
      <xsl:text>\end{figure}&#10;&#10;</xsl:text>   	
    </xsl:template>
 
    <xsl:template match="dtb:h1/dtb:img|dtb:h2/dtb:img|dtb:h3/dtb:img|dtb:h4/dtb:img|dtb:h5/dtb:img|dtb:h6/dtb:img">
-     <xsl:value-of select="$includegraphics-command"/>
-   	<xsl:value-of select="@src"/>
-   	<xsl:text>}}</xsl:text>
+     <xsl:value-of select="my:includegraphics-command(@src, false())"/>
    </xsl:template>
 
    <xsl:template match="dtb:table//dtb:img|dtb:sidebar//dtb:img" priority="10">
+     <xsl:variable name="captions" select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]"/>
      <!-- images inside tables and sidebars do not float -->
-     <xsl:value-of select="$includegraphics-command"/>
-     <xsl:value-of select="@src"/>
-     <xsl:text>}}&#10;&#10;</xsl:text>
+     <xsl:value-of select="my:includegraphics-command(@src, exists($captions))"/>
      <!-- a caption is associated with an image through an imgref attribute or a bit less formal
           simply by following it immediately -->
-     <xsl:apply-templates
-	 select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]" mode="referenced-caption">
+     <xsl:apply-templates select="$captions" mode="referenced-caption">
      </xsl:apply-templates>
    </xsl:template>
 
