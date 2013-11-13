@@ -697,6 +697,7 @@
      <xsl:text>]{</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>}&#10;</xsl:text>
+     <xsl:apply-templates select="my:first-pagenum-anchor-before-headline(.)" mode="inside-headline"/>
    </xsl:template>
 
    <xsl:template match="dtb:bridgehead">
@@ -1206,6 +1207,35 @@
      <xsl:apply-templates/>
    </xsl:template>
 
+  <xsl:function name="my:is-pagenum-anchor" as="xs:boolean">
+    <xsl:param name="anchor" as="element()"/>
+    <xsl:sequence
+	select="exists($anchor/preceding-sibling::*[1][self::dtb:pagenum])"/>
+  </xsl:function>
+
+  <xsl:function name="my:first-pagenum-anchor-before-headline" as="element()?">
+    <xsl:param name="headline" as="element()"/>
+    <xsl:sequence
+	select="$headline/preceding-sibling::*[1][self::dtb:a and my:is-pagenum-anchor(.)]"/>
+  </xsl:function>
+
+  <xsl:function name="my:is-first-pagenum-anchor-before-headline" as="xs:boolean">
+    <xsl:param name="anchor" as="element()"/>
+    <xsl:sequence
+	select="exists($anchor[my:is-pagenum-anchor(.)]/following-sibling::*[1][matches(name(),'h[1-6]')])"/>
+  </xsl:function>
+
+   <xsl:template match="dtb:a[@id != '']" mode="inside-headline">
+     <!-- create a label so we can later add a reference to it -->
+     <xsl:value-of select="concat('\label{',@id,'}&#10;')"/>
+     <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:a[@id != '' and my:is-first-pagenum-anchor-before-headline(.)]" priority="10">
+     <!-- ingore anchors before a headline otherwise the label will be
+	  refering to the wrong page -->
+   </xsl:template>
+  
    <!-- support for Index as defined in
         http://www.daisy.org/z3986/structure/SG-DAISY3/part2-major.html#index -->
    <xsl:template match="dtb:lic[@class='index-line']">
