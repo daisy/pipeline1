@@ -1201,6 +1201,12 @@
      <xsl:apply-templates/>
    </xsl:template>
 
+   <!-- cross references that contain only original page numbers -->
+   <!-- We drop the original page number and replace it with a page reference -->
+   <xsl:template match="dtb:a[@class='pageref' and starts-with(@href, '#')]">
+     <xsl:value-of select="concat('\pageref{',substring(@href,2),'}')"/>
+   </xsl:template>
+
    <xsl:template match="dtb:a[@id != '']">
      <!-- create a label so we can later add a reference to it -->
      <xsl:value-of select="concat('\label{',@id,'}&#10;')"/>
@@ -1236,26 +1242,6 @@
 	  refering to the wrong page -->
    </xsl:template>
   
-   <!-- support for Index as defined in
-        http://www.daisy.org/z3986/structure/SG-DAISY3/part2-major.html#index -->
-   <xsl:template match="dtb:lic[@class='index-line']">
-     <xsl:apply-templates/>
-     <xsl:if test="following-sibling::dtb:lic">
-       <xsl:text>\dotfill </xsl:text>
-     </xsl:if>
-   </xsl:template>
-
-   <xsl:template match="dtb:lic[@class='index-pg']">
-     <xsl:apply-templates/>
-   </xsl:template>
-
-   <!-- Assume that the following dtb:a contains the page number of
-        the print original, so we drop it and create a pageref. This
-        will result in the correct page number of the large print -->
-   <xsl:template match="dtb:lic[@class='index-pg']/dtb:a[starts-with(@href, '#')]">
-     <xsl:value-of select="concat('\pageref{',substring(@href,2),'}')"/>
-   </xsl:template>
-
    <xsl:template match="dtb:em">
      <xsl:choose>
        <xsl:when test="$replace_em_with_quote = 'true'">
