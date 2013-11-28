@@ -236,8 +236,15 @@
      <xsl:variable name="num">
        <xsl:apply-templates/>
      </xsl:variable>
-     <xsl:text>\\&#10;</xsl:text>
+     <xsl:if test="my:has-preceding-non-empty-textnode-within-block(.)">
+       <xsl:text>\\&#10;</xsl:text>
+     </xsl:if>
      <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}')"/>
+   </xsl:template>
+
+   <xsl:template match="text()[preceding-sibling::*[1][self::dtb:span[@class='linenum']]]">
+     <!-- trim whitespace after the linenum span -->
+     <xsl:value-of select="my:quoteSpecialChars(replace(string(current()), '^\s+', ''))"/>
    </xsl:template>
 
 </xsl:stylesheet>

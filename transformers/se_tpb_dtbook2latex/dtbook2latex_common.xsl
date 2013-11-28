@@ -4,6 +4,7 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"	
 		xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		xmlns:math="http://www.w3.org/1998/Math/MathML"
 		xmlns:my="http://my-functions"
 		extension-element-prefixes="my"
 		exclude-result-prefixes="dtb my">
@@ -90,6 +91,36 @@
          from xslt (aside from crude guesses). -->
     <xsl:variable name="height" select="if ($with_caption) then '\textheight-\baselineskip' else '\textheight'"/>
     <xsl:sequence select="concat('\maxsizebox{\textwidth}{',$height,'}{\includegraphics[scale=',$scale-factor*$magic-number,']{',$src,'}}')"/>
+  </xsl:function>
+
+  <!-- =========================== -->
+  <!-- Queries for block vs inline -->
+  <!-- =========================== -->
+
+  <xsl:function name="my:is-block-element" as="xs:boolean">
+    <xsl:param name="node" as="node()"/>
+    <xsl:apply-templates select="$node" mode="is-block-element"/>
+  </xsl:function>
+
+  <xsl:template match="node()" as="xs:boolean" mode="is-block-element" priority="10">
+    <xsl:sequence select="false()"/>
+  </xsl:template>
+
+  <xsl:template match="dtb:*|math:*" as="xs:boolean" mode="is-block-element" priority="11">
+    <xsl:sequence select="false()"/>
+  </xsl:template>
+
+  <xsl:template match="dtb:samp|dtb:cite" as="xs:boolean" mode="is-block-element" priority="12">
+    <xsl:sequence select="if (parent::*[self::dtb:p|self::dtb:li|self::dtb:td|self::dtb:th]) then false() else true()"/>
+  </xsl:template>
+
+  <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6|dtb:p|dtb:list|dtb:li|dtb:author|dtb:byline|dtb:line|dtb:imggroup|dtb:blockquote" as="xs:boolean" mode="is-block-element" priority="12">
+    <xsl:sequence select="true()"/>
+  </xsl:template>
+
+  <xsl:function name="my:has-preceding-non-empty-textnode-within-block" as="xs:boolean">
+    <xsl:param name="context"/>
+    <xsl:sequence select="some $t in ($context/preceding::text() intersect $context/ancestor-or-self::*[my:is-block-element(.)][1]//text()) satisfies normalize-space($t) != ''"/>
   </xsl:function>
 
   <xsl:variable name="level_to_section_map">
@@ -250,7 +281,7 @@
        <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float,parbox=false}&#10;</xsl:text>
      </xsl:if>
 
-     <xsl:if test="//dtb:linenum">
+     <xsl:if test="//dtb:linenum|//dtb:span[@class='linenum']">
        <!-- Make sure the linenums are always on the left -->
        <xsl:text>\sideparmargin{left}&#10;</xsl:text>
      </xsl:if>
