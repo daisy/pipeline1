@@ -719,7 +719,7 @@
 
    <xsl:template match="dtb:lic">
    	<xsl:apply-templates/>
-   	<xsl:if test="following-sibling::dtb:lic or normalize-space(following-sibling::text())!=''">
+   	<xsl:if test="not(preceding-sibling::dtb:lic) and (following-sibling::dtb:lic or normalize-space(following-sibling::text())!='')">
 	   	<xsl:text>\dotfill </xsl:text>
    	</xsl:if>
    </xsl:template>
