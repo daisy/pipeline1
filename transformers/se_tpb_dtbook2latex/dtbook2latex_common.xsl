@@ -89,7 +89,7 @@
          a caption we assume that it will take up one line. This assumption can of course
          fail, but we basically have no way of knowing how many lines a caption will take
          from xslt (aside from crude guesses). -->
-    <xsl:variable name="height" select="if ($with_caption) then '\textheight-\baselineskip' else '\textheight'"/>
+    <xsl:variable name="height" select="if ($with_caption) then '\textheightMinusCaption' else '\textheight'"/>
     <xsl:sequence select="concat('\maxsizebox{\textwidth}{',$height,'}{\includegraphics[scale=',$scale-factor*$magic-number,']{',$src,'}}')"/>
   </xsl:function>
 
@@ -312,6 +312,10 @@
 	<xsl:text>\setsecheadstyle{\Large\bfseries\raggedright}&#10;</xsl:text>
 	<xsl:text>\setsubsecheadstyle{\large\bfseries\raggedright}&#10;</xsl:text>
 	<xsl:text>\setsubsubsecheadstyle{\bfseries\raggedright}&#10;</xsl:text>
+
+	<!-- calculate the textheight minus the caption -->
+	<xsl:text>\newlength{\textheightMinusCaption}&#10;</xsl:text>
+	<xsl:text>\setlength{\textheightMinusCaption}{\textheight - \baselineskip}&#10;</xsl:text>
 
 	<xsl:if test="$pageStyle='plain'">
 	  <!-- do not number the sections -->
