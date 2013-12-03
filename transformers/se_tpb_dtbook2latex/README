@@ -83,6 +83,11 @@ Bank Name:____________________________________
 </samp>
 #+END_EXAMPLE
 
+** Sidebar
+Sidebars are implemented using tcolorbox which has the nice property
+that it can float and at the same time break across pages. You'll have
+to use a very new version of it though.
+
 ** Prodnote
 Prodnotes come in two flavours: inline and block. 
 
