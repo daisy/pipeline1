@@ -278,7 +278,7 @@
      <xsl:if test="//dtb:sidebar|//dtb:prodnote">
        <xsl:text>\usepackage{tcolorbox}&#10;</xsl:text>
        <xsl:text>\tcbuselibrary{breakable}&#10;</xsl:text>
-       <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float,parbox=false}&#10;</xsl:text>
+       <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float,parbox=false,enlarge top by=5mm}&#10;</xsl:text>
      </xsl:if>
 
      <xsl:if test="//dtb:linenum|//dtb:span[@class='linenum']">
@@ -931,6 +931,13 @@
 
    <xsl:template match="dtb:sidebar">
      <xsl:text>\begin{tcolorbox}[breakable,floatplacement=htp!]&#10;</xsl:text>
+     <xsl:text>\raggedright&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:sidebar[@class='no-float']">
+     <xsl:text>\begin{tcolorbox}[breakable,nofloat]&#10;</xsl:text>
      <xsl:text>\raggedright&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{tcolorbox}&#10;</xsl:text>
