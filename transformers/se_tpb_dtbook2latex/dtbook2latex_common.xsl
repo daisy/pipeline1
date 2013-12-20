@@ -90,7 +90,17 @@
          fail, but we basically have no way of knowing how many lines a caption will take
          from xslt (aside from crude guesses). -->
     <xsl:variable name="height" select="if ($with_caption) then '\textheightMinusCaption' else '\textheight'"/>
-    <xsl:sequence select="concat('\maxsizebox{\textwidth}{',$height,'}{\includegraphics[scale=',$scale-factor*$magic-number,']{',$src,'}}')"/>
+    <xsl:sequence select="concat('\maxsizebox{\textwidth}{',$height,'}{\includegraphics[scale=',$scale-factor*$magic-number,']{',$src,'}}&#10;')"/>
+  </xsl:function>
+
+  <!-- Captions in plain LaTeX aren't very robust, i.e. a caption
+       should not contain environments such as lists, enumerations,
+       etc. In DTBook you can put all sorts of stuff inside captions.
+       If we really want to support this we'll have to put the float
+       and the caption (as a plain para) inside a minipage. -->
+  <xsl:function name="my:cleanCaptions" as="xs:string">
+    <xsl:param name="context" as="node()"/>
+    <xsl:value-of select="string($context)"/>
   </xsl:function>
 
   <!-- =========================== -->
@@ -795,7 +805,7 @@
 
    <xsl:template match="dtb:img">
      <xsl:variable name="captions" select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]"/>
-     <xsl:text>\begin{figure}[htb]&#10;</xsl:text>
+     <xsl:text>\begin{figure}[htbp!]&#10;</xsl:text>
      <xsl:value-of select="my:includegraphics-command(@src, exists($captions))"/>
      <!-- a caption is associated with an image through an imgref attribute or a bit less formal
           simply by following it immediately -->
@@ -822,9 +832,7 @@
    </xsl:template>
 
    <xsl:template match="dtb:caption" mode="referenced-caption">
-     <xsl:variable name="caption">
-       <xsl:apply-templates/>
-     </xsl:variable>
+     <xsl:variable name="caption" select="my:cleanCaptions(.)"/>
      <xsl:value-of select="concat('\legend{',$caption,'}&#10;')"/>
      <xsl:value-of select="concat('\addcontentsline{lof}{figure}{',$caption,'}&#10;')"/>
    </xsl:template>
@@ -936,12 +944,12 @@
      <xsl:text>\end{tcolorbox}&#10;</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:sidebar[@class='no-float']">
-     <xsl:text>\begin{tcolorbox}[breakable,nofloat]&#10;</xsl:text>
-     <xsl:text>\raggedright&#10;</xsl:text>
-     <xsl:apply-templates/>
-     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
-   </xsl:template>
+   <!-- <xsl:template match="dtb:sidebar[@class='no-float']"> -->
+   <!--   <xsl:text>\begin{tcolorbox}[breakable,nofloat]&#10;</xsl:text> -->
+   <!--   <xsl:text>\raggedright&#10;</xsl:text> -->
+   <!--   <xsl:apply-templates/> -->
+   <!--   <xsl:text>\end{tcolorbox}&#10;</xsl:text> -->
+   <!-- </xsl:template> -->
 
    <xsl:template match="dtb:sidebar//dtb:sidebar">
      <!-- a nested sidebar should obviously not float and cannot be
@@ -1077,9 +1085,7 @@
   </xsl:template>
   
    <xsl:template match="dtb:table/dtb:caption">
-     <xsl:variable name="caption">
-       <xsl:apply-templates/>
-     </xsl:variable>
+     <xsl:variable name="caption" select="my:cleanCaptions(.)"/>
      <xsl:value-of select="concat('\legend{',$caption,'}&#10;')"/>
      <xsl:value-of select="concat('\addcontentsline{lot}{table}{',$caption,'}&#10;')"/>
    </xsl:template>
