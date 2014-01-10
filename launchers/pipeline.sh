@@ -41,7 +41,14 @@ fi
 
 
 # Set classpath
-DIR=`dirname $0`
+if [[ "$(uname)" == 'Linux' ]]; then
+    # resolve the path to this script in the face of symlinks
+    DIR="$(dirname "$(readlink -f "$0")")"
+else
+    # other platforms might not support readlink -f
+    DIR=`dirname $0`
+fi
+
 CP=$DIR/pipeline.jar:$DIR
 
 # Execute Daisy Pipeline

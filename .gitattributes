@@ -5,11 +5,13 @@ META-INF/MANIFEST.MF -text
 META-INF/services/javax.xml.validation.SchemaFactory -text
 /build-addin.xml -text svneol=unset#text/plain
 /build-bundles.xml -text
+/build-deb.xml -text
 /build-obi.xml -text svneol=unset#text/plain
 /build-odt-addin.xml -text svneol=unset#text/plain
 /build-sapi.xml -text svneol=unset#text/plain
 /build.properties -text
 /custom.xml -text
+debian/control -text
 doc/404.html -text
 doc/dev_old/diagram.png -text
 doc/developer/core-build-process.html -text
