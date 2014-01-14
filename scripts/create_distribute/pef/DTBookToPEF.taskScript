@@ -43,6 +43,7 @@
 		<datatype>
 			<enum>
 			  <item nicename="32 characters wide" value="A4-w32" />
+			  <item nicename="32 characters wide (double line spacing)" value="A4-w32-dls" />
 			  <item nicename="42 characters wide" value="FA44-w42" />
 			  <item nicename="50 characters wide" value="w50" />
 			</enum>

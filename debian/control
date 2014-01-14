@@ -1,0 +1,12 @@
+Package: [[name]]
+Version: [[version]]
+Section: misc
+Priority: optional
+Architecture: all
+Description: Cross-platform framework for DTB-related document transformations.
+ It provides a comprehensive solution for converting text documents
+ into accessible formats for people with print disabilities.
+Maintainer: DAISY Consortium <daisymfc-developer@lists.sourceforge.net>
+Homepage: http://www.daisy.org/project/pipeline
+Depends: default-jdk
+Recommends: texlive-xetex, texlive-latex-extra, texlive-latex-recommended, ttf-tiresias, lmodern, ttf-mscorefonts-installer, lame, espeak, sox 

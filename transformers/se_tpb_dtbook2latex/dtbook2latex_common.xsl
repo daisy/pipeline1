@@ -4,10 +4,13 @@
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 		xmlns:dtb="http://www.daisy.org/z3986/2005/dtbook/"	
 		xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		xmlns:math="http://www.w3.org/1998/Math/MathML"
 		xmlns:my="http://my-functions"
 		extension-element-prefixes="my"
 		exclude-result-prefixes="dtb my">
   
+  <xsl:include href="table-utils.xsl"/>
+
   <xsl:output method="text" encoding="utf-8" indent="no"/>
   <xsl:strip-space elements="*"/>
   <xsl:preserve-space elements="dtb:line dtb:address dtb:div dtb:title dtb:author dtb:note dtb:byline dtb:dateline 
@@ -72,7 +75,9 @@
 
   <xsl:variable name="number_of_volumes" select="count(//*['volume-split-point'=tokenize(@class, '\s+')])+1"/>
 
-  <xsl:variable name="includegraphics-command" >
+  <xsl:function name="my:includegraphics-command" as="xs:string">
+    <xsl:param name="src" as="xs:string"/>
+    <xsl:param name="with_caption" as="xs:boolean"/>
     <xsl:variable name="magic-number" select="3"/>
     <xsl:variable name="scale-factor">
       <xsl:sequence select="if ($fontsize='14pt') then round-half-to-even(14 div 12, 1) else 
@@ -80,7 +85,61 @@
 			    if ($fontsize='20pt') then round-half-to-even(20 div 12, 1) else
 			    if ($fontsize='25pt') then round-half-to-even(25 div 12, 1) else 1"/>
     </xsl:variable>
-    <xsl:sequence select="concat('\includegraphics[scale=',$scale-factor*$magic-number,']{')"/>
+    <!-- FIXME: The following code calculates the available height for an image. If there is
+         a caption we assume that it will take up one line. This assumption can of course
+         fail, but we basically have no way of knowing how many lines a caption will take
+         from xslt (aside from crude guesses). -->
+    <xsl:variable name="height" select="if ($with_caption) then '\textheightMinusCaption' else '\textheight'"/>
+    <xsl:sequence select="concat('\maxsizebox{\textwidth}{',$height,'}{\includegraphics[scale=',$scale-factor*$magic-number,']{',$src,'}}&#10;')"/>
+  </xsl:function>
+
+  <!-- Captions in plain LaTeX aren't very robust, i.e. a caption
+       should not contain environments such as lists, enumerations,
+       etc. In DTBook you can put all sorts of stuff inside captions.
+       If we really want to support this we'll have to put the float
+       and the caption (as a plain para) inside a minipage. -->
+  <xsl:function name="my:cleanCaptions" as="xs:string">
+    <xsl:param name="context" as="node()"/>
+    <xsl:value-of select="string($context)"/>
+  </xsl:function>
+
+  <!-- =========================== -->
+  <!-- Queries for block vs inline -->
+  <!-- =========================== -->
+
+  <xsl:function name="my:is-block-element" as="xs:boolean">
+    <xsl:param name="node" as="node()"/>
+    <xsl:apply-templates select="$node" mode="is-block-element"/>
+  </xsl:function>
+
+  <xsl:template match="node()" as="xs:boolean" mode="is-block-element" priority="10">
+    <xsl:sequence select="false()"/>
+  </xsl:template>
+
+  <xsl:template match="dtb:*|math:*" as="xs:boolean" mode="is-block-element" priority="11">
+    <xsl:sequence select="false()"/>
+  </xsl:template>
+
+  <xsl:template match="dtb:samp|dtb:cite" as="xs:boolean" mode="is-block-element" priority="12">
+    <xsl:sequence select="if (parent::*[self::dtb:p|self::dtb:li|self::dtb:td|self::dtb:th]) then false() else true()"/>
+  </xsl:template>
+
+  <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6|dtb:p|dtb:list|dtb:li|dtb:author|dtb:byline|dtb:line|dtb:imggroup|dtb:blockquote" as="xs:boolean" mode="is-block-element" priority="12">
+    <xsl:sequence select="true()"/>
+  </xsl:template>
+
+  <xsl:function name="my:has-preceding-non-empty-textnode-within-block" as="xs:boolean">
+    <xsl:param name="context"/>
+    <xsl:sequence select="some $t in ($context/preceding::text() intersect $context/ancestor-or-self::*[my:is-block-element(.)][1]//text()) satisfies normalize-space($t) != ''"/>
+  </xsl:function>
+
+  <xsl:variable name="level_to_section_map">
+    <entry key="level1">\chapter</entry>
+    <entry key="level2">\section</entry>
+    <entry key="level3">\subsection</entry>
+    <entry key="level4">\subsubsection</entry>
+    <entry key="level5">\paragraph</entry>
+    <entry key="level6">\subparagraph</entry>
   </xsl:variable>
 
   <!-- Localization -->
@@ -143,6 +202,8 @@
 	<xsl:if test="//dtb:table">
 	  <!-- tables with variable width columns balanced -->
 	  <xsl:text>\usepackage{tabulary}&#10;</xsl:text>
+	  <!-- we need the xcolor package to be able to define colors such as black!60 -->
+	  <xsl:text>\usepackage{xcolor}&#10;</xsl:text>
 	  <xsl:text>\usepackage{colortbl}&#10;</xsl:text>
 	  <xsl:text>\arrayrulecolor{black!60}&#10;</xsl:text>
 	  <xsl:text>\setlength{\arrayrulewidth}{0.5mm}&#10;</xsl:text>
@@ -179,6 +240,8 @@
 	<xsl:text>\trimLmarks&#10;&#10;</xsl:text>
 
    	<xsl:text>\usepackage{graphicx}&#10;</xsl:text>
+	<!-- Make sure images never get larger than the textwidth and the textheight -->
+   	<xsl:text>\usepackage{adjustbox}&#10;</xsl:text>
    	<xsl:call-template name="findLanguage"/>
 	<!-- The Babel package defines what they call shorthands. These are usefull
 	     if you handcraft your LaTeX. But they are not wanted in the case where
@@ -218,10 +281,19 @@
        </xsl:if>
      </xsl:if>
      
-     <xsl:if test="//dtb:sidebar">
+     <xsl:if test="//dtb:samp[@xml:space='preserve']">
+       <xsl:text>\usepackage{alltt}&#10;</xsl:text>
+     </xsl:if>
+
+     <xsl:if test="//dtb:sidebar|//dtb:prodnote">
        <xsl:text>\usepackage{tcolorbox}&#10;</xsl:text>
        <xsl:text>\tcbuselibrary{breakable}&#10;</xsl:text>
-       <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float}&#10;</xsl:text>
+       <xsl:text>\tcbset{colframe=black!60,colback=white,arc=0mm,float,parbox=false,enlarge top by=5mm}&#10;</xsl:text>
+     </xsl:if>
+
+     <xsl:if test="//dtb:linenum|//dtb:span[@class='linenum']">
+       <!-- Make sure the linenums are always on the left -->
+       <xsl:text>\sideparmargin{left}&#10;</xsl:text>
      </xsl:if>
 
 	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
@@ -250,6 +322,10 @@
 	<xsl:text>\setsecheadstyle{\Large\bfseries\raggedright}&#10;</xsl:text>
 	<xsl:text>\setsubsecheadstyle{\large\bfseries\raggedright}&#10;</xsl:text>
 	<xsl:text>\setsubsubsecheadstyle{\bfseries\raggedright}&#10;</xsl:text>
+
+	<!-- calculate the textheight minus the caption -->
+	<xsl:text>\newlength{\textheightMinusCaption}&#10;</xsl:text>
+	<xsl:text>\setlength{\textheightMinusCaption}{\textheight - \baselineskip}&#10;</xsl:text>
 
 	<xsl:if test="$pageStyle='plain'">
 	  <!-- do not number the sections -->
@@ -330,7 +406,12 @@
 	
 	<!-- Make sure wrapped poetry lines are not indented -->
 	<xsl:text>\setlength{\vindent}{0em}&#10;</xsl:text>
-	
+
+	<!-- Poem titles should be left aligned (instead of centered) -->
+	<xsl:if test="//dtb:poem/dtb:title">
+	  <xsl:text>\renewcommand*{\PoemTitlefont}{\normalfont\large}&#10;</xsl:text>
+	</xsl:if>
+
     <!-- New environment for nested pl-type lists -->
     <xsl:text>\newenvironment{indentedlist}%&#10;</xsl:text>
     <xsl:text>  {\begin{list}{}{%&#10;</xsl:text>
@@ -398,14 +479,7 @@
 
      <xsl:if test="$max_toc_depth &gt; 0">
        <xsl:text>\maxtocdepth{</xsl:text>
-       <xsl:choose>
-	 <xsl:when test="$max_toc_depth=1"><xsl:text>chapter</xsl:text></xsl:when>
-	 <xsl:when test="$max_toc_depth=2"><xsl:text>section</xsl:text></xsl:when>
-	 <xsl:when test="$max_toc_depth=3"><xsl:text>subsection</xsl:text></xsl:when>
-	 <xsl:when test="$max_toc_depth=4"><xsl:text>subsubsection</xsl:text></xsl:when>
-	 <xsl:when test="$max_toc_depth=5"><xsl:text>paragraph</xsl:text></xsl:when>
-	 <xsl:when test="$max_toc_depth>5"><xsl:text>subparagraph</xsl:text></xsl:when>
-       </xsl:choose>
+       <xsl:value-of select="substring($level_to_section_map/entry[@key=concat('level',$max_toc_depth)],2)"/>
        <xsl:text>}&#10;</xsl:text>
      </xsl:if>
    </xsl:template>
@@ -516,12 +590,11 @@
    </xsl:template>
 
    <xsl:template match="dtb:head">
-   	<xsl:apply-templates/>
+     <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:meta">
-   	<xsl:apply-templates/>
-   </xsl:template>
+   <!-- Ignore meta data and links -->
+   <xsl:template match="dtb:meta|dtb:link"/>
 
    <xsl:template match="dtb:book">
 	<xsl:text>\begin{document}&#10;</xsl:text>
@@ -529,7 +602,7 @@
 	  <xsl:text>\raggedright&#10;</xsl:text>
 	</xsl:if>
 	<xsl:apply-templates/>
-	<xsl:if test="//dtb:noteref and $endnotes = 'document'">
+	<xsl:if test="//(dtb:noteref|dtb:annoref) and $endnotes = 'document'">
 	  <xsl:text>\printpagenotes&#10;</xsl:text>
 	</xsl:if>
 	<xsl:text>\end{document}&#10;</xsl:text>
@@ -575,7 +648,7 @@
       <xsl:text>\chapter*{\ }&#10;</xsl:text>
     </xsl:if>
     <xsl:apply-templates/>
-    <xsl:if test=".//dtb:noteref and $endnotes = 'chapter'">
+    <xsl:if test=".//(dtb:noteref|dtb:annoref) and $endnotes = 'chapter'">
       <xsl:text>\printpagenotes*&#10;</xsl:text>
     </xsl:if>
     <xsl:if test="following::*[1][self::dtb:p]">
@@ -651,59 +724,38 @@
    </xsl:template>
 
    <xsl:template match="dtb:address">
-  	<xsl:apply-templates/>
+     <xsl:apply-templates/>
+     <xsl:text>&#10;</xsl:text>
+   </xsl:template>
+   
+   <xsl:template match="dtb:address/dtb:line">
+     <xsl:apply-templates/>
+     <xsl:if test="following-sibling::*"><xsl:text>\\</xsl:text></xsl:if>
+     <xsl:text>&#10;</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:h1">
-   	<xsl:text>\chapter[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>
+   <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
+     <xsl:variable name="level" select="local-name(ancestor::dtb:*[matches(local-name(),'^level[1-6]$')][1])"/>
+     <xsl:value-of select="$level_to_section_map/entry[@key=$level]"/>
+     <xsl:text>[</xsl:text>
+     <xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
+     <xsl:text>]{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;</xsl:text>
+     <xsl:apply-templates select="my:first-pagenum-anchor-before-headline(.)" mode="inside-headline"/>
    </xsl:template>
 
-   <xsl:template match="dtb:h2">
-   	<xsl:text>\section[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:h3">
-   	<xsl:text>\subsection[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:h4">
-   	<xsl:text>\subsubsection[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:h5">
-   	<xsl:text>\paragraph[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:h6">
-   	<xsl:text>\subparagraph[</xsl:text>
-	<xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-	<xsl:text>]{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-  <xsl:template match="dtb:bridgehead">
-  	<xsl:apply-templates/>
+   <xsl:template match="dtb:bridgehead">
+     <!-- a bridgehead inside level{N} is displayed like a h{N+1} (without the toc entry) -->
+     <xsl:variable name="level" 
+		   select="concat('level',number(substring-after(local-name(ancestor::dtb:*[matches(local-name(),'^level[1-6]$')][1]),'level'))+1)"/>
+     <!-- FIXME: This will fail if we are inside a level6. I guess we should define a LaTeX
+          command \subsubparagraph*, give it some styling and add it to level_to_section_map
+          -->
+     <xsl:value-of select="$level_to_section_map/entry[@key=$level]"/>
+     <xsl:text>*{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;</xsl:text>   
    </xsl:template>
 
    <xsl:template match="dtb:list[not(@type)]">
@@ -712,7 +764,7 @@
 
    <xsl:template match="dtb:lic">
    	<xsl:apply-templates/>
-   	<xsl:if test="following-sibling::dtb:lic or normalize-space(following-sibling::text())!=''">
+   	<xsl:if test="not(preceding-sibling::dtb:lic) and (following-sibling::dtb:lic or normalize-space(following-sibling::text())!='')">
 	   	<xsl:text>\dotfill </xsl:text>
    	</xsl:if>
    </xsl:template>
@@ -727,10 +779,14 @@
      <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:noteref">
+   <xsl:template match="dtb:noteref|dtb:annoref">
      <xsl:variable name="refText">
-       <xsl:apply-templates select="//dtb:note[@id=translate(current()/@idref,'#','')]" mode="footnotes"/>
+       <xsl:apply-templates select="//(dtb:note|dtb:annotation)[@id=translate(current()/@idref,'#','')]" mode="footnotes"/>
      </xsl:variable>
+     <xsl:if test="self::dtb:annoref">
+       <!-- for annorefs we want to keep the content -->
+       <xsl:apply-templates/>
+     </xsl:if>
      <xsl:choose>
        <xsl:when test="$endnotes = 'none'">
 	 <xsl:text>\footnotemark</xsl:text>
@@ -748,33 +804,26 @@
    </xsl:template>
 
    <xsl:template match="dtb:img">
-     <xsl:text>\begin{figure}[htb]&#10;</xsl:text>
-     <xsl:value-of select="$includegraphics-command"/>
-     <xsl:value-of select="@src"/>
-     <xsl:text>}&#10;</xsl:text>
+     <xsl:variable name="captions" select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]"/>
+     <xsl:text>\begin{figure}[htbp!]&#10;</xsl:text>
+     <xsl:value-of select="my:includegraphics-command(@src, exists($captions))"/>
      <!-- a caption is associated with an image through an imgref attribute or a bit less formal
           simply by following it immediately -->
-     <xsl:apply-templates
-	 select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]" mode="referenced-caption" />
+     <xsl:apply-templates select="$captions" mode="referenced-caption" />
      <xsl:text>\end{figure}&#10;&#10;</xsl:text>   	
    </xsl:template>
 
    <xsl:template match="dtb:h1/dtb:img|dtb:h2/dtb:img|dtb:h3/dtb:img|dtb:h4/dtb:img|dtb:h5/dtb:img|dtb:h6/dtb:img">
-     <xsl:value-of select="$includegraphics-command"/>
-   	<xsl:value-of select="@src"/>
-   	<xsl:text>}</xsl:text>
+     <xsl:value-of select="my:includegraphics-command(@src, false())"/>
    </xsl:template>
 
    <xsl:template match="dtb:table//dtb:img|dtb:sidebar//dtb:img" priority="10">
+     <xsl:variable name="captions" select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]"/>
      <!-- images inside tables and sidebars do not float -->
-     <xsl:value-of select="$includegraphics-command"/>
-     <xsl:value-of select="@src"/>
-     <xsl:text>}&#10;&#10;</xsl:text>
+     <xsl:value-of select="my:includegraphics-command(@src, exists($captions))"/>
      <!-- a caption is associated with an image through an imgref attribute or a bit less formal
           simply by following it immediately -->
-     <xsl:apply-templates
-	 select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]" mode="referenced-caption">
-       <xsl:with-param name="from-within-table" select="true()"/>
+     <xsl:apply-templates select="$captions" mode="referenced-caption">
      </xsl:apply-templates>
    </xsl:template>
 
@@ -783,14 +832,9 @@
    </xsl:template>
 
    <xsl:template match="dtb:caption" mode="referenced-caption">
-     <xsl:param name="from-within-table" select="false()"/>
-     <xsl:if test="not($from-within-table)">
-       <xsl:text>\caption{</xsl:text>
-     </xsl:if>
-     <xsl:apply-templates/>
-     <xsl:if test="not($from-within-table)">
-       <xsl:text>}&#10;</xsl:text>
-     </xsl:if>
+     <xsl:variable name="caption" select="my:cleanCaptions(.)"/>
+     <xsl:value-of select="concat('\legend{',$caption,'}&#10;')"/>
+     <xsl:value-of select="concat('\addcontentsline{lof}{figure}{',$caption,'}&#10;')"/>
    </xsl:template>
 
    <!-- What's the point of a div? Usually you want some visual clue
@@ -845,10 +889,6 @@
      <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:annotation">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
    <xsl:template match="dtb:author">	
    	<xsl:apply-templates/>
    </xsl:template>
@@ -875,33 +915,41 @@
     <xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
 
-  <xsl:template match="dtb:dateline">
-  	<xsl:apply-templates/>
+   <xsl:template match="dtb:dateline">
+     <xsl:apply-templates/>
+     <xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
 
-  <xsl:template match="dtb:epigraph">
-  	<xsl:apply-templates/>
-   </xsl:template>
-
-   <xsl:template match="dtb:note">
-   	<!--<xsl:apply-templates/>-->
-   </xsl:template>
-
-   <xsl:template match="dtb:note" mode="footnotes">
+   <xsl:template match="dtb:epigraph">
      <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:note/dtb:p">
+   <xsl:template match="dtb:note|dtb:annotation">
+   	<!--<xsl:apply-templates/>-->
+   </xsl:template>
+
+   <xsl:template match="dtb:note|dtb:annotation" mode="footnotes">
+     <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:note/dtb:p|dtb:annotation/dtb:p">
      <xsl:apply-templates/>
      <xsl:if test="position() != last()"><xsl:text>&#10;&#10;</xsl:text></xsl:if>
    </xsl:template>
 
    <xsl:template match="dtb:sidebar">
-     <xsl:text>\begin{tcolorbox}[breakable,floatplacement=htbp]&#10;</xsl:text>
+     <xsl:text>\begin{tcolorbox}[breakable,floatplacement=htp!]&#10;</xsl:text>
      <xsl:text>\raggedright&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{tcolorbox}&#10;</xsl:text>
    </xsl:template>
+
+   <!-- <xsl:template match="dtb:sidebar[@class='no-float']"> -->
+   <!--   <xsl:text>\begin{tcolorbox}[breakable,nofloat]&#10;</xsl:text> -->
+   <!--   <xsl:text>\raggedright&#10;</xsl:text> -->
+   <!--   <xsl:apply-templates/> -->
+   <!--   <xsl:text>\end{tcolorbox}&#10;</xsl:text> -->
+   <!-- </xsl:template> -->
 
    <xsl:template match="dtb:sidebar//dtb:sidebar">
      <!-- a nested sidebar should obviously not float and cannot be
@@ -922,14 +970,7 @@
      <xsl:variable name="level">
        <xsl:value-of select="count(ancestor::dtb:level)"/>
      </xsl:variable>
-     <xsl:choose>
-       <xsl:when test="$level=1"><xsl:text>\chapter</xsl:text></xsl:when>
-       <xsl:when test="$level=2"><xsl:text>\section</xsl:text></xsl:when>
-       <xsl:when test="$level=3"><xsl:text>\subsection</xsl:text></xsl:when>
-       <xsl:when test="$level=4"><xsl:text>\subsubsection</xsl:text></xsl:when>
-       <xsl:when test="$level=5"><xsl:text>\paragraph</xsl:text></xsl:when>
-       <xsl:when test="$level>5"><xsl:text>\subparagraph</xsl:text></xsl:when>
-     </xsl:choose>
+     <xsl:value-of select="$level_to_section_map/entry[@key=concat('level',$level)]"/>
      <xsl:text>[</xsl:text>
      <xsl:value-of select="text()"/>
      <xsl:text>]{</xsl:text>
@@ -997,25 +1038,56 @@
    </xsl:template>
 
    <xsl:template match="dtb:table">
+     <xsl:variable name="normalized-table">
+       <xsl:apply-templates mode="normalize-table" select="."/>
+     </xsl:variable>
      <xsl:text>\begin{table}[H]&#10;</xsl:text>
      <xsl:text>\begin{tabulary}{\textwidth}{|</xsl:text>
      <xsl:variable name="numcols">
-       <xsl:value-of select="max(for $row in descendant::dtb:tr return count($row/(dtb:td|dtb:th)))"/>
+       <xsl:value-of select="max(for $row in $normalized-table//dtb:tr return count($row/(dtb:td|dtb:th)))"/>
      </xsl:variable>
      <!-- make all columns left justified and let tabulary deal with spacing of the table -->
      <xsl:value-of select="string-join((for $col in 1 to $numcols return 'L'),'|')"/>
      <xsl:text>|} \hline&#10;</xsl:text>
      <!-- Make sure the table is in the right order and also handle tables without tbody -->
-     <xsl:apply-templates select="dtb:thead, dtb:tbody, dtb:tfoot, dtb:tr"/>
+     <xsl:apply-templates select="$normalized-table/dtb:table/dtb:thead, $normalized-table/dtb:table/dtb:tbody, $normalized-table/dtb:table/dtb:tfoot, $normalized-table/dtb:table/dtb:tr"/>
      <xsl:text>\end{tabulary}&#10;</xsl:text>
      <xsl:apply-templates select="dtb:caption"/>
      <xsl:text>\end{table}&#10;</xsl:text>
    </xsl:template>
 
+  <xsl:template match="dtb:table" mode="normalize-table">
+    <xsl:variable name="dtb:tr" as="element()*">
+      <xsl:call-template name="dtb:insert-covered-table-cells">
+        <xsl:with-param name="table_cells" select="dtb:tr/(dtb:td|dtb:th)"/>
+        <xsl:with-param name="insert_if_colspan" select="false()" tunnel="yes"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:copy>
+      <xsl:apply-templates mode="#current" select="(dtb:thead, $dtb:tr, dtb:tbody, dtb:tfoot)"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="dtb:thead|dtb:tbody|dtb:tfoot" mode="normalize-table">
+    <xsl:variable name="dtb:tr" as="element()*">
+      <xsl:call-template name="dtb:insert-covered-table-cells">
+        <xsl:with-param name="table_cells" select="dtb:tr/(dtb:td|dtb:th)"/>
+        <xsl:with-param name="insert_if_colspan" select="false()" tunnel="yes"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:copy>
+      <xsl:apply-templates mode="#current" select="$dtb:tr"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="dtb:tr" mode="normalize-table">
+    <xsl:sequence select="."/>
+  </xsl:template>
+  
    <xsl:template match="dtb:table/dtb:caption">
-     <xsl:text>\caption{</xsl:text>
-     <xsl:apply-templates/>
-     <xsl:text>}&#10;</xsl:text>
+     <xsl:variable name="caption" select="my:cleanCaptions(.)"/>
+     <xsl:value-of select="concat('\legend{',$caption,'}&#10;')"/>
+     <xsl:value-of select="concat('\addcontentsline{lot}{table}{',$caption,'}&#10;')"/>
    </xsl:template>
    
    <xsl:template match="dtb:tbody">
@@ -1032,7 +1104,11 @@
 
    <xsl:template match="dtb:tr">
    	<xsl:apply-templates/>
-   	<xsl:text>\\ \hline&#10;</xsl:text>
+   	  <xsl:text>\\ </xsl:text>
+   	<xsl:if test="not(following-sibling::dtb:tr[1]//(dtb:td|dtb:th)[@covered-table-cell='yes'])">
+   	  <xsl:text>\hline</xsl:text>
+   	</xsl:if>
+   	  <xsl:text>&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:th">
@@ -1045,18 +1121,32 @@
    </xsl:template>
 
    <xsl:template match="dtb:td">
-   	<xsl:if test="preceding-sibling::dtb:td">
-   		<xsl:text> &amp; </xsl:text>
-   	</xsl:if>
-   	<xsl:apply-templates/>
+     <xsl:if test="preceding-sibling::dtb:td">
+       <xsl:text> &amp; </xsl:text>
+     </xsl:if>
+     <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:colgroup">
-   	<xsl:apply-templates/>
+   <xsl:template match="dtb:td[@colspan &gt; 1]">
+     <xsl:if test="preceding-sibling::dtb:td">
+       <xsl:text> &amp; </xsl:text>
+     </xsl:if>
+     <xsl:text>\multicolumn{</xsl:text><xsl:value-of select="@colspan"/><xsl:text>}{l|}{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:col">
-   	<xsl:apply-templates/>
+   <xsl:template match="dtb:th[@colspan &gt; 1]">
+     <xsl:if test="preceding-sibling::dtb:th">
+       <xsl:text> &amp; </xsl:text>
+     </xsl:if>
+     <xsl:text>\multicolumn{</xsl:text><xsl:value-of select="@colspan"/><xsl:text>}{l|}{\textbf{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}}</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:colgroup|dtb:col">
+     <!-- ignore -->
    </xsl:template>
 
    <xsl:template match="dtb:poem">
@@ -1072,7 +1162,9 @@
    </xsl:template>
 
    <xsl:template match="dtb:poem/dtb:title">
-   	<xsl:apply-templates/>
+     <xsl:text>\PoemTitle*[]{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:cite/dtb:title">
@@ -1083,28 +1175,27 @@
    	<xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:code">
-   	<xsl:text>\texttt{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:kbd">
-   	<xsl:text>\texttt{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}</xsl:text>
-   </xsl:template>
-
    <xsl:template match="dtb:q">
    	<xsl:text>\textsl{</xsl:text>
    	<xsl:apply-templates/>
    	<xsl:text>}</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:samp">
-   	<xsl:text>\texttt{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}</xsl:text>
+   <xsl:template match="dtb:samp|dtb:code|dtb:kbd">
+     <xsl:text>\texttt{</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>}</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:samp[@xml:space='preserve']|dtb:code[@xml:space='preserve']">
+     <xsl:text>\begin{alltt}</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{alltt}</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:samp[@xml:space='preserve']//text()|dtb:code[@xml:space='preserve']//text()">
+     <!-- escape backslash and curly braces -->
+     <xsl:value-of select="replace(replace(., '\\', '\\textbackslash '), '(\{|\})', '\\$1')"/>
    </xsl:template>
 
    <xsl:template match="dtb:linegroup">
@@ -1127,7 +1218,12 @@
      <xsl:variable name="num">
        <xsl:apply-templates/>
      </xsl:variable>
-     <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}&#10;')"/>
+     <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}')"/>
+   </xsl:template>
+
+   <xsl:template match="dtb:line//text()[(preceding-sibling::*|preceding-sibling::text())[1]/self::dtb:linenum]">
+     <!-- trim whitespace after the linenum element -->
+     <xsl:value-of select="my:quoteSpecialChars(replace(string(current()), '^\s+(.*)$', '$1'))"/>
    </xsl:template>
 
    <xsl:template match="dtb:prodnote">
@@ -1135,7 +1231,13 @@
      <xsl:text>&#10;\raggedright&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+   </xsl:template>
 
+   <xsl:template match="dtb:p/dtb:prodnote">
+     <!-- inline prodnote -->
+     <xsl:text>\begin{tcolorbox}[colback=black!10,nofloat,after={}]</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:rearmatter">
@@ -1144,9 +1246,50 @@
    </xsl:template>
 
    <xsl:template match="dtb:a">
-   	<xsl:apply-templates/>
+     <xsl:apply-templates/>
    </xsl:template>
 
+   <!-- cross references that contain only original page numbers -->
+   <!-- We drop the original page number and replace it with a page reference -->
+   <xsl:template match="dtb:a[@class='pageref' and starts-with(@href, '#')]">
+     <xsl:value-of select="concat('\pageref{',substring(@href,2),'}')"/>
+   </xsl:template>
+
+   <xsl:template match="dtb:a[@id != '']">
+     <!-- create a label so we can later add a reference to it -->
+     <xsl:value-of select="concat('\label{',@id,'}&#10;')"/>
+     <xsl:apply-templates/>
+   </xsl:template>
+
+  <xsl:function name="my:is-pagenum-anchor" as="xs:boolean">
+    <xsl:param name="anchor" as="element()"/>
+    <xsl:sequence
+	select="exists($anchor/preceding-sibling::*[1][self::dtb:pagenum])"/>
+  </xsl:function>
+
+  <xsl:function name="my:first-pagenum-anchor-before-headline" as="element()?">
+    <xsl:param name="headline" as="element()"/>
+    <xsl:sequence
+	select="$headline/preceding-sibling::*[1][self::dtb:a and my:is-pagenum-anchor(.)]"/>
+  </xsl:function>
+
+  <xsl:function name="my:is-first-pagenum-anchor-before-headline" as="xs:boolean">
+    <xsl:param name="anchor" as="element()"/>
+    <xsl:sequence
+	select="exists($anchor[my:is-pagenum-anchor(.)]/following-sibling::*[1][matches(name(),'h[1-6]')])"/>
+  </xsl:function>
+
+   <xsl:template match="dtb:a[@id != '']" mode="inside-headline">
+     <!-- create a label so we can later add a reference to it -->
+     <xsl:value-of select="concat('\label{',@id,'}&#10;')"/>
+     <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="dtb:a[@id != '' and my:is-first-pagenum-anchor-before-headline(.)]" priority="10">
+     <!-- ingore anchors before a headline otherwise the label will be
+	  refering to the wrong page -->
+   </xsl:template>
+  
    <xsl:template match="dtb:em">
      <xsl:choose>
        <xsl:when test="$replace_em_with_quote = 'true'">
@@ -1213,14 +1356,6 @@
      <!-- FIXME: What to do with span? It basically depends on the class -->
      <!-- attribute which can be used for anything (colour, typo, error, etc) -->
      <xsl:apply-templates/>
-   </xsl:template>
-
-   <xsl:template match="dtb:a[@href]">
-   	<xsl:apply-templates/>
-   </xsl:template>
-
-  <xsl:template match="dtb:annoref">
-   	<xsl:apply-templates/>
    </xsl:template>
 
    <!-- remove excessive space and insert non-breaking spaces inside abbrevs -->

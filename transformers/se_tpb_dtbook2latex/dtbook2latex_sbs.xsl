@@ -227,4 +227,24 @@
 	<xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
 
+   <!-- The span@class='linenum' is a "proprietary extension" of SBS if you will
+        that allows to markup books where you have very long passages of numbered
+        lines, i.e. basically spanning the whole book. Linegroup and line is not
+        suited for this as you can no longer markup paragraphs, blockquotes or
+        anything else for that matter. -->
+   <xsl:template match="dtb:span[@class='linenum']">   
+     <xsl:variable name="num">
+       <xsl:apply-templates/>
+     </xsl:variable>
+     <xsl:if test="my:has-preceding-non-empty-textnode-within-block(.)">
+       <xsl:text>\\&#10;</xsl:text>
+     </xsl:if>
+     <xsl:value-of select="concat('\sidepar[',$num,']{',$num,'}')"/>
+   </xsl:template>
+
+   <xsl:template match="text()[preceding-sibling::*[1][self::dtb:span[@class='linenum']]]">
+     <!-- trim whitespace after the linenum span -->
+     <xsl:value-of select="my:quoteSpecialChars(replace(string(current()), '^\s+', ''))"/>
+   </xsl:template>
+
 </xsl:stylesheet>

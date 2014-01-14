@@ -52,6 +52,7 @@
 			<example>A4-w32</example>
 			<enum>
 				<value>A4-w32</value>
+				<value>A4-w32-dls</value>
 				<value>FA44-w42</value>
 				<value>w50</value>
 			</enum>

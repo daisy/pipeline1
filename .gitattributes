@@ -5,11 +5,13 @@ META-INF/MANIFEST.MF -text
 META-INF/services/javax.xml.validation.SchemaFactory -text
 /build-addin.xml -text svneol=unset#text/plain
 /build-bundles.xml -text
+/build-deb.xml -text
 /build-obi.xml -text svneol=unset#text/plain
 /build-odt-addin.xml -text svneol=unset#text/plain
 /build-sapi.xml -text svneol=unset#text/plain
 /build.properties -text
 /custom.xml -text
+debian/control -text
 doc/404.html -text
 doc/dev_old/diagram.png -text
 doc/developer/core-build-process.html -text
@@ -1431,9 +1433,11 @@ transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_7.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_8.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/promptFiles/sv/skiva_9.mp3 -text
 transformers/se_tpb_dtbSplitterMerger/split/transformer.tdf -text
+transformers/se_tpb_dtbook2latex/README -text
 transformers/se_tpb_dtbook2latex/dtbook2latex_common.xsl -text
 transformers/se_tpb_dtbook2latex/dtbook2latex_nordic.xsl -text
 transformers/se_tpb_dtbook2latex/dtbook2latex_sbs.xsl -text
+transformers/se_tpb_dtbook2latex/table-utils.xsl -text
 transformers/se_tpb_dtbook2latex/unicode-blocks.xml -text
 transformers/se_tpb_dtbookFix/Category.java -text
 transformers/se_tpb_dtbookFix/CharsetExecutor.java -text

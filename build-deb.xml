@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="Pipeline debian package" default="package">
+  <description>Buildfile for a Debian package for the Daisy Pipeline</description>
+
+  <import file="${basedir}/build-core.xml"/>
+  
+  <property name="deb.name" value="daisy-pipeline"/>
+  <property name="deb.version" value="${ISO-TODAY}-2"/>
+  <property name="deb.install.root" value="/usr"/>
+  <property name="deb.install.lib" value="${deb.install.root}/lib/${deb.name}"/>
+  <property name="deb.install.doc" value="${deb.install.root}/share/doc/${deb.name}"/>
+  
+  <target name="package" depends="buildCoreJar,buildUtil,createDistributionDir">
+    <taskdef name="deb" classname="org.vafer.jdeb.ant.DebAntTask"/>
+    
+    <mkdir dir="${build.dir}/debian/control"/>
+    
+    <copy todir="${build.dir}/debian/control">
+      <fileset dir="${base.dir}/debian"/>
+      <filterset begintoken="[[" endtoken="]]">
+	<filter token="version" value="${deb.version}"/>
+	<filter token="name" value="${deb.name}"/>
+      </filterset>
+    </copy>
+    
+    <deb destfile="${build.dir}/${deb.name}_${deb.version}_all.deb" control="${build.dir}/debian/control">
+      <!-- Pipeline core -->
+      <data src="${distribution.dir}" type="directory">
+	<mapper type="perm" prefix="${deb.install.lib}"/>
+	<include name="pipeline.jar"/>				
+      </data>
+      <!-- Util library -->
+      <data src="${distribution.dir}" type="directory">
+	<mapper type="perm" prefix="${deb.install.lib}/lib"/>
+	<include name="org.daisy.util.jar"/>				
+      </data>
+      <!-- Required JARs -->
+      <data src="${base.dir}/lib" type="directory">
+	<mapper type="perm" prefix="${deb.install.lib}/lib"/>
+	<include name="batik-css.jar"/>
+	<include name="batik-util.jar"/>
+	<include name="chardet.jar"/>
+	<include name="commons-cli-1.1.jar"/>
+	<include name="commons-pool-1.4.jar"/>
+	<include name="epubcheck-3.0.jar"/>
+	<include name="icu4j-3_8.jar"/>		
+        <!-- <include name="icu4j-charsets.jar"/> -->    
+	<include name="jaudiotagger.jar"/>
+	<include name="jl1.0.jar"/>
+	<include name="junit-4.7.jar"/>
+	<include name="log4j-1.2.15.jar"/>
+	<include name="jing.jar"/>
+	<include name="xml-apis.jar"/>
+	<include name="sac.jar"/>
+	<include name="saxon.jar"/>
+	<include name="saxon8.jar"/>
+	<include name="saxon8-dom.jar"/>
+	<include name="serializer.jar"/>
+	<include name="slf4j-api-1.5.6.jar"/>
+	<include name="slf4j-log4j12-1.5.6.jar"/>
+	<include name="stax-api-1.0.1.jar"/>
+	<include name="tagsoup-1.2.jar"/>	
+	<include name="tritonus_remaining-0.3.6.jar"/>			
+	<include name="tritonus_share-0.3.6.jar"/>
+	<include name="wstx-lgpl-3.2.8.jar"/>
+	<include name="xalan.jar"/>
+	<include name="xercesImpl.jar"/>			
+	<include name="zedval.jar"/>
+	<include name="brailleUtils-core.jar"/>
+	<include name="brailleUtils-catalog.jar"/>
+	<include name="dotify.jar"/>
+	<include name="dotify-translator.jar"/>
+	<include name="texhyphj.jar"/>
+      </data>
+      <!-- Transformers -->
+      <data src="${base.dir}/transformers" type="directory">
+	<mapper type="perm" prefix="${deb.install.lib}/transformers"/>
+	<include name="**/*.*"/>		
+	<exclude name="se_tpb_aligner/**/*.*"/>
+	<exclude name="int_daisy_filesetEncryptor/**/*.*"/>
+	<exclude name="uk_rnib_odf2dtbook/**/*.*"/>
+	<exclude name="se_tpb_speechgenerator/**/*.*"/>
+	<exclude name="int_daisy_xukCreator/**/*.*"/>
+	<exclude name="**/*.java"/>
+	<exclude name="*.jar"/> 
+	<!-- exclude some stuff which only works on windows or mac -->
+	<exclude name="ca_cnib_rtf2dtbook/rtf2xml-win/**/*.*"/>
+	<exclude name="se_tpb_speechgen2/external/win/**/*.*"/>
+	<exclude name="se_tpb_speechgen2/lib/*.*"/>
+	<exclude name="se_tpb_speechgen2/external/MacOS/*.*"/>
+	<!-- exclude vcs control files -->
+	<exclude name="**/.cvsignore"/>
+      </data>
+      <!-- Property files -->
+      <data src="${base.dir}/bin" type="directory">
+	<mapper type="perm" prefix="${deb.install.lib}"/>
+	<include name="pipeline.properties"/>
+	<include name="pipeline.user.properties"/>
+      </data>
+      <!-- Pipeline RMI files -->
+      <data src="${base.dir}/rmi" type="directory">
+	<mapper type="perm" prefix="${deb.install.lib}/rmi"/>
+	<include name="**/*.*"/>
+      </data>
+      <!-- Launcher shell scripts -->
+      <data src="${base.dir}/launchers" type="directory">
+	<mapper type="perm" filemode="755" prefix="${deb.install.lib}"/>
+	<include name="pipeline.sh"/>
+      </data>
+      <!-- Link to the launcher -->
+      <link name="/usr/bin/daisy-pipeline" target="${deb.install.lib}/pipeline.sh"/>
+      <!-- Scripts -->
+      <data src="${base.dir}/scripts" type="directory">
+	<mapper type="perm" prefix="${deb.install.lib}/scripts"/>
+	<include name="**/*.*"/>
+	<exclude name="_dev/**/*.*"/>
+      </data>
+      <!-- Documentation -->
+      <data src="${base.dir}/doc" type="directory">
+	<mapper type="perm" prefix="${deb.install.lib}/doc"/>
+	<include name="developer/**/*.*"/>
+	<include name="enduser/**/*.*"/>
+	<include name="scripts/**/*.*"/>
+	<include name="transformers/**/*.*"/>
+	<include name="*.html"/>
+	<include name="*.css"/>
+      </data>
+      <link name="${deb.install.doc}/index.html" target="${deb.install.lib}/doc/index-all.html"/>
+      <!-- Licenses -->
+      <data src="${base.dir}/licenses" type="directory">
+	<mapper type="perm" prefix="${deb.install.doc}/licenses"/>
+	<include name="**/*.*"/>
+      </data>
+    </deb>
+  </target>
+</project>
