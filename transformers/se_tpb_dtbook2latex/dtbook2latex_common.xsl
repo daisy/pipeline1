@@ -233,11 +233,23 @@
 	<xsl:text>\setheaderspaces{*}{*}{0.4}&#10;</xsl:text>
 	<xsl:text>\checkandfixthelayout&#10;&#10;</xsl:text>
 
-	<!-- The trim marks should be outside the actual page so that
-	     you will not see any lines even if you do not cut the
-	     paper absolutely precisely (see section 18.3. Trim marks
-	     in the memoir manual) -->
-	<xsl:text>\trimLmarks&#10;&#10;</xsl:text>
+	<!-- The trim marks should be outside the actual page so that you will not
+	     see any lines even if you do not cut the paper absolutely precisely
+	     (see section 18.3. Trim marks in the memoir manual) -->
+	<!-- The default for trimLmarks in newer versions of memoir (v3.6j) is too
+	     cluttered and in particular too close the the actual page. Define a
+	     new 'light' version of trimLmarks which drops the trim marks in the
+	     middle -->
+	<xsl:text>\newcommand*{\trimLmarksLight}{%&#10;</xsl:text>
+	<xsl:text>  \let\tmarktl\Ltrimpictl&#10;</xsl:text>
+	<xsl:text>  \let\tmarktr\Ltrimpictr&#10;</xsl:text>
+	<xsl:text>  \let\tmarkbl\Ltrimpicbl&#10;</xsl:text>
+	<xsl:text>  \let\tmarkbr\Ltrimpicbr&#10;</xsl:text>
+	<xsl:text>  \let\tmarktm\relax&#10;</xsl:text>
+	<xsl:text>  \let\tmarkml\relax&#10;</xsl:text>
+	<xsl:text>  \let\tmarkmr\relax&#10;</xsl:text>
+	<xsl:text>  \let\tmarkbm\relax}&#10;&#10;</xsl:text>
+	<xsl:text>\trimLmarksLight&#10;&#10;</xsl:text>
 
    	<xsl:text>\usepackage{graphicx}&#10;</xsl:text>
 	<!-- Make sure images never get larger than the textwidth and the textheight -->
