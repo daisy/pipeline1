@@ -127,6 +127,17 @@
 			<example>50</example>
 			<default></default>
 		</parameter>
+		
+		<parameter required="false" type="enum">
+			<name>hyphenate</name>
+			<description>Hyphenate output.</description>
+			<example>true</example>
+			<enum>
+				<value>true</value>
+				<value>false</value>
+			</enum>
+			<default>true</default>
+		</parameter>
 
 	</parameters>
 
