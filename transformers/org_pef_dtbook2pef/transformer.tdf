@@ -138,6 +138,13 @@
 			</enum>
 			<default>true</default>
 		</parameter>
+		
+		<parameter type="string" required="false">
+			<name>dotifyCliPath</name>
+			<description>Path to executable. Leave blank to use default.</description>
+			<example>C:\Program\Dotify\dotify-cli.jar</example>
+			<default></default>
+		</parameter>
 
 	</parameters>
 

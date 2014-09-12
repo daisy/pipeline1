@@ -60,8 +60,6 @@
 		<include name="zedval.jar"/>
 		<include name="brailleUtils-core.jar"/>
 		<include name="brailleUtils-catalog.jar"/>
-		<include name="dotify.jar"/>
-		<include name="dotify-translator.jar"/>
 		<include name="texhyphj.jar"/>
 	</patternset>
 	

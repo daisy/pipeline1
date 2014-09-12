@@ -42,11 +42,7 @@ that end users may come in contact with that information. -->
 
 <p>The main purpose of this transformer is to convert DTBook into PEF 2008-1.
 However, other input formats as well as other output formats are possible to
-implement within the boundaries of the transformer. In the general case, the
-transformer can convert structural XML into text-oriented display formats, i.e.
-formats that have a fixed width in characters per row. Focus has been on
-braille, specifically braille books, therefore pages, sections and volumes have
-been considered for the programming interfaces. The recommended way to obtain
+within the boundaries of the transformer. The recommended way to obtain
 braille formats other than PEF (such as american ascii braille) is to feed the
 output from this transformer as input to the <a
 href="org_pef_pef2text.html">pef2text</a> transformer.</p>
@@ -54,8 +50,7 @@ href="org_pef_pef2text.html">pef2text</a> transformer.</p>
 
 <h2 id="inputReqs">Input Requirements</h2>
 
-<p>A DTBook document. The input document is assumed to have soft hyphen
-characters (U+00AD) at all desired hyphenation points.</p>
+<p>A DTBook document.</p>
 
 <p>A particular conversion setup may have further requirements.</p>
 <!-- contract definition: detailed requirements on input nature -->
@@ -112,7 +107,7 @@ input reqs were not satisfied, or because an exception occurs -->
 </dl>
 
 <h3 id="extConfig">Extended configurability</h3>
-
+<p>To use this transformer, the path to Dotify must be set using the pipeline user properties. Set the "pipeline.dotify.cli.path" to the path to Dotify's dotify-cli.jar.</p>
 <p>For extended configurability, see javadoc documentation or <a
 href="../../transformers/org_pef_dtbook2pef/package.html">package.html</a></p>
 <!-- details on additional config files, system variables etc -->
