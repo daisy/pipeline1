@@ -966,7 +966,7 @@ public class TextOnlyDtbCreator extends Transformer {
                 	}
                 	
                 	// Internal links:  Add to the list of SMIL links for resolution later
-                	else {
+                	else if (targetAtt != null) {
                 		// We store these in lists keyed under the target string 
                 		// (we use lists because a target can have multiple links to it)
                 		List<SmilStructure> ssList;
