@@ -73,6 +73,7 @@ doc/enduser/img/dp-013.png -text
 doc/enduser/img/dp-014.png -text
 doc/enduser/img/dp-015.png -text
 doc/enduser/installation.html -text
+doc/enduser/installing-dotify.html -text
 doc/enduser/installing-imagemagick.html -text svneol=unset#text/plain
 doc/enduser/installing-lame.html -text
 doc/index-all.html -text

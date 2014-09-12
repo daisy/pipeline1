@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Installing Dotify for use within the Daisy Pipeline</title>
+		<link rel="stylesheet" type="text/css" href="../pipeline.css" />
+	</head>
+	<body>
+		<h1>Installing Dotify for use within the Daisy Pipeline</h1>
+		<div id="toc" class="toc">
+			<ul>
+				<li>
+					<a href="#install">Installing Dotify</a>
+				</li>
+				<li><a href="#configure">Configuring the Dotify CLI path in the DAISY Pipeline</a></li>
+			</ul>
+		</div>
+
+		<h2 id="install">Installing Dotify</h2>
+
+		<p>Download and install the latest release available on the <a href="http://code.google.com/p/dotify">Dotify website</a></p>
+
+		<h2 id="configure">Configuring the Dotify CLI path in the DAISY Pipeline</h2>
+		<ul>
+			<li>If you are using the Pipeline GUI, go to <code>Windows &gt; Preferences &gt; Paths</code> and make sure that the "dotify-cli.jar" path entry points to the Dotify dotify-cli.jar executable (e.g. <code>C:\Program File\Dotify\dotify-cli.jar</code>)</li>
+			<li>If you are using the Pipeline CommandLine version or have embedded the Pipeline as a component in another system, do the following:
+				<ul>
+					<li>Locate the <code>pipeline.user.properties</code> file by navigating to the Pipeline installation path (e.g. C:\Program Files\Daisy Pipeline\) and find pipeline.user.properties within that directory.</li>
+					<li>Open pipeline.user.properties in an XML or text editor, and make sure that the entry with the key <code>pipeline.dotify.cli.path</code> points to the dotify-cli.jar file.<br />
+		<p>For example, if you installed Dotify to <code>C:\Program File\Dotify\</code>, the resulting element in pipeline.user.properties should read:</p>
+		<pre><code>
+	&lt;entry key="pipeline.dotify.cli.path"&gt;C:\Program File\Dotify\dotify-cli.jar&lt;/entry&gt;
+		</code></pre>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</body>
+</html>
