@@ -2,10 +2,13 @@ package org_pef_dtbook2pef;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.daisy.pipeline.core.InputListener;
@@ -46,7 +49,8 @@ public class DTBook2PEF extends Transformer {
 			dotifyCliPath = System.getProperty("pipeline.dotify.cli.path");
 		}
 
-		if (dotifyCliPath == null || !new File(dotifyCliPath).exists()) {
+		File cliPath = new File(dotifyCliPath);
+		if (dotifyCliPath == null || !cliPath.exists()) {
 			throw new TransformerRunException("Cannot locate Dotify executable at '" + dotifyCliPath + "'. Check your configuration. For more information, see the transformer documentation.");
 		}
 
@@ -59,14 +63,21 @@ public class DTBook2PEF extends Transformer {
 			command.add("-jar");
 		}
 		command.add(dotifyCliPath);
-		command.add(input.getAbsolutePath());
-		command.add(output.getAbsolutePath());
-		command.add(setup);
-		command.add(locale.toString());
-		for (String arg : parameters.keySet()) {
-			if (parameters.get(arg) != null) {
-				command.add("-" + arg + "=" + parameters.get(arg));
+
+		List<String> version = getDotifyVersion(new File(cliPath.getParentFile(), "version"));
+
+		if ("2".equals(version.get(0))) {
+			command.add(input.getAbsolutePath());
+			command.add(output.getAbsolutePath());
+			command.add(setup);
+			command.add(locale.toString());
+			for (String arg : parameters.keySet()) {
+				if (parameters.get(arg) != null) {
+					command.add("-" + arg + "=" + parameters.get(arg));
+				}
 			}
+		} else {
+			throw new TransformerRunException("Unsupported major version: " + version.get(0));
 		}
 
 		sendMessage("About to run: " + command.toString());
@@ -103,18 +114,69 @@ public class DTBook2PEF extends Transformer {
 	}
 
 	public static boolean isSupported() {
-		double v = getVersion();
+		double v = getJavaVersion();
 		// System.out.println("Version: " + v);
 		return v >= 1.6;
 	}
 
-	static double getVersion() {
+	static double getJavaVersion() {
 		String[] version = System.getProperty("java.version").split("\\.");
 		return Double.parseDouble(version[0] + (version.length >= 2 ? "." + version[1] : ""));
 	}
 
 	public static void main(String[] args) {
 		isSupported();
+	}
+
+	static List<String> getDotifyVersion(File v) {
+		List<String> segments = new ArrayList<String>();
+		if (v.exists()) {
+			FileInputStream is = null;
+			try {
+				is = new FileInputStream(v);
+				int i;
+				StringBuilder sb = new StringBuilder();
+				while ((i = is.read()) > -1) {
+					if (i >= (int) '0' && i <= (int) '9') {
+						sb.append((char) i);
+					} else {
+						if (sb.length() > 0) {
+							segments.add(sb.toString());
+						}
+						sb = new StringBuilder();
+						if (i != (int) '.') {
+							break;
+						}
+					}
+				}
+				if (sb.length() > 0) {
+					segments.add(sb.toString());
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if (is != null) {
+					try {
+						is.close();
+					} catch (IOException e) {
+					}
+				}
+			}
+		}
+		// add defaults
+		switch (segments.size()) {
+			case 0:
+				segments.add("2");
+				//$FALL-THROUGH$
+			case 1:
+				segments.add("0");
+				//$FALL-THROUGH$
+			case 2:
+				segments.add("0");
+		}
+		return segments;
 	}
 
 }
