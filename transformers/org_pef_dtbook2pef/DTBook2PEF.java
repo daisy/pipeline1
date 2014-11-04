@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -44,7 +43,6 @@ public class DTBook2PEF extends Transformer {
 		String dotifyCliPath = parameters.remove("dotifyCliPath");
 
 		if (dotifyCliPath == null || "".equals(dotifyCliPath)) {
-			System.out.println("HERE");
 			dotifyCliPath = System.getProperty("pipeline.dotify.cli.path");
 		}
 
@@ -52,18 +50,15 @@ public class DTBook2PEF extends Transformer {
 			throw new TransformerRunException("Cannot locate Dotify executable at '" + dotifyCliPath + "'. Check your configuration. For more information, see the transformer documentation.");
 		}
 
-		String separator = System.getProperty("file.separator");
-		String path = System.getProperty("java.home") + separator + "bin" + separator + "java";
 		ArrayList<String> command = new ArrayList<String>();
-		command.add(path);
-		command.add("-jar");
+		if (dotifyCliPath.endsWith(".jar")) {
+			String separator = System.getProperty("file.separator");
+			String path = System.getProperty("java.home") + separator + "bin" + separator + "java";
 
-		try {
-			command.add(new File(getClass().getResource("dotify-dist/dotify-cli.jar").toURI()).getAbsolutePath());
-		} catch (URISyntaxException e1) {
-			throw new TransformerRunException("", e1);
+			command.add(path);
+			command.add("-jar");
 		}
-
+		command.add(dotifyCliPath);
 		command.add(input.getAbsolutePath());
 		command.add(output.getAbsolutePath());
 		command.add(setup);
