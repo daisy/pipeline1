@@ -103,6 +103,9 @@ public class DTBook2PEF extends Transformer {
 			} catch (IOException e) {
 			}
 			process.waitFor();
+			if (process.exitValue()!=0) {
+				throw new TransformerRunException("Dotify returned a non-zero exit value: " + process.exitValue());
+			}
 		} catch (IOException e) {
 			throw new TransformerRunException("Failed to start process.", e);
 		} catch (InterruptedException e) {
