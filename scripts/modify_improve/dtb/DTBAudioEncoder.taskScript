@@ -28,25 +28,61 @@
 			<enum>
 			  <item nicename="32" value="32" />
 			  <item nicename="48" value="48" />
+			  <item nicename="56" value="56" />
 			  <item nicename="64" value="64" />
+			  <item nicename="80" value="80" />
+			  <item nicename="96" value="96" />
+			  <item nicename="112" value="112" />
 			  <item nicename="128" value="128" />
 			</enum>
 		</datatype>
 	</parameter>
 		
+	<parameter name="stereo" value="mono" required="false">
+	  <nicename>Stereo</nicename>
+	  <description>The stereo mode of the encoded files</description>
+	  <datatype>
+	    <enum>
+	      <item nicename="Mono" value="mono" />
+	      <item nicename="Stereo" value="stereo" />
+	    </enum>
+	  </datatype>
+	</parameter>
+	
+	<parameter name="freq" value="22050" required="false">
+	  <nicename>Sampling rate</nicename>
+	  <description>The sample rate of the encoded files</description>
+	  <datatype>
+	    <enum>
+	      <item nicename="11025" value="11025" />
+	      <item nicename="22050" value="22050" />
+	      <item nicename="44100" value="44100" />
+	      <item nicename="48000" value="48000" />
+	    </enum>
+	  </datatype>
+	</parameter>
+
 	<task name="se_tpb_dtbAudioEncoder" interactive="false">
-		<parameter>
-			<name>manifest</name>
-			<value>${input}</value>
-		</parameter>
-		<parameter>
-			<name>outDir</name>
-			<value>${output}</value>
-		</parameter>		
-		<parameter>
-			<name>bitrate</name>
-			<value>${bitrate}</value>
-		</parameter>		
+	  <parameter>
+	    <name>manifest</name>
+	    <value>${input}</value>
+	  </parameter>
+	  <parameter>
+	    <name>outDir</name>
+	    <value>${output}</value>
+	  </parameter>		
+	  <parameter>
+	    <name>bitrate</name>
+	    <value>${bitrate}</value>
+	  </parameter>		
+	  <parameter>
+	    <name>stereo</name>
+	    <value>${stereo}</value>
+	  </parameter>
+	  <parameter>
+	    <name>freq</name>
+	    <value>${freq}</value>
+	  </parameter>
 	</task>
 	
 </taskScript>
