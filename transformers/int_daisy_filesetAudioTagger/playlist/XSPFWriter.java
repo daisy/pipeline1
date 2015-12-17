@@ -22,6 +22,7 @@ import java.util.Collection;
 import org.daisy.util.fileset.AudioFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
+import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 
@@ -81,7 +82,7 @@ public class XSPFWriter extends AbstractXMLWriter {
 
 					mXMLEventList.add(mXMLEventFactory.createCharacters(mNewLine));
 					mXMLEventList.add(mXMLEventFactory.createStartElement("", NS_XSPF, "duration"));
-					mXMLEventList.add(mXMLEventFactory.createCharacters(Long.toString(file.getLength().millisecondsValue())));
+					mXMLEventList.add(mXMLEventFactory.createCharacters(file.getLength().toString(SmilClock.RAW_TIMECOUNT_TRUNCATED_MSC)));
 					mXMLEventList.add(mXMLEventFactory.createEndElement("", NS_XSPF, "duration"));
 										
 					mXMLEventList.add(mXMLEventFactory.createCharacters(mNewLine));

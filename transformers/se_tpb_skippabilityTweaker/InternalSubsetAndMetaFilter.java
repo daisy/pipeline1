@@ -72,7 +72,7 @@ import org.daisy.util.xml.stax.StaxFilter;
 		this.staxEvPool = staxEvPool;
 	}
 	
-	public void filter(File input, File output, long totalElapsedTime) throws XMLStreamException, IOException {
+	public void filter(File input, File output, SmilClock totalElapsedTime) throws XMLStreamException, IOException {
 		XMLOutputFactory xof = null;
 	    XMLEventFactory xef = null;
 	    XMLEventReader reader = null;
@@ -119,13 +119,13 @@ import org.daisy.util.xml.stax.StaxFilter;
 	
 	private class DTDAndMetaFilter extends StaxFilter {
 	
-        private long totalElapsedTime;
+        private SmilClock totalElapsedTime = new SmilClock();
         
 		public DTDAndMetaFilter(XMLEventReader xer, XMLEventFactory xef,
-				XMLOutputFactory xof, OutputStream outStream, long totalElapsedTime)
+				XMLOutputFactory xof, OutputStream outStream, SmilClock totalElapsedTime2)
 				throws XMLStreamException {
 			super(xer, xef, xof, outStream);
-            this.totalElapsedTime = totalElapsedTime;
+            this.totalElapsedTime = totalElapsedTime2;
 		}
 
 		
@@ -160,7 +160,7 @@ import org.daisy.util.xml.stax.StaxFilter;
                 if (nameAttr != null && "ncc:totalTime".equals(nameAttr.getValue())) {
                     List<Attribute> attrs = new ArrayList<Attribute>();
                     attrs.add(nameAttr);
-                    String content = new SmilClock((totalElapsedTime+500)-((totalElapsedTime+500)%1000)).toString(SmilClock.FULL);
+                    String content = new SmilClock(totalElapsedTime.secondsValueRoundedDouble()).toString(SmilClock.FULL);
                     attrs.add(getEventFactory().createAttribute("content", content));
                     result = getEventFactory().createStartElement(event.getName(), attrs.iterator(), event.getNamespaces());
                 }

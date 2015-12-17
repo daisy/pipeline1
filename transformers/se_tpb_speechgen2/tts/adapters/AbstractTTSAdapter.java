@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.events.StartElement;
 
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
+import org.daisy.util.xml.SmilClock;
 import org.w3c.dom.Document;
 
 import se_tpb_speechgen2.audio.AudioFiles;
@@ -98,7 +99,7 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	 * @throws IOException
 	 * @throws TTSException
 	 */
-	public long read(List<StartElement> announcements, QName attrName,
+	public SmilClock read(List<StartElement> announcements, QName attrName,
 			File destination) throws IOException, TTSException {
 		try {
 			String line = TTSUtils.concatAttributes(announcements, attrName);
@@ -107,7 +108,7 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 				read(line, destination);
 				return AudioFiles.getAudioFileDuration(destination);
 			}
-			return 0;
+			return new SmilClock();
 		} catch (IOException e) {
 			throw e;
 		} catch (Exception e) {
@@ -128,7 +129,7 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	 * @throws IOException
 	 * @throws TTSException
 	 */
-	public long read(Document doc, File destination) throws IOException,
+	public SmilClock read(Document doc, File destination) throws IOException,
 			TTSException {
 		try {
 			String line = mUtils.dom2input(doc);
@@ -136,7 +137,7 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 				read(line, destination);
 				return AudioFiles.getAudioFileDuration(destination);
 			}
-			return 0;
+			return new SmilClock();
 		} catch (IOException e) {
 			throw e;
 		} catch (Exception e) {

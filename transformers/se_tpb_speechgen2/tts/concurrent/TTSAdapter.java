@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.events.StartElement;
 
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
+import org.daisy.util.xml.SmilClock;
 import org.w3c.dom.Document;
 
 import se_tpb_speechgen2.tts.TTSException;
@@ -46,7 +47,7 @@ public interface TTSAdapter {
 	 * @throws IOException
 	 * @throws TTSException
 	 */
-	long read(List<StartElement> announcements, QName attrName, File destination) throws IOException, TTSException;
+	SmilClock read(List<StartElement> announcements, QName attrName, File destination) throws IOException, TTSException;
 	
 	
 	/**
@@ -57,7 +58,7 @@ public interface TTSAdapter {
 	 * @throws IOException
 	 * @throws TTSException
 	 */
-	long read(Document doc, File destination) throws IOException, TTSException;
+	SmilClock read(Document doc, File destination) throws IOException, TTSException;
 	
 	
 	/**

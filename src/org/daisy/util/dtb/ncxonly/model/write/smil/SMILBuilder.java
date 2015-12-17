@@ -80,9 +80,9 @@ public class SMILBuilder {
 	}
 	
 	public SmilClock getDurationClock() {
-		SmilClock totalElapsedClock = new SmilClock(0);		
+		SmilClock totalElapsedClock = new SmilClock();		
 		for(SMILFile smil : mSpine) {			
-			totalElapsedClock = new SmilClock(totalElapsedClock.millisecondsValue() + (long)(smil.getDurationSeconds()*1000));
+			totalElapsedClock.addTime(new SmilClock(smil.getDurationSeconds()));
 		}	
 		return totalElapsedClock;
 	}
@@ -123,11 +123,11 @@ public class SMILBuilder {
 	 * @throws FileNotFoundException 
 	 */
 	public void render(Directory destination, XMLEventFactory xef, XMLOutputFactory xof) throws FileNotFoundException, XMLStreamException {
-		SmilClock totalElapsedClock = new SmilClock(0);		
+		SmilClock totalElapsedClock = new SmilClock();
 		for(SMILFile smil : mSpine) {			
 			File dest = new File(destination,smil.getFileName());			
 			smil.render(dest,totalElapsedClock,mModel.getMetadata(),xof,xef);			
-			totalElapsedClock = new SmilClock(totalElapsedClock.millisecondsValue() + (long)(smil.getDurationSeconds()*1000));
+			totalElapsedClock.addTime(new SmilClock(smil.getDurationSeconds()));
 		}
 	}
 

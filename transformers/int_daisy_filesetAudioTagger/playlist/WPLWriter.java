@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 import org.daisy.util.fileset.AudioFile;
 import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.util.FilesetLabelProvider;
+import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.pool.PoolException;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 
@@ -119,13 +120,13 @@ public class WPLWriter extends AbstractXMLWriter {
 	 * @return duration in seconds
 	 */
 	private String getTotalDuration() {
-		long length = 0;
+		SmilClock length = new SmilClock();
 		try{
 			for (Object o : mAudioSpine) {
 				AudioFile af = (AudioFile) o;
-				length += af.getLength().secondsValueRounded();
+				length = length.addTime(new SmilClock(af.getLength().secondsValueRoundedDouble()));
 			}
-			return Long.toString(length);
+			return Double.toString(length.secondsValue());
 		}catch (Exception e) {
 			return "0";
 		}

@@ -70,8 +70,8 @@ class SmilFileClockFixer {
      * @throws XMLStreamException
      * @throws IOException
      */
-    public long fix(File inFile, File outFile, long totalElapsedTime, String fragment) throws XMLStreamException, IOException {
-        long timeInThisSmil = 0;
+    public SmilClock fix(File inFile, File outFile, SmilClock totalElapsedTime, String fragment) throws XMLStreamException, IOException {
+        SmilClock timeInThisSmil = new SmilClock();
         boolean idForFragmentSeen = false;
         XMLEventReader reader = factory.createXMLEventReader(new FileInputStream(inFile));
         
@@ -87,8 +87,8 @@ class SmilFileClockFixer {
                 if (idForFragmentSeen && "audio".equals(se.getName().getLocalPart())) {
                     Attribute clipBegin = se.getAttributeByName(new QName("clip-begin"));
                     Attribute clipEnd = se.getAttributeByName(new QName("clip-end"));                    
-                    timeInThisSmil += new SmilClock(clipEnd.getValue()).millisecondsValue();
-                    timeInThisSmil -= new SmilClock(clipBegin.getValue()).millisecondsValue();
+                    timeInThisSmil = timeInThisSmil.addTime(new SmilClock(clipEnd.getValue()));
+                    timeInThisSmil = timeInThisSmil.subtractTime(new SmilClock(clipBegin.getValue()));
                 }                
             }
         }
@@ -107,12 +107,12 @@ class SmilFileClockFixer {
     }
     
     private class MySmilClock extends StaxFilter {
-        long timeInThisSmil = 0;
-        long totalElapsedTime = 0;
+        SmilClock timeInThisSmil = new SmilClock();
+        SmilClock totalElapsedTime = new SmilClock();
         boolean firstSeq = true;
         boolean idForFragmentSeen = false;
         String fragment = null;
-        public MySmilClock(XMLEventReader xer, OutputStream os, long smilTime, long totalTime, String idFragment) throws XMLStreamException {
+        public MySmilClock(XMLEventReader xer, OutputStream os, SmilClock smilTime, SmilClock totalTime, String idFragment) throws XMLStreamException {
             super(xer, os);
             timeInThisSmil = smilTime;
             totalElapsedTime = totalTime;
@@ -126,30 +126,16 @@ class SmilFileClockFixer {
             if ("meta".equals(se.getName().getLocalPart())) {
                 Attribute name = se.getAttributeByName(new QName("name"));
                 if (name!=null && "ncc:timeInThisSmil".equals(name.getValue())) {
-                    long diff = timeInThisSmil % 1000;
-                    long timeInSmil = 0;
-                    if (diff >= 500) {
-                        timeInSmil = timeInThisSmil + (1000-diff);
-                    } else {
-                        timeInSmil = timeInThisSmil - diff;
-                    }
-                    SmilClock sc = new SmilClock(timeInSmil);                    
-                    Attribute content = this.getEventFactory().createAttribute("content", sc.toString());
+                    SmilClock roundedTimeInThisSmil = new SmilClock(timeInThisSmil.secondsValueRoundedDouble());
+                    Attribute content = this.getEventFactory().createAttribute("content", roundedTimeInThisSmil.toString());
                     Collection<Attribute> coll = new ArrayList<Attribute>();
                     coll.add(name);
                     coll.add(content);
                     StartElement result = this.getEventFactory().createStartElement(se.getName(), coll.iterator(), se.getNamespaces());
                     return result;
                 } else if (name!=null && "ncc:totalElapsedTime".equals(name.getValue())) {
-                    long diff = totalElapsedTime % 1000;
-                    long totalTime = 0;
-                    if (diff >= 500) {
-                        totalTime = totalElapsedTime + (1000-diff);
-                    } else {
-                        totalTime = totalElapsedTime - diff;
-                    }
-                    SmilClock sc = new SmilClock(totalTime);
-                    Attribute content = this.getEventFactory().createAttribute("content", sc.toString());
+                    SmilClock roundedTotalElapsedTime = new SmilClock(totalElapsedTime.secondsValueRoundedDouble());
+                    Attribute content = this.getEventFactory().createAttribute("content", roundedTotalElapsedTime.toString());
                     Collection<Attribute> coll = new ArrayList<Attribute>();
                     coll.add(name);
                     coll.add(content);
@@ -159,8 +145,7 @@ class SmilFileClockFixer {
             } else if ("seq".equals(se.getName().getLocalPart())) {
                 if (firstSeq) {
                     firstSeq = false;
-                    SmilClock sc = new SmilClock(timeInThisSmil);
-                    Attribute dur = this.getEventFactory().createAttribute("dur", sc.toString(SmilClock.TIMECOUNT_SEC));
+                    Attribute dur = this.getEventFactory().createAttribute("dur", timeInThisSmil.toString(SmilClock.TIMECOUNT_SEC));
                     Collection<Attribute> coll = new ArrayList<Attribute>();
                     coll.add(dur);
                     StartElement result = this.getEventFactory().createStartElement(se.getName(), coll.iterator(), se.getNamespaces());

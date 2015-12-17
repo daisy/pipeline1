@@ -54,7 +54,7 @@ public class M3U8Writer extends AbstractWriter {
 			try{
 				AudioFile file = (AudioFile) object;
 				mOutputBuilder.append("#EXTINF:");
-				mOutputBuilder.append(file.getLength().secondsValueRounded());
+				mOutputBuilder.append(file.getLength().secondsValueRoundedDouble());
 				mOutputBuilder.append(',');
 				String label = mLabelProvider.getFilesetFileTitle(file);
 				if(label==null) label = "unknown title";				

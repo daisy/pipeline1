@@ -77,7 +77,7 @@ class NccFixer {
      * @throws XMLStreamException
      * @throws IOException
      */
-    public void fix(File nccIn, File nccOut, long totalElapsedTime) throws XMLStreamException, IOException {
+    public void fix(File nccIn, File nccOut, SmilClock totalElapsedTime) throws XMLStreamException, IOException {
         XMLEventReader nccReader = factory.createXMLEventReader(new FileInputStream(nccIn));        
         XMLEventWriter nccWriter = outFactory.createXMLEventWriter(new FileOutputStream(nccOut), "utf-8");
 
@@ -116,7 +116,7 @@ class NccFixer {
      * @throws FileNotFoundException
      * @throws XMLStreamException
      */
-    private void copyNccHead(File nccIn, long totalElapsedTime, XMLEventWriter writer) throws FileNotFoundException, XMLStreamException {
+    private void copyNccHead(File nccIn, SmilClock totalElapsedTime, XMLEventWriter writer) throws FileNotFoundException, XMLStreamException {
         XMLEventReader nccReader = factory.createXMLEventReader(new FileInputStream(nccIn));
         String indentation = "\t\t\t\t\t\t\t";
         int level = 0;
@@ -131,7 +131,7 @@ class NccFixer {
                     if (name!=null && "ncc:totalTime".equals(name.getValue())) {
                         Collection<Attribute> attrs = new ArrayList<Attribute>();
                         attrs.add(name);
-                        attrs.add(eventFactory.createAttribute("content", new SmilClock((totalElapsedTime+500)-((totalElapsedTime+500)%1000)).toString(SmilClock.FULL)));
+                        attrs.add(eventFactory.createAttribute("content", new SmilClock(totalElapsedTime.secondsValueRoundedDouble()).toString(SmilClock.FULL)));
                         writer.add(eventFactory.createStartElement(new QName(null, "meta", ""), attrs.iterator(), null));                        
                     } else {
                     	Collection<Attribute> attrs = new ArrayList<Attribute>();

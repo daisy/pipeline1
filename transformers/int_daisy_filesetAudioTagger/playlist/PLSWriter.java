@@ -73,7 +73,7 @@ public class PLSWriter extends AbstractWriter implements PlaylistWriter {
 				mOutputBuilder.append("Length");
 				mOutputBuilder.append(Integer.toString(i));
 				mOutputBuilder.append('=');
-				mOutputBuilder.append(file.getLength().secondsValueRounded());			
+				mOutputBuilder.append(file.getLength().secondsValueRoundedDouble());
 				mOutputBuilder.append(mNewLine);
 				
 			}catch (Exception e) {

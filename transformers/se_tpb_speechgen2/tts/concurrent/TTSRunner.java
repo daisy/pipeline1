@@ -20,7 +20,7 @@ package se_tpb_speechgen2.tts.concurrent;
 import java.io.IOException;
 
 import org.daisy.pipeline.exception.TransformerRunException;
-
+import org.daisy.util.xml.SmilClock;
 import se_tpb_speechgen2.tts.TTSException;
 import se_tpb_speechgen2.tts.TTSInput;
 import se_tpb_speechgen2.tts.TTSOutput;
@@ -54,7 +54,7 @@ public class TTSRunner implements Runnable {
 	 */
 	public void run() {
 		TTSInput in = null;
-		long duration = 0;
+		SmilClock duration = new SmilClock();
 			while ((in = mCallback.getNextInput()) != null) {
 				try {
 				if (in.isAnnouncement()) {

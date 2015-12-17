@@ -42,7 +42,7 @@ class SmilFileImpl extends XmlFileImpl implements SmilFile {
 	protected String myMetaTitle = null;	
 	private SmilClock audioClipBegin = null; //does not gather anything outside startelement; here for optim 	
 	private SmilClock audioClipEnd = null; //does not gather anything outside startelement; here for optim	 
-	private long myCalculatedDuration = 0;
+	private SmilClock myCalculatedDuration = new SmilClock();
 	/** id attr values of any occuring customTest elements in head */
 	protected Set<String> mCustomTestIDs = null;
 
@@ -104,7 +104,7 @@ class SmilFileImpl extends XmlFileImpl implements SmilFile {
 			if (audioClipBegin != null
 					&& audioClipEnd != null) { 
 				// means we had a standard dtb audio element
-				myCalculatedDuration += (audioClipEnd.millisecondsValue() - audioClipBegin.millisecondsValue());
+				myCalculatedDuration = myCalculatedDuration.addTime(audioClipEnd).subtractTime(audioClipBegin);
 				// reset
 				audioClipBegin = null;
 				audioClipEnd = null;
@@ -114,7 +114,7 @@ class SmilFileImpl extends XmlFileImpl implements SmilFile {
 	}
 
 	public SmilClock getCalculatedDuration() {
-		return new SmilClock(myCalculatedDuration);
+		return myCalculatedDuration;
 	}
 
 	public SmilClock getStatedDuration() {

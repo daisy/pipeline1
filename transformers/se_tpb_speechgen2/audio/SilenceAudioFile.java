@@ -28,24 +28,25 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.daisy.util.xml.SmilClock;
 /**
  * @author Linus Ericson
  */
 public class SilenceAudioFile {
 
-	public static void writeSilentFile(File outputFile, long durationInMillis, AudioFormat format) throws IOException {
+	public static void writeSilentFile(File outputFile, SmilClock durationInMillis, AudioFormat format) throws IOException {
         AudioInputStream ais = new SilenceAudioInputStream(format, durationInMillis);
         AudioSystem.write(ais, AudioFileFormat.Type.WAVE, outputFile);
     }
 	
-    public static void writeSilentFile(File outputFile, long durationInMillis, File model) throws UnsupportedAudioFileException, IOException {
+    public static void writeSilentFile(File outputFile, SmilClock durationInMillis, File model) throws UnsupportedAudioFileException, IOException {
         AudioFileFormat aff = AudioSystem.getAudioFileFormat(model);
         AudioFormat format = aff.getFormat();
         AudioInputStream ais = new SilenceAudioInputStream(format, durationInMillis);
         AudioSystem.write(ais, aff.getType(), outputFile);
     }
     
-    public static void writeSilentOutputStream(OutputStream outStream, long durationInMillis, InputStream model) throws UnsupportedAudioFileException, IOException {
+    public static void writeSilentOutputStream(OutputStream outStream, SmilClock durationInMillis, InputStream model) throws UnsupportedAudioFileException, IOException {
         AudioFileFormat aff = AudioSystem.getAudioFileFormat(model);
         AudioFormat format = aff.getFormat();
         AudioInputStream ais = new SilenceAudioInputStream(format, durationInMillis);
@@ -55,6 +56,6 @@ public class SilenceAudioFile {
     public static void main(String args[]) throws UnsupportedAudioFileException, IOException {
         File out = new File("d:/test.wav");
         File in = new File("U:/testbok1/fileset/speechgen00009.wav");
-        SilenceAudioFile.writeSilentFile(out, 15748, in);
+        SilenceAudioFile.writeSilentFile(out, new SmilClock(((double)15748)/1000.0), in);
     }
 }

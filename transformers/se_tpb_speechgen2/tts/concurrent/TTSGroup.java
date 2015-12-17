@@ -33,6 +33,7 @@ import javax.xml.stream.events.StartElement;
 import org.daisy.pipeline.core.event.MessageEvent;
 import org.daisy.pipeline.core.event.MessageEvent.Type;
 import org.daisy.pipeline.core.transformer.TransformerDelegateListener;
+import org.daisy.util.xml.SmilClock;
 import org.w3c.dom.Document;
 
 import se_tpb_speechgen2.tts.TTS;
@@ -45,41 +46,41 @@ import se_tpb_speechgen2.tts.util.TTSUtils;
 
 /**
  * This is an implementation of the TTS interface. It covers the case
- * with several tts instances speaking the same language. 
- * 
+ * with several tts instances speaking the same language.
+ *
  * TTSGroup first recieves the input. That input is added to a queue.
  * When no more input will be added, TTSGroup can start deliver its
  * output, i e. the synthesized audio.
- * 
+ *
  * Calling <code>start()</code> will initialize all slaves and put
  * them to work before their first output is actually requested. However,
  * if more input is added, an exception will be thrown.
- * 
+ *
  * @author Martin Blomberg
  *
  */
 public class TTSGroup implements TTS, TTSGroupFacade {
 
 	// housekeeping
-	private int spCounter = 0;					// number of sync points to process				
+	private int spCounter = 0;					// number of sync points to process
 	private Map<TTSRunner, Thread> mSlaves = 	// the slaves (runners and threads)
 		new HashMap<TTSRunner, Thread>();
 	private List<TTSAdapter> mTTSInstances;		// list of ttsadapters created by the TTSBuilder.
-	
+
 	private Queue<TTSInput> mTTSInput = 		// input queue where new jobs are put by the transformer
 		new LinkedList<TTSInput>();
-	private Map<Integer, TTSOutput> mTTSOutput = // queue-number system for output, deliver output in... 
+	private Map<Integer, TTSOutput> mTTSOutput = // queue-number system for output, deliver output in...
 		new HashMap<Integer, TTSOutput>();		 // ...the same order as input
 	private Integer mOutputIndex = null;		// output queue counter
 	private static boolean DEBUG = false;
 	private TransformerDelegateListener mTDL;
 	private boolean failOnError = false;        // whether this engine should terminate after a failure
-	
-	
+
+
 	/**
 	 * Constructs a new instance given a list of tts adapters to run
 	 * concurrently.
-	 * 
+	 *
 	 * @param ttsInstances the tts process wrappers.
 	 */
 	public TTSGroup(List<TTSAdapter> ttsInstances, TransformerDelegateListener tdl) {
@@ -88,12 +89,12 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 			String msg = ttsInstances + " not a legal argument for TTSGroup(List)";
 			throw new IllegalArgumentException(msg);
 		}
-		
+
 		if (ttsInstances.size() == 0) {
 			String msg = ttsInstances + " not a legal argument for TTSGroup(List), size = " + (ttsInstances.size());
 			throw new IllegalArgumentException(msg);
 		}
-		
+
 		for (Iterator<TTSAdapter> it = ttsInstances.iterator(); it.hasNext(); ) {
 			TTSAdapter tmp = it.next();
 			if (null == tmp) {
@@ -101,33 +102,33 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 				throw new IllegalArgumentException(msg);
 			}
 		}
-		
+
 		mTTSInstances = ttsInstances;
 		mTDL = tdl;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgen2.tts.TTS#start()
 	 */
 	public void start()  {
 		init();
 	}
-		
-	
+
+
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgen2.tts.TTS#addAnnouncements(java.util.List, javax.xml.namespace.QName, java.io.File)
 	 */
-	public void addAnnouncements(List<StartElement> announcement, QName attrName, File outputFile) { 		
+	public void addAnnouncements(List<StartElement> announcement, QName attrName, File outputFile) {
 		addInput(new TTSAnnouncement(announcement, attrName, outputFile, spCounter++));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgen2.tts.TTS#addSyncPoint(org.w3c.dom.Document, java.io.File)
 	 */
 	public void addSyncPoint(Document scope, File outputFile) {
 		addInput(new TTSSyncPoint(scope, outputFile, spCounter++));
 	}
-	
+
 	/**
 	 * Puts the TTSInput in the queue.
 	 * @param in the tts input.
@@ -135,7 +136,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 	private void addInput(TTSInput in) {
 		if (mOutputIndex != null) {
 			String msg = "Not legal to add input after output " +
-					"has been requested: " + 
+					"has been requested: " +
 					(in.isAnnouncement() ? "Announcement" : "SyncPoint");
 			throw new IllegalStateException(msg);
 		}
@@ -147,28 +148,28 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 	 */
 	public void close() throws TTSException {
 		if (0 == mSlaves.size()) {
-			DEBUG("Number of slaves: " + mSlaves.size()); 
+			DEBUG("Number of slaves: " + mSlaves.size());
 			return;
 		}
-		
+
 		List<Exception> exceptions = new ArrayList<Exception>();
-		
+
 		DEBUG("Await slave termination...");
 		int i = 0;
 		for (Iterator<TTSRunner> iter = mSlaves.keySet().iterator(); iter.hasNext();) {
-			
+
 			DEBUG("Processing slave " + i);
 			TTSRunner element = iter.next();
-			
+
 			try {
 				element.close();
 			} catch (TTSException e) {
 				exceptions.add(e);
 			}
 			DEBUG("Terminated slave " + i);
-			
+
 			Thread thread = mSlaves.get(element);
-			
+
 			DEBUG("Await termination of slave " + i);
 			boolean success = true;
 			try {
@@ -178,21 +179,21 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 				DEBUG("Exception joining slave " + i);
 				e.printStackTrace();
 			}
-			
+
 			DEBUG("Slave " + i + " terminated? " + success);
 			i++;
 		}
-		
+
 		mSlaves.clear();
 		DEBUG("TTS terminated, all slaves too.");
-		
+
 		if (exceptions.size() > 0) {
 			String msg = "Exceptions occurred while generating the book. I better stop now than " +
 					"returning an invalid book.";
 			DEBUG(msg);
 			throw (TTSException) exceptions.get(0);
 		}
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -203,13 +204,13 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 		if (null == mOutputIndex) {
 			init();
 		}
-		
-		
+
+
 		// no more results to wait for
 		if (!hasNext()) {
 			return null;
 		}
-		
+
 		// wait for the "right" output to arrive
 		while (null == mTTSOutput.get(mOutputIndex)) {
 			try {
@@ -218,10 +219,10 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 				e.printStackTrace();
 			}
 		}
-		
+
 		TTSOutput to = mTTSOutput.remove(mOutputIndex);
 		mOutputIndex = new Integer(mOutputIndex.intValue() + 1);
-		
+
 		notifyAll();
 		return to;
 	}
@@ -234,11 +235,11 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 		if (null == mOutputIndex) {
 			return true;
 		}
-		
+
 		return mOutputIndex.intValue() < spCounter;
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgen2.tts.concurrent.TTSGroupFacade#getNextInput()
 	 */
@@ -250,7 +251,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 		// are finished.
 		return mTTSInput.poll();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgen2.tts.concurrent.TTSGroupFacade#addOutput(se_tpb_speechgen2.tts.TTSOutput)
 	 */
@@ -259,26 +260,26 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 		mTTSOutput.put(key, out);
 		notifyAll();
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgen2.tts.concurrent.TTSGroupFacade#slaveTerminated(se_tpb_speechgen2.tts.concurrent.TTSInstance, se_tpb_speechgen2.tts.TTSInput)
 	 */
 	public synchronized void slaveTerminated(@SuppressWarnings("unused")TTSAdapter slave, TTSInput myLastInput, Throwable t) {
 		// TODO
 		DEBUG("#slaveTerminated: ");
-		
+
 		if (failOnError) {
 			// makes hasNext() return false;
 			spCounter = -1;
 			// no more work
 			mTTSInput.clear();
 		}
-		
-		// makes the currently blocking call receive "something"
-		mTTSOutput.put(mOutputIndex, new TTSOutput(myLastInput.getFile(), myLastInput.getNumber(), 0));
 
-		
+		// makes the currently blocking call receive "something"
+		mTTSOutput.put(mOutputIndex, new TTSOutput(myLastInput.getFile(), myLastInput.getNumber(), new SmilClock()));
+
+
 		// delegates the error message to the transformer
 		TTSUtils ttsUtils = new TTSUtils(new HashMap<String, String>());
 		String sent=null;
@@ -306,7 +307,7 @@ public class TTSGroup implements TTS, TTSGroupFacade {
 		if (mOutputIndex != null) {
 			return;
 		}
-		
+
 		mOutputIndex = new Integer(0);
 		int i = 0;
 		for (Iterator<TTSAdapter> it = mTTSInstances.iterator(); it.hasNext(); ) {

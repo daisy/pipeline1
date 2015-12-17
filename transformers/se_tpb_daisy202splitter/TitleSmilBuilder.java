@@ -85,7 +85,7 @@ public class TitleSmilBuilder {
 		reader.close();
 		
 		// The length of the audio in the title smil
-		long timeInSmil = parStripperFilter.getAudioLength();
+		SmilClock timeInSmil = parStripperFilter.getAudioLength();
 	
 		// Step 2: remove ncc:totalElapsedTime, update ncc:timeInThisSmil and seq@dur
 		// FIXME change value of text@id attribute as well!
@@ -117,7 +117,7 @@ public class TitleSmilBuilder {
 	private class ParStripperFilter extends StaxFilter {
 		
 		private boolean firstParPassed = false;
-		private long audioLength = 0;
+		private SmilClock audioLength = new SmilClock();
 		private Set<String> mediaURIs = new HashSet<String>();
 
 		/**
@@ -146,8 +146,8 @@ public class TitleSmilBuilder {
 				Attribute clipBegin = AttributeByName.get(new QName("clip-begin"), event);
                 Attribute clipEnd = AttributeByName.get(new QName("clip-end"), event);                    
                 Attribute src = AttributeByName.get(new QName("src"), event);
-                audioLength += new SmilClock(clipEnd.getValue()).millisecondsValue();
-                audioLength -= new SmilClock(clipBegin.getValue()).millisecondsValue();
+                audioLength = audioLength.addTime(new SmilClock(clipEnd.getValue()));
+                audioLength = audioLength.subtractTime(new SmilClock(clipBegin.getValue()));
                 mediaURIs.add(src.getValue());
 			}
 			if ("text".equals(localName)) {
@@ -175,7 +175,7 @@ public class TitleSmilBuilder {
 		 * Gets the length of all audio referenced from the title SMIL
 		 * @return the audio length
 		 */
-		public long getAudioLength() {
+		public SmilClock getAudioLength() {
 			return audioLength;
 		}
 		
@@ -207,10 +207,10 @@ public class TitleSmilBuilder {
 	 */
 	private class MetadataFixFilter extends StaxFilter {
 		
-		private long timeInThisSmil;
+		private SmilClock timeInThisSmil;
 		private boolean firstSeq = true;
 
-		public MetadataFixFilter(XMLEventReader xer, XMLOutputFactory xof, OutputStream outStream, long timeInSmil) throws XMLStreamException {
+		public MetadataFixFilter(XMLEventReader xer, XMLOutputFactory xof, OutputStream outStream, SmilClock timeInSmil) throws XMLStreamException {
 			super(xer, xof, outStream);
 			this.timeInThisSmil = timeInSmil;
 		}
@@ -229,15 +229,8 @@ public class TitleSmilBuilder {
 				}
 				if (nameAttr != null && "ncc:timeInThisSmil".equals(nameAttr.getValue())) {
                 	// Update ncc:timeInThisSmil
-                    long diff = timeInThisSmil % 1000;
-                    long timeInSmil = 0;
-                    if (diff >= 500) {
-                        timeInSmil = timeInThisSmil + (1000-diff);
-                    } else {
-                        timeInSmil = timeInThisSmil - diff;
-                    }
-                    SmilClock sc = new SmilClock(timeInSmil);                    
-                    Attribute content = this.getEventFactory().createAttribute("content", sc.toString());
+                    SmilClock roundedTimeInThisSmil = new SmilClock(timeInThisSmil.secondsValueRoundedDouble());                    
+                    Attribute content = this.getEventFactory().createAttribute("content", roundedTimeInThisSmil.toString());
                     Collection<Attribute> coll = new ArrayList<Attribute>();
                     coll.add(nameAttr);
                     coll.add(content);
@@ -248,8 +241,7 @@ public class TitleSmilBuilder {
 				if (firstSeq) {
                 	// Add the dur attribute to the first seq
                     firstSeq = false;
-                    SmilClock sc = new SmilClock(timeInThisSmil);
-                    Attribute dur = this.getEventFactory().createAttribute("dur", sc.toString(SmilClock.TIMECOUNT_SEC));
+                    Attribute dur = this.getEventFactory().createAttribute("dur", timeInThisSmil.toString(SmilClock.TIMECOUNT_SEC));
                     Collection<Attribute> coll = new ArrayList<Attribute>();
                     coll.add(dur);
                     StartElement result = this.getEventFactory().createStartElement(event.getName(), coll.iterator(), event.getNamespaces());

@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
  * 
  * @author James Pritchett
  */
-public class SmilClock implements Comparable<Object> {
+public class SmilClock {
     // TODO move this to a more appropriate package
     private static Pattern fullClockPattern = Pattern
             .compile("(npt=)?(\\d+):([0-5]\\d):([0-5]\\d)([.](\\d+))?");
@@ -91,31 +91,29 @@ public class SmilClock implements Comparable<Object> {
             if (m.group(4) == null) {
                 // this.msecValue = (long)(bd.longValue() * 1000);
                 // //(28/11/2006)Piotr: this one truncates fraction
-                this.msecValue = bd.multiply(BigDecimal.valueOf((long) 1000))
-                        .longValue();
+                this.msecValue = new ClipTime(bd.multiply(BigDecimal.valueOf((long) 1000))
+                        .longValue());
             } else if (m.group(4).equals("ms")) {
-                this.msecValue = bd.longValue(); // NOTE: This will truncate
-                // fraction
+                this.msecValue = new ClipTime(bd.doubleValue()); // NOTE: This will NOT truncate fraction
             } else if (m.group(4).equals("s")) {
                 // this.msecValue = bd.multiply(new
                 // BigDecimal((long)1000)).longValue(); //(28/11/2006)Piotr: the
                 // construcor BigDecimal(long l) missing in java 1.4; ZedVal
                 // feature
-                this.msecValue = bd.multiply(BigDecimal.valueOf((long) 1000))
-                        .longValue();
+                this.msecValue = new ClipTime(bd.multiply(BigDecimal.valueOf((long) 1000))
+                        .longValue());
             } else if (m.group(4).equals("min")) {
                 // this.msecValue = bd.multiply(new
                 // BigDecimal((long)60000)).longValue(); //(28/11/2006)Piotr: as
                 // above
-                this.msecValue = bd.multiply(BigDecimal.valueOf((long) 60000))
-                        .longValue();
+                this.msecValue = new ClipTime(bd.multiply(BigDecimal.valueOf((long) (60*1000))).doubleValue());
             } else if (m.group(4).equals("h")) {
                 // this.msecValue = bd.multiply(new
                 // BigDecimal((long)3600000)).longValue(); //(28/11/2006)Piotr:
                 // as above
-                this.msecValue = bd
-                        .multiply(BigDecimal.valueOf((long) 3600000))
-                        .longValue();
+                this.msecValue = new ClipTime(bd.multiply(BigDecimal.valueOf((long) 60*60*1000)).longValue());
+            } else {
+            	this.msecValue = new ClipTime();
             }
             return;
         }
@@ -123,23 +121,19 @@ public class SmilClock implements Comparable<Object> {
         // test for a full clock value
         m = fullClockPattern.matcher(s.trim());
         if (m.matches()) {
-            this.msecValue = (Long.parseLong(m.group(2)) * 3600000)
-                    + (Long.parseLong(m.group(3)) * 60000)
+            this.msecValue = new ClipTime((Long.parseLong(m.group(2)) * 60*60*1000)
+                    + (Long.parseLong(m.group(3)) * 60* 1000)
                     + (Long.parseLong(m.group(4)) * 1000)
-                    + ((m.group(6) != null) ? Math.round(new BigDecimal(m
-                            .group(5)).multiply(BigDecimal.valueOf(1000))
-                            .doubleValue()) : 0);
+                    + ((m.group(6) != null) ? new BigDecimal(m.group(5)).multiply(BigDecimal.valueOf(1000)).doubleValue() : 0));
             return;
         }
 
         // test for partial clock value
         m = partialClockPattern.matcher(s.trim());
         if (m.matches()) {
-            this.msecValue = (Long.parseLong(m.group(2)) * 60000)
+            this.msecValue = new ClipTime((Long.parseLong(m.group(2)) * 60*1000)
                     + (Long.parseLong(m.group(3)) * 1000)
-                    + ((m.group(5) != null) ? Math.round(new BigDecimal(m
-                            .group(4)).multiply(BigDecimal.valueOf(1000))
-                            .doubleValue()) : 0);
+                    + ((m.group(5) != null) ? new BigDecimal(m.group(4)).multiply(BigDecimal.valueOf(1000)).doubleValue() : 0));
             return;
         }
 
@@ -148,20 +142,62 @@ public class SmilClock implements Comparable<Object> {
                 + s.trim());
     }
 
+    public SmilClock() {
+    	this.msecValue = new ClipTime();
+    }
+    
     /**
      * @param msec Time value in milliseconds
      */
-    public SmilClock(long msec) {
-        this.msecValue = msec;
+//    public SmilClock(long msec) {
+//        this.msecValue = new ClipTime(msec);
+//    }
+    
+    private SmilClock(ClipTime clipTime) {
+        this.msecValue = clipTime;
     }
 
+//    public SmilClock(SmilClock toCopy) {
+//    	this.msecValue = toCopy.getTimeWOPrecisionLoss();
+//    }
+//    
     /**
      * @param sec Time value in seconds
      */
     public SmilClock(double sec) {
-        this.msecValue = (long) (sec * 1000);
+        this.msecValue = new ClipTime(sec * 1000);
+    }
+    
+    public SmilClock addTime(SmilClock addTime) {
+    	return new SmilClock(this.getTimeWOPrecisionLoss().add(addTime.getTimeWOPrecisionLoss()));
     }
 
+    public SmilClock subtractTime(SmilClock subtractTime) {
+    	return new SmilClock(this.getTimeWOPrecisionLoss().subtract(subtractTime.getTimeWOPrecisionLoss()));
+    }
+
+    /**
+     * 
+     * Just for compability, broken by design really
+     * 
+     * The SmilClock should only be initialized by values of "seconds", another basic type,
+     * implying another unit type, milliseconds is way to dangerous!
+     * @param msec Time value in milliseconds
+     */
+    @Deprecated
+    public SmilClock(long msec) {
+        this.msecValue = new ClipTime(msec);
+    }
+
+    //public void setToMiliseconds(double msec) {
+    //	this.msecValue = new ClipTime(msec);
+    //}
+    
+    public boolean notSet() {
+    	return this.msecValue.notSet();
+    }
+
+    
     /**
      * Returns clock value in full clock value format (default)
      * 
@@ -182,7 +218,7 @@ public class SmilClock implements Comparable<Object> {
         long hr;
         long min;
         long sec;
-        long msec;
+        double msec;
         long tmp;
 
         String s;
@@ -198,8 +234,8 @@ public class SmilClock implements Comparable<Object> {
         dfDouble.setGroupingUsed(false);
 
         // Break out all the pieces ...
-        msec = this.msecValue % 1000;
-        tmp = (this.msecValue - msec) / 1000;
+        msec = this.msecValue.roundedToMilliSeconds().getTimeInMs() % 1000;
+        tmp = (Math.round(this.msecValue.getTimeInMs() - msec)) / 1000;
         sec = tmp % 60;
         tmp = (tmp - sec) / 60;
         min = tmp % 60;
@@ -215,7 +251,8 @@ public class SmilClock implements Comparable<Object> {
             }
             break;
         case PARTIAL:
-            // KNOWN BUG: This will return misleading results for clock values >
+            // TODO : Comment probably wrong! (Comment older than "previous" code..??
+        	// KNOWN BUG: This will return misleading results for clock values >
             // 59:59.999
             // WORK AROUND: Caller is responsible for testing that this is an
             // appropriate format
@@ -227,26 +264,22 @@ public class SmilClock implements Comparable<Object> {
             }
             break;
         case TIMECOUNT:
-            s = dfDouble.format(BigDecimal.valueOf(this.msecValue).divide(
-                    BigDecimal.valueOf(1000)));
+            s = dfDouble.format(BigDecimal.valueOf(this.msecValue.getTimeInMs() / 1000));
             break;
         case TIMECOUNT_MSEC:
-            s = dfDouble.format(BigDecimal.valueOf(this.msecValue)) + "ms";
+            s = dfDouble.format(BigDecimal.valueOf(this.msecValue.getTimeInMs())) + "ms";
             break;
+        case RAW_TIMECOUNT_TRUNCATED_MSC:
+        	s =  Long.toString((long) Math.ceil(this.msecValue.getTimeInMs()));
+        	break;
         case TIMECOUNT_SEC:
-            s = dfDouble.format(BigDecimal.valueOf(this.msecValue).divide(
-                    BigDecimal.valueOf(1000)))
-                    + "s";
+            s = dfDouble.format(BigDecimal.valueOf(this.msecValue.getTimeInMs() / 1000)) + "s";
             break;
         case TIMECOUNT_MIN:
-            s = dfDouble.format(BigDecimal.valueOf(this.msecValue).divide(
-                    BigDecimal.valueOf(60000)))
-                    + "min";
+            s = dfDouble.format(BigDecimal.valueOf(this.msecValue.getTimeInMs() / (1000*60))) + "min";
             break;
         case TIMECOUNT_HR:
-            s = dfDouble.format(BigDecimal.valueOf(this.msecValue).divide(
-                    BigDecimal.valueOf(360000)))
-                    + "h";
+            s = dfDouble.format(BigDecimal.valueOf(this.msecValue.getTimeInMs() / (1000*60*60))) + "h";
             break;
         case HUMAN_READABLE:
             if (hr > 0) {
@@ -268,11 +301,36 @@ public class SmilClock implements Comparable<Object> {
 
     /**
      * Returns clock value in milliseconds
+     */
+    private ClipTime getTimeWOPrecisionLoss() {
+        return this.msecValue;
+    }
+
+	/**
+     * 
+     * Just for compability, broken by design really
      * 
      * @return clock value in milliseconds
      */
+    @Deprecated
     public long millisecondsValue() {
-        return this.msecValue;
+        return (long) millisecondsValueAsLong();
+    }
+
+    public long millisecondsValueAsLong() {
+        return Math.round(this.msecValue.roundedToMilliSeconds().getTimeInMs());
+    }
+
+    /**
+     * 
+     * Just for compability, broken by design really
+     * 
+     * Enhance type system even further, get rid of log/double altogheter and use some class "Seconds" instead!
+     * @return
+     */
+    @Deprecated
+    public long secondsValueRounded() {
+        return Math.round(this.secondsValue());
     }
 
     /**
@@ -285,7 +343,7 @@ public class SmilClock implements Comparable<Object> {
         // BigDecimal(this.msecValue).divide(BigDecimal.valueOf(1000)).doubleValue();
         // //(28/11/2006)PK: BigDecimal#divide(BigDecimal bd) not in java 1.4;
         // ZedVal feature
-        return (double) this.msecValue / 1000;
+        return (double) this.msecValue.getTimeInMs() / 1000;
     }
 
     /**
@@ -293,10 +351,24 @@ public class SmilClock implements Comparable<Object> {
      * 
      * @return clock value in seconds, rounded to full seconds
      */
-    public long secondsValueRounded() {
+//    public long secondsValueRounded() {
+//        return Math.round(this.secondsValue());
+//    }
+ 
+    public double secondsValueRoundedDouble() {
         return Math.round(this.secondsValue());
     }
+    
+    public SmilClock roundToMSPrecision() {
+    	return new SmilClock(this.getTimeWOPrecisionLoss().roundedToMilliSeconds());
+    }
 
+    public SmilClock floorToMSPrecision() {
+    	return new SmilClock(this.getTimeWOPrecisionLoss().floorToMilliSeconds());
+    }
+    
+    // FIXME Hashcode not implemented, should come in pair with "equals"
+    
     // implement equals() so we can test values for equality
     @Override
     public boolean equals(Object otherObject) {
@@ -310,22 +382,34 @@ public class SmilClock implements Comparable<Object> {
             SmilClock other = (SmilClock) otherObject; // Cast it, then
             // compare, using
             // tolerance
-            if (Math.abs(other.msecValue - this.msecValue) <= msecTolerance) {
-                return true;
-            }
+            return eqWithinTolerance(other, msecTolerance);
         } catch (ClassCastException cce) {
             // do nothing
         }
         return false;
     }
+    
+    public boolean eqWithinTolerance(SmilClock other, long msecTolerance) {
+        if (compareTo(other, msecTolerance) == 0) {
+            return true;
+        } else {
+        	return false;
+        }
+    }
 
     // implement Comparable interface so we can sort and compare values
     public int compareTo(Object otherObject) throws ClassCastException {
+    	return compareTo(otherObject, getTolerance());
+    }
+    
+    public int compareTo(Object otherObject, long msecTolerance) throws ClassCastException {
         SmilClock other = (SmilClock) otherObject; // Hope for the best!
-        if (Math.abs(other.msecValue - this.msecValue) <= msecTolerance)
+        if (Math.abs(other.msecValue.getTimeInMs() - this.msecValue.getTimeInMs()) <= msecTolerance) {        	
             return 0;
-        if (this.msecValue < other.msecValue)
+        }
+        if (this.msecValue.getTimeInMs() < other.msecValue.getTimeInMs()) {
             return -1;
+        }
         return 1;
     }
 
@@ -362,7 +446,8 @@ public class SmilClock implements Comparable<Object> {
     public static final int TIMECOUNT_MIN = 6;
     public static final int TIMECOUNT_HR = 7;
     public static final int HUMAN_READABLE = 8;
+    public static final int RAW_TIMECOUNT_TRUNCATED_MSC = 9;
 
-    private long msecValue; // All values stored in milliseconds
+    private final ClipTime msecValue; // All values stored in milliseconds
     private static long msecTolerance;
 }

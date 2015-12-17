@@ -198,7 +198,7 @@ public class Model extends LinkedList<Item> {
 				writer.add(xef.createAttribute("onset", duration.toString()));	
 				SmilClock itemDur = new SmilClock(getDurationSeconds(item));
 				writer.add(xef.createAttribute("dur", itemDur.toString()));
-				duration = new SmilClock(itemDur.millisecondsValue()+duration.millisecondsValue());
+				duration.addTime(itemDur);
 				writer.add(xef.createCharacters(newline));
 				
 				writer.add(xef.createCharacters(tab));

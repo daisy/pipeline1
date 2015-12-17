@@ -54,6 +54,7 @@ import org.daisy.util.fileset.exception.FilesetFatalException;
 import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.text.URIUtils;
+import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.pool.StAXEventFactoryPool;
 import org.daisy.util.xml.pool.StAXInputFactoryPool;
@@ -413,7 +414,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
         // and the body seq dur attribute.
         this.sendMessage(i18n("STEP_RECALC_SMIL_TIMING"), MessageEvent.Type.INFO_FINER);
         SmilFileClockFixer smilFileClockFixer = new SmilFileClockFixer();
-        long totalElapsedTime = 0;
+        SmilClock totalElapsedTime = new SmilClock(0);
         // We reuse the fileset instance from the input fileset although we are modifying the
         // output fileset. Since we haven't renamed any SMIL files this should be OK...
         D202NccFile ncc = (D202NccFile)fileset.getManifestMember();
@@ -422,7 +423,7 @@ public class SkippabilityTweaker extends Transformer implements FilesetErrorHand
             //URI outputUri = outputDirUri.resolve(relative);
             File outputFile = new File(outputDir, relative.toString());
             TempFile tempFile = new TempFile(outputFile);
-            totalElapsedTime += smilFileClockFixer.fix(tempFile.getFile(), outputFile, totalElapsedTime);
+            totalElapsedTime = totalElapsedTime.addTime(smilFileClockFixer.fix(tempFile.getFile(), outputFile, totalElapsedTime));
             tempFile.delete();
             this.checkAbort();
         }

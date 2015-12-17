@@ -61,7 +61,7 @@ class MasterSmilFileClockFixer {
         factory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, Boolean.FALSE);        
     }
     
-    public long fix(File inFile, File outFile, long totalElapsedTime) throws XMLStreamException, IOException {       
+    public SmilClock fix(File inFile, File outFile, SmilClock totalElapsedTime) throws XMLStreamException, IOException {       
         XMLEventReader reader = factory.createXMLEventReader(new FileInputStream(inFile));        
         
         // Update ncc:timeInThisSmil
@@ -75,26 +75,19 @@ class MasterSmilFileClockFixer {
     }
     
     private class MyMasterSmilClock extends StaxFilter {
-        long totalElapsedTime = 0;
+        SmilClock totalElapsedTime = new SmilClock(0);
         boolean firstSeq = true;        
-        public MyMasterSmilClock(XMLEventReader xer, OutputStream os, long totalTime) throws XMLStreamException {
+        public MyMasterSmilClock(XMLEventReader xer, OutputStream os, SmilClock totalElapsedTime2) throws XMLStreamException {
             super(xer, os);
-            totalElapsedTime = totalTime;            
+            totalElapsedTime = totalElapsedTime2;            
         }
         protected StartElement startElement(StartElement se) {
             if ("meta".equals(se.getName().getLocalPart())) {
                 Attribute name = se.getAttributeByName(new QName("name"));
                 if (name!=null && "ncc:timeInThisSmil".equals(name.getValue())) {
                 	// Update ncc:timeInThisSmil
-                    long diff = totalElapsedTime % 1000;
-                    long totalTime = 0;
-                    if (diff >= 500) {
-                        totalTime = totalElapsedTime + (1000-diff);
-                    } else {
-                        totalTime = totalElapsedTime - diff;
-                    }
-                    SmilClock sc = new SmilClock(totalTime);
-                    Attribute content = this.getEventFactory().createAttribute("content", sc.toString());
+                    SmilClock roundedTotalElapsedTime = new SmilClock(totalElapsedTime.secondsValueRoundedDouble());
+                    Attribute content = this.getEventFactory().createAttribute("content", roundedTotalElapsedTime.toString());
                     Collection<Attribute> coll = new ArrayList<Attribute>();
                     coll.add(name);
                     coll.add(content);

@@ -248,7 +248,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 
 		//TODO use a cached transformer
 		
-		long totalElapsedTimeMillis = 0;
+		SmilClock totalElapsedTimeMillis = new SmilClock();
 		for (Iterator<?> it = inputFileset.getManifestMember().getReferencedLocalMembers().iterator(); it.hasNext(); ) {
 			FilesetFile fsf = (FilesetFile)it.next();
 			if (fsf instanceof D202SmilFile) {
@@ -262,7 +262,7 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				parameters.put("uid", properties.getIdentifier());
 				parameters.put("title", properties.getTitle());
 				//time value of time elapsed until the onset of this smil file
-				parameters.put("totalElapsedTime",new SmilClock(totalElapsedTimeMillis).toString(SmilClock.FULL));
+				parameters.put("totalElapsedTime", totalElapsedTimeMillis.toString(SmilClock.FULL));
 				//duration of this smil file
 				parameters.put("timeinThisSmil",in.getCalculatedDuration().toString(SmilClock.FULL));
 				//default state to use for skippables, if that skippable appears at all.
@@ -284,15 +284,14 @@ public class MigratorImpl implements Migrator, FilesetErrorHandler, ErrorListene
 				
 				mManifestItems.add(out.toURI(), Z3986SmilFile.class);
 								
-				totalElapsedTimeMillis += in.getCalculatedDuration().millisecondsValue();
+				totalElapsedTimeMillis = totalElapsedTimeMillis.addTime(in.getCalculatedDuration());
 				
 				reportCompleted(out);
 				
 			} //if (fsf instanceof D202SmilFile)
 		}
 		
-		return new SmilClock(totalElapsedTimeMillis);
-		
+		return totalElapsedTimeMillis;
 	}
 		
 	/**

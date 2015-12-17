@@ -144,7 +144,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	private String currentAudioFilename;			// name of the current audio file
 	private String finalDTBookFilename;				// name of the final dtbook file
 	private boolean newSmilIncoming = false;		// whether next sync point's corresponding audio is in a file other than currentAudioFilename 
-	private long totalTime;							// total duration of this book.
+	private SmilClock totalTime = new SmilClock();	// total duration of this book.
 	
 	private Vector<String> generatedFiles = new Vector<String>();	// names of all generated (smil) files
 	private File manuscriptOutputFile;				// the location to which the modified input document should be written
@@ -494,7 +494,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @throws IOException
 	 */
 	private void outputResult() throws TransformerException, IOException {
-		long millis = 0;
+		SmilClock millis = new SmilClock();
 		int i = 0;
 		int size = smilTrees.size();
 		for (; i < size; i++) {
@@ -1125,7 +1125,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @param smilDom the smil DOM to operate on.
 	 * @return the time elapsed so far, including this file, as milliseconds.
 	 */
-	private long finishSmil(long elapsedMillis, Document smilDom) {
+	private SmilClock finishSmil(SmilClock elapsedMillis, Document smilDom) {
 		//--------------------------------------------------------------------------------------------------
 		// which customTest are made?
 		//
@@ -1154,26 +1154,24 @@ public class SmilMaker implements AbortListener, BusListener {
 		// what is the duration?
 		//
 		NodeList timeContainers = XPathUtils.selectNodes(smilDom.getDocumentElement(), "//smil:audio", mNsc);
-		long currentDuration = 0;
+		SmilClock currentDuration = new SmilClock();
 		for (int i = 0; i < timeContainers.getLength(); i++) {
 			Element tc = (Element) timeContainers.item(i);
 			NamedNodeMap nnm = tc.getAttributes();
-			currentDuration -= new SmilClock(nnm.getNamedItem("clipBegin").getNodeValue()).millisecondsValue();
-			currentDuration += new SmilClock(nnm.getNamedItem("clipEnd").getNodeValue()).millisecondsValue();
+			currentDuration = currentDuration.subtractTime(new SmilClock(nnm.getNamedItem("clipBegin").getNodeValue()));
+			currentDuration = currentDuration.addTime(new SmilClock(nnm.getNamedItem("clipEnd").getNodeValue()));
 		}
 		
 		// put the sum of the time in the first seq, attribute "dur"
-		String elapsedTime = new SmilClock(currentDuration).toString(SmilClock.FULL);
 		Element duration = (Element) XPathUtils.selectSingleNode(smilDom.getDocumentElement(), "//smil:*[@dur]", mNsc);
-		duration.setAttribute("dur", elapsedTime);
+		duration.setAttribute("dur", currentDuration.toString(SmilClock.FULL));
 		
 		// add the time with the time value found in 'dtb:totalElapsedTime', this sum will be returned.
 		Element elapsed = (Element) XPathUtils.selectSingleNode(smilDom.getDocumentElement(), "//smil:meta[@name='dtb:totalElapsedTime']", mNsc);
-		SmilClock smilClockElapsed = new SmilClock(elapsedMillis);
-		elapsed.setAttribute("content", smilClockElapsed.toString(SmilClock.FULL));
+		elapsed.setAttribute("content", elapsedMillis.toString(SmilClock.FULL));
 		
-		totalTime += currentDuration;
-		return elapsedMillis + currentDuration;
+		totalTime = totalTime.addTime(currentDuration);
+		return elapsedMillis.addTime(currentDuration);
 	}
 		
 	/**
@@ -1636,7 +1634,7 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @return the total time for all smils as a string in smilClock format.
 	 */
 	public String getStrTotoalTime() {
-		return new SmilClock(totalTime).toString(SmilClock.FULL);
+		return totalTime.toString(SmilClock.FULL);
 	}
 
 	public void setUid(String uid) {

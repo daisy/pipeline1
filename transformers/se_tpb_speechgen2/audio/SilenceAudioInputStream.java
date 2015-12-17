@@ -32,19 +32,19 @@ import java.io.InputStream;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
-
+import org.daisy.util.xml.SmilClock;
 
 public class SilenceAudioInputStream extends AudioInputStream {
 
-    public SilenceAudioInputStream(AudioFormat format, long dur)	{
+    public SilenceAudioInputStream(AudioFormat format, SmilClock dur)	{
 		super(new SilenceInputStream(format),
 		      format,
-			  calcFrameLengthFromDuration(dur, format.getFrameRate()) );
+			  calcFrameLengthFromDuration(dur.millisecondsValueAsLong(), format.getFrameRate()) );
 	}
 
 
-	private static long calcFrameLengthFromDuration(long dur, float frameRate) {
-		return (long)(dur * frameRate / 1000);
+	private static long calcFrameLengthFromDuration(long durationInMilliSeconds, float frameRate) {
+		return (long)(durationInMilliSeconds * frameRate / 1000);
 	}
 
 

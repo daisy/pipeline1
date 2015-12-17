@@ -25,6 +25,8 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.daisy.util.xml.SmilClock;
+
 
 
 /**
@@ -65,7 +67,7 @@ public class AudioFiles {
 	 * @throws UnsupportedAudioFileException
 	 * @throws IOException
 	 */
-	public static long getAudioFileDuration(File file) throws UnsupportedAudioFileException, IOException {
+	public static SmilClock getAudioFileDuration(File file) throws UnsupportedAudioFileException, IOException {
 		if (null == file) {
 			String msg = "null has no duration. file = " + file;
 			throw new IllegalArgumentException(msg);
@@ -75,7 +77,7 @@ public class AudioFiles {
 		AudioFormat format = aff.getFormat();
 		// jpritchett@rfbd.org, 14 Nov 2008:  Changed casting to rounding to make more accurate
 		//return (long)(1000.0 * aff.getFrameLength() / format.getFrameRate());
-		return Math.round(1000.0 * aff.getFrameLength() / format.getFrameRate());
+		return new SmilClock(((double)aff.getFrameLength()) / format.getFrameRate());
 	}
 	
 	
@@ -83,25 +85,25 @@ public class AudioFiles {
 	 * Writes <code>millis</code> milliseconds of silience to the file <code>target</code>,
 	 * using the audio format <code>format</code>. 
 	 * @param target the file to write the silence to.
-	 * @param millis the duration of silence.
+	 * @param timeMillis the duration of silence.
 	 * @param format the audio format to use.
 	 * @return the silent file.
 	 * @throws IOException
 	 */
-	public static File getSilentAudio(File target, long millis, AudioFormat format) throws IOException {
+	public static File getSilentAudio(File target, SmilClock timeMillis, AudioFormat format) throws IOException {
 		if (null == target) {
 			String msg = "Impossible to use " + target + 
 				" as destination for audio.";
 			throw new IllegalArgumentException(msg);
 		}
 		
-		if (millis < 0) {
+		if (timeMillis.compareTo(new SmilClock(0), 0) < 0) {
 			String msg = "Impossible to create audio with " +
-					"duration " + millis + " millis.";
+					"duration " + timeMillis + " millis.";
 			throw new IllegalArgumentException(msg);
 		} 
 		
-		SilenceAudioFile.writeSilentFile(target, millis, format);
+		SilenceAudioFile.writeSilentFile(target, timeMillis, format);
 		return target;
 	}
 	
@@ -115,7 +117,7 @@ public class AudioFiles {
 	 * @throws UnsupportedAudioFileException
 	 * @throws IOException
 	 */
-	public static File getSilentAudio(File target, long millis, File model) throws UnsupportedAudioFileException, IOException {
+	public static File getSilentAudio(File target, SmilClock millis, File model) throws UnsupportedAudioFileException, IOException {
 		if (null == model || !model.exists() || model.isDirectory()) {
 			String msg = "Impossible to use " + model + 
 				" as model for silent audio file.";
@@ -128,7 +130,7 @@ public class AudioFiles {
 			throw new IllegalArgumentException(msg);
 		}
 		
-		if (millis < 0) {
+		if (millis.compareTo(new SmilClock(0), 0) < 0) {
 			String msg = "Impossible to create audio with " +
 					"duration " + millis + " millis.";
 			throw new IllegalArgumentException(msg);

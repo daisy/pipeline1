@@ -44,6 +44,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.i18n.UCharReplacer;
+import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.XPathUtils;
 import org.daisy.util.xml.xslt.Stylesheet;
 import org.daisy.util.xml.xslt.TransformerCache;
@@ -93,7 +94,7 @@ public abstract class ExternalTTS implements TTS {
 	 * @throws UnsupportedAudioFileException
 	 * @throws TransformerRunException
 	 */
-	protected abstract long sayImpl(Document doc, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException;
+	protected abstract SmilClock sayImpl(Document doc, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException;
 	
 	/**
 	 * Generates audio for the string <tt>str</tt>.
@@ -104,7 +105,7 @@ public abstract class ExternalTTS implements TTS {
 	 * @throws UnsupportedAudioFileException
 	 * @throws TransformerRunException
 	 */
-	protected abstract long sayImpl(String str, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException;
+	protected abstract SmilClock sayImpl(String str, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException;
 	
 	/**
 	 * Makes an announcement, introduction, for each start element in the list
@@ -117,7 +118,7 @@ public abstract class ExternalTTS implements TTS {
 	 * @throws UnsupportedAudioFileException 
 	 * @throws TransformerRunException 
 	 */
-	public long introduceStruct(List<StartElement> startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException {
+	public SmilClock introduceStruct(List<StartElement> startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException {
 		String sayBefore = concatAttributes(startElements, attributeQName);
 		return sayImpl(sayBefore, outputFile);
 	}
@@ -133,7 +134,7 @@ public abstract class ExternalTTS implements TTS {
 	 * @throws UnsupportedAudioFileException 
 	 * @throws TransformerRunException 
 	 */
-	public long terminateStruct(List<StartElement> startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException {
+	public SmilClock terminateStruct(List<StartElement> startElements, QName attributeQName, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException {
 		String sayAfter = concatAttributes(startElements, attributeQName);
 		return sayImpl(sayAfter, outputFile);
 	}
@@ -147,7 +148,7 @@ public abstract class ExternalTTS implements TTS {
 	 * @throws UnsupportedAudioFileException 
 	 * @throws TransformerRunException 
 	 */
-	public long say(Document synchPoint, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException {
+	public SmilClock say(Document synchPoint, File outputFile) throws IOException, UnsupportedAudioFileException, TransformerRunException {
 		NodeList abbrs = XPathUtils.selectNodes(synchPoint.getDocumentElement(), "//*[@exp]");
 		// if supplied, use exp attributes instead of text nodes
 		for (int i = 0; i < abbrs.getLength(); i++) {	

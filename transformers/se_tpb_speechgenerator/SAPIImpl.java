@@ -35,6 +35,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.daisy.pipeline.exception.TransformerRunException;
 import org.daisy.util.file.StreamRedirector;
+import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.XSLTException;
 import org.w3c.dom.Document;
@@ -108,7 +109,7 @@ public final class SAPIImpl extends ExternalTTS {
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgenerator.ExternalTTS#sayImpl(org.w3c.dom.Document, java.io.File)
 	 */
-	protected long sayImpl(Document doc, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException {		
+	protected SmilClock sayImpl(Document doc, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException {		
 		String content = "";
 		try {
 			replaceUChars(doc);
@@ -128,7 +129,7 @@ public final class SAPIImpl extends ExternalTTS {
 		}
 
 		if (content.length() == 0) {
-			return 0;
+			return new SmilClock(0);
 		}
 		
 		return sayImpl(content, file);
@@ -139,9 +140,9 @@ public final class SAPIImpl extends ExternalTTS {
 	/* (non-Javadoc)
 	 * @see se_tpb_speechgenerator.ExternalTTS#sayImpl(java.lang.String, java.io.File)
 	 */
-	protected long sayImpl(String line, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException {
+	protected SmilClock sayImpl(String line, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException {
 		if (line.length() == 0) {
-			return 0;
+			return new SmilClock(0);
 		}
 		
 		line = regexFilter(line);
@@ -155,7 +156,7 @@ public final class SAPIImpl extends ExternalTTS {
 			line = "<voice optional=\"" + mSapiVoiceSelection + "\">" + line + "</voice>";
 		}
 		
-		long timeVal = 0;
+		SmilClock timeVal = new SmilClock(0);
 		send(file.getAbsolutePath());
 		send(line);
 		timeVal = getAudioLength(file); 
@@ -182,7 +183,7 @@ public final class SAPIImpl extends ExternalTTS {
 		}
 		*/
 		
-		if (timeVal == 0) {
+		if (timeVal.compareTo(new SmilClock(0), 0) == 0) {
 			DEBUG("SAPIImpl#say(String, File): Line = \"" + line + "\"");
 			String message = "SAPIImpl#say(String, File): error speaking sentence: " + line + ",\n" +
 				"error writing file " + file.getAbsolutePath();
@@ -203,16 +204,17 @@ public final class SAPIImpl extends ExternalTTS {
 	 * @param file the audio file (.wav) to examine.
 	 * @return the duration of the file in miliseconds.
 	 */
-	private long getAudioLength(File file) throws IOException, UnsupportedAudioFileException {
+	private SmilClock getAudioLength(File file) throws IOException, UnsupportedAudioFileException {
 		// just to get the two processes synchronized:
 		String line = mReader.readLine();
 		if (line == null || !line.equals("OK")) {
-			return 0;
+			return new SmilClock(0);
 		}
 		
 		AudioFileFormat aff = AudioSystem.getAudioFileFormat(file);
 		AudioFormat format = aff.getFormat();
-		return (long)(1000.0 * aff.getFrameLength() / format.getFrameRate());
+		// Set length in seconds
+		return new SmilClock( ((double) aff.getFrameLength()) / format.getFrameRate());
 	}
 	
 	

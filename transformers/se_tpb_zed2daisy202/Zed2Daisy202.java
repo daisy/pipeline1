@@ -57,6 +57,7 @@ import org.daisy.util.fileset.exception.FilesetFileException;
 import org.daisy.util.fileset.exception.FilesetFileWarningException;
 import org.daisy.util.fileset.impl.FilesetImpl;
 import org.daisy.util.text.URIUtils;
+import org.daisy.util.xml.SmilClock;
 import org.daisy.util.xml.catalog.CatalogEntityResolver;
 import org.daisy.util.xml.catalog.CatalogExceptionNotRecoverable;
 import org.daisy.util.xml.xslt.Stylesheet;
@@ -167,7 +168,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             }
                         
             // Create smils
-            long totalElapsedTime = this.createSmils(opf, dtbook, ncx, smilPrefix);            
+            SmilClock totalElapsedTime = this.createSmils(opf, dtbook, ncx, smilPrefix);            
             this.progress(SMIL_DONE);
             this.checkAbort();
             
@@ -218,7 +219,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @throws XMLStreamException
      * @throws IOException
      */
-    private void createNcc(File opf, long totalElapsedTime, String hrefTarget, String smilPrefix) throws CatalogExceptionNotRecoverable, XSLTException, XMLStreamException, IOException {
+    private void createNcc(File opf, SmilClock totalElapsedTime, String hrefTarget, String smilPrefix) throws CatalogExceptionNotRecoverable, XSLTException, XMLStreamException, IOException {
         Map<String,Object> parameters = new HashMap<String,Object>();
         parameters.put("baseDir", outputDir.toURI());
         parameters.put("date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
@@ -262,7 +263,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @throws TransformerAbortException
      * @throws SAXException 
      */
-    private long createSmils(OpfFile opf, File dtbook, File ncx, String smilPrefix) throws XMLStreamException, IOException, XSLTException, TransformerAbortException, SAXException {
+    private SmilClock createSmils(OpfFile opf, File dtbook, File ncx, String smilPrefix) throws XMLStreamException, IOException, XSLTException, TransformerAbortException, SAXException {
 
         // Extract the information the smil2smil stylesheet needs
         // from the DTBook and the OPF. This will speed up the
@@ -271,7 +272,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
         File preCalcFile = preCalc.getPreCalcFile();        
         
         SmilFileClockFixer smilClockFixer = new SmilFileClockFixer();
-        long totalElapsedTime = 0;
+        SmilClock totalElapsedTime = new SmilClock();
         File smil2smil = new File(this.getTransformerDirectory(), "smil2smil.xsl");
         
         Map<String,Object> parameters = new HashMap<String,Object>();
@@ -301,7 +302,7 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
             Stylesheet.apply(smilZed.getFile().getAbsolutePath(), cache.get(smil2smil.getAbsolutePath(), XSLT_FACTORY), temp2.getAbsolutePath(), parameters, CatalogEntityResolver.getInstance());
                         
             // Step 2: Update the ncc:timeInThisSmil, ncc:totalElapsedTime and the dur attribute of the main seq
-            totalElapsedTime += smilClockFixer.fix(temp2, smil202, totalElapsedTime, null);
+            totalElapsedTime = totalElapsedTime.addTime(smilClockFixer.fix(temp2, smil202, totalElapsedTime, null));
             
             temp2.delete();
             parameters.put("add_title", "false");
