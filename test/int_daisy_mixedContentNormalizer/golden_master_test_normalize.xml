@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?><dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" version="2005-3" xml:lang="sv" xmlns:annon="http://www.daisy.org/ns/pipeline/annon" xmlns:smil="http://www.w3.org/2001/SMIL20/" xmlns:vnml="http://www.tpb.se/vnml">
+               http://www.daisy.org/z3986/2005/dtbook/"        xmlns:dtbook="http://www.daisy.org/z3986/2005/dtbook/
+	<head>
+		<meta content="C00000" name="dtb:uid"/>
+		<meta content="Himmelska kroppar, inkarnation, blick, kroppslighet" name="dc:Title"/>
+		<meta content="Sigurdson, Ola" name="dc:Creator"/>
+		<meta content="2013-11-20" name="dc:Date"/>
+		<meta content="MTM" name="dc:Publisher"/>
+		<meta content="sv" name="dc:Language"/>
+		<meta content="AEL Data" name="track:Supplier"/>
+		<meta content="2013-12-10" name="track:SuppliedDate"/>
+		<meta content="" name="track:Signum"/>
+		<meta content="2011-2" name="track:Guidelines"/>
+	</head>
+	<book>
+		<frontmatter>
+			<doctitle smil:sync="true">Himmelska kroppar</doctitle>
+			<docauthor annon:before="Av" smil:sync="true">Ola Sigurdson</docauthor>
+		</frontmatter>
+		<bodymatter>
+			<level1>
+				<pagenum id="page-288" page="normal" smil:sync="true">288</pagenum>
+				<h1>
+					<sent smil:sync="true">KROPPSLIGHET</sent>
+				</h1>
+					<p>
+						<sent><span class="normalized" smil:sync="true">Så föreställde sig till exempel <em>Platon</em> i dialogen <em>Timaios</em> inte bara den <em>mänskliga</em> kroppen som ett kosmos, utan också kosmos som en kropp, och här var han enig med stora delar av sin samtid.</span> <noteref idref="#c09036" smil:sync="true">36</noteref> <span class="normalized" smil:sync="true">Därmed skulle varje skarp <em>distinktion</em> mellan en figurativ och en faktisk kropp men även mellan en social och en individuell kropp försvinna.</span></sent>
+						<sent><span class="normalized" smil:sync="true"><em>Så</em> föreställde sig till <em>exempel</em> Platon i dialogen <em>Timaios</em> inte <em>bara</em> den mänskliga kroppen som ett kosmos, utan också kosmos som en kropp, och här var han enig med stora delar av sin samtid.</span><noteref idref="#c09036" smil:sync="true">36</noteref> <span class="normalized" smil:sync="true">Därmed skulle varje skarp distinktion mellan en figurativ och en faktisk kropp men även mellan en social och en individuell kropp försvinna.</span></sent>
+						<sent><span class="normalized" smil:sync="true">test<em> av0</em> något <em> av1</em> <em> av2</em> <em> av3</em></span><noteref idref="#c09036" smil:sync="true">36</noteref><span class="normalized" smil:sync="true">Textextra</span></sent>
+					</p>
+			</level1>
+		</bodymatter>
+	</book>
+</dtbook>

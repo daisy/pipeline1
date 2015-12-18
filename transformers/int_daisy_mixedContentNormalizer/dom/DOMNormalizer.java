@@ -83,7 +83,7 @@ public class DOMNormalizer extends AbstractNormalizer {
 
 		    	if(mTransformer.delegateCheckAbort()) throw new TransformerRunException ("user abort");	
 		    	
-		    	NodeList children = e.getChildNodes();		
+		    	NodeList children = e.getChildNodes();
 		    	SiblingState state = getSiblingState(children);
 		    	if(state==SiblingState.UNBALANCED) normalizeChildren(e);
 		    	
@@ -204,21 +204,6 @@ public class DOMNormalizer extends AbstractNormalizer {
 	}
 //	
 	
-	private List<Node> evaluate(List<Node> ignorables) {
-		//remove leading and trailing whitespace					
-		ignorables = trim(ignorables);		
-		//if we after trim have exactly one non-ws textnode 
-		//or if length (regardless of type) > 1, then wrap		
-		if(ignorables.size()>1 || (ignorables.size()==1 && ignorables.get(0).getNodeType() == Node.TEXT_NODE )) { 						
-			Element wrapper = wrap(ignorables);								  
-			if(mConfig.isScrubbingWrappers(wrapper.getNamespaceURI())) {
-				scrub(wrapper); 
-			}
-		}	
-		ignorables.clear();
-		return ignorables;
-	}
-	
 	/**
 	 * If first and/or last child of wrapper are textnodes, 
 	 * and these begin with whitespace chars,
@@ -240,23 +225,35 @@ public class DOMNormalizer extends AbstractNormalizer {
 
 	private void scrub(Node textNode, Direction dir) {
 		String value = textNode.getNodeValue();
-		StringBuilder movedChars = new StringBuilder();
-				
-		for (int i = 0; i < value.length(); i++) {
-			char c = value.charAt(i);
-			if(mConfig.isWhitespace(c,textNode.getParentNode().getNamespaceURI())) {
-				movedChars.append(c);								
+		String newValue;
+		String movedChars;
+		if (dir == Direction.BEFORE) {
+			int i = 0;
+			for (; i < value.length(); i++) {
+				char c = value.charAt(i);
+				if(!mConfig.isWhitespace(c,textNode.getParentNode().getNamespaceURI())) {
+					break;
+				}
 			}
-			else{
-				break;
+			newValue = value.substring(i);
+			movedChars = value.substring(0, i);
+		} else {
+			int i = value.length()-1;
+			for (; i >= 0 ; i--) {
+				char c = value.charAt(i);
+				if(!mConfig.isWhitespace(c,textNode.getParentNode().getNamespaceURI())) {
+					break;
+				}
 			}
+			newValue = value.substring(0, i+1);
+			movedChars = value.substring(i+1);
 		}
 		
-		if(movedChars.length()>0) {
+		if(newValue.length()<value.length()) {
 			//change the inner value
-			textNode.setNodeValue(value.substring(movedChars.length()));
+			textNode.setNodeValue(newValue);
 			//add a new text node outside wrapper, given direction
-			Node newTextNode = textNode.getOwnerDocument().createTextNode(movedChars.toString());
+			Node newTextNode = textNode.getOwnerDocument().createTextNode(movedChars);
 			Element wrapper = (Element)textNode.getParentNode();
 			@SuppressWarnings("unused")
 			Node inserted = null;

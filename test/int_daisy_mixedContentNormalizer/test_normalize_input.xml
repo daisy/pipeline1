@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dtbook xmlns="http://www.daisy.org/z3986/2005/dtbook/" xmlns:vnml="http://www.tpb.se/vnml" xmlns:annon="http://www.daisy.org/ns/pipeline/annon" xml:lang="sv" version="2005-3">
+               http://www.daisy.org/z3986/2005/dtbook/"        xmlns:dtbook="http://www.daisy.org/z3986/2005/dtbook/
+	<head>
+		<meta name="dtb:uid" content="C00000"/>
+		<meta name="dc:Title" content="Himmelska kroppar, inkarnation, blick, kroppslighet"/>
+		<meta name="dc:Creator" content="Sigurdson, Ola"/>
+		<meta name="dc:Date" content="2013-11-20"/>
+		<meta name="dc:Publisher" content="MTM"/>
+		<meta name="dc:Language" content="sv"/>
+		<meta name="track:Supplier" content="AEL Data"/>
+		<meta name="track:SuppliedDate" content="2013-12-10"/>
+		<meta name="track:Signum" content=""/>
+		<meta name="track:Guidelines" content="2011-2"/>
+	</head>
+	<book>
+		<frontmatter>
+			<doctitle>Himmelska kroppar</doctitle>
+			<docauthor annon:before="Av">Ola Sigurdson</docauthor>
+		</frontmatter>
+		<bodymatter>
+			<level1>
+				<pagenum page="normal" id="page-288">288</pagenum>
+				<h1>
+					<sent>KROPPSLIGHET</sent>
+				</h1>
+					<p>
+						<sent>Så föreställde sig till exempel <em>Platon</em> i dialogen <em>Timaios</em> inte bara den <em>mänskliga</em> kroppen som ett kosmos, utan också kosmos som en kropp, och här var han enig med stora delar av sin samtid. <noteref idref="#c09036">36</noteref> Därmed skulle varje skarp <em>distinktion</em> mellan en figurativ och en faktisk kropp men även mellan en social och en individuell kropp försvinna.</sent>
+						<sent><em>Så</em> föreställde sig till <em>exempel</em> Platon i dialogen <em>Timaios</em> inte <em>bara</em> den mänskliga kroppen som ett kosmos, utan också kosmos som en kropp, och här var han enig med stora delar av sin samtid.<noteref idref="#c09036">36</noteref> Därmed skulle varje skarp distinktion mellan en figurativ och en faktisk kropp men även mellan en social och en individuell kropp försvinna.</sent>
+						<sent>test<em> av0</em> något <em> av1</em> <em> av2</em> <em> av3</em><noteref idref="#c09036">36</noteref>Textextra</sent>
+					</p>
+			</level1>
+		</bodymatter>
+	</book>
+</dtbook>

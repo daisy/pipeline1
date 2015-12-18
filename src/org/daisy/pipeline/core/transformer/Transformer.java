@@ -155,8 +155,7 @@ public abstract class Transformer implements BusListener {
 	private String getName() {
 		return this.getTransformerInfo().getNiceName();
 	}
-	
-		
+
 	/**
 	 * Executes the Transformer with the specified parameters.
 	 * @param parameters a collection of parameters
@@ -189,7 +188,7 @@ public abstract class Transformer implements BusListener {
 	
 
 	final protected UserReplyEvent getUserInput(String message, String defaultValue) {
-		if (!mIsInteractive) {
+		if (!mIsInteractive||mInputListener==null) { // JH 151126: Added null pointer check to allow unit testing of transformers
 			return new UserReplyEvent(this,defaultValue);			
 		}		
 		return mInputListener.getUserReply(new RequestEvent(this,message));		
@@ -288,7 +287,9 @@ public abstract class Transformer implements BusListener {
 	 * Convenience method to emit a message.
 	 */
 	public void sendMessage(String message, MessageEvent.Type type, MessageEvent.Cause cause, Location location) {
-		mEventBus.publish(new TaskMessageEvent(this.mTask,message,type,cause,location));
+		if (mTask!=null) { // JH 151126: Added null pointer check to allow unit testing of transformers
+			mEventBus.publish(new TaskMessageEvent(this.mTask,message,type,cause,location));
+		}
 	}
 	
 	/**
@@ -296,7 +297,9 @@ public abstract class Transformer implements BusListener {
 	 * @param progress A double between 0.0 and 1.0 inclusive
 	 */
 	protected void sendMessage(double progress) {
-		mEventBus.publish(new TaskProgressChangeEvent(this.mTask,progress));   
+		if (mTask!=null) { // JH 151126: Added null pointer check to allow unit testing of transformers
+			mEventBus.publish(new TaskProgressChangeEvent(this.mTask,progress));
+		}
 	}
 	
 	/**
