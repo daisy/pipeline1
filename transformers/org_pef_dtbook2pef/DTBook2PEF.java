@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.daisy.pipeline.core.InputListener;
 import org.daisy.pipeline.core.event.MessageEvent;
@@ -54,6 +55,7 @@ public class DTBook2PEF extends Transformer {
 			throw new TransformerRunException("Cannot locate Dotify executable at '" + dotifyCliPath + "'. Check your configuration. For more information, see the transformer documentation.");
 		}
 
+		File dotifyRoot = cliPath.getParentFile();
 		ArrayList<String> command = new ArrayList<String>();
 		if (dotifyCliPath.endsWith(".jar")) {
 			String separator = System.getProperty("file.separator");
@@ -61,19 +63,37 @@ public class DTBook2PEF extends Transformer {
 
 			command.add(path);
 			command.add("-jar");
+		} else {
+			if ("bin".equals(dotifyRoot.getName()) || "lib".equals(dotifyRoot.getName())) {
+				//version 3 has this layout, back up one more level
+				dotifyRoot = dotifyRoot.getParentFile();
+			} else {
+				throw new TransformerRunException("Unrecognized folder layout for Dotify: " + dotifyRoot);
+			}
 		}
 		command.add(dotifyCliPath);
-
-		List<String> version = getDotifyVersion(new File(cliPath.getParentFile(), "version"));
+		
+		List<String> version = getDotifyVersion(new File(dotifyRoot, "version"));
 
 		if ("2".equals(version.get(0))) {
 			command.add(input.getAbsolutePath());
 			command.add(output.getAbsolutePath());
 			command.add(setup);
-			command.add(locale.toString());
-			for (String arg : parameters.keySet()) {
-				if (parameters.get(arg) != null) {
-					command.add("-" + arg + "=" + parameters.get(arg));
+			command.add(locale);
+			for (Entry<String, String> arg : parameters.entrySet()) {
+				if (arg.getValue() != null) {
+					command.add("-" + arg.getKey() + "=" + arg.getValue());
+				}
+			}
+		} else if ("3".equals(version.get(0))) {
+			command.add("convert");
+			command.add(input.getAbsolutePath());
+			command.add(output.getAbsolutePath());
+			command.add("--preset="+setup);
+			command.add("--locale="+locale);
+			for (Entry<String, String> arg : parameters.entrySet()) {
+				if (arg.getValue() != null) {
+					command.add("--" + arg.getKey() + "=" + arg.getValue());
 				}
 			}
 		} else {

@@ -49,4 +49,13 @@ public class DTBook2PEFTest {
 		assertEquals(3, version.size());
 	}
 
+
+	@Test
+	public void testDotifyVersion_04() {
+		List<String> version = DTBook2PEF.getDotifyVersion(new File("test/org_pef_dtbook2pef/version4"));
+		assertEquals("3", version.get(0));
+		assertEquals("0", version.get(1));
+		assertEquals("0", version.get(2));
+		assertEquals(3, version.size());
+	}
 }
