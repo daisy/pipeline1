@@ -47,9 +47,9 @@
     <datatype>
      <enum>
        <item nicename="Tiresias LPfont" value="Tiresias LPfont"/>
-       <item nicename="LMRoman10 Regular" value="LMRoman10 Regular"/>
-       <item nicename="LMSans10 Regular" value="LMSans10 Regular"/>
-       <item nicename="LMTypewriter10 Regular" value="LMTypewriter10 Regular"/>
+       <item nicename="Latin Modern Roman" value="Latin Modern Roman"/>
+       <item nicename="Latin Modern Sans" value="Latin Modern Sans"/>
+       <item nicename="Latin Modern Mono" value="Latin Modern Mono"/>
      </enum>
     </datatype>
   </parameter>

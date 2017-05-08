@@ -48,9 +48,9 @@
 		  <example>Tiresias LPfont</example>
 		  <enum>
 		    <value>Tiresias LPfont</value>
-		    <value>LMRoman10 Regular</value>
-		    <value>LMSans10 Regular</value>
-		    <value>LMTypewriter10 Regular</value>
+		    <value>Latin Modern Roman</value>
+		    <value>Latin Modern Sans</value>
+		    <value>Latin Modern Mono</value>
 		  </enum>
 		  <default>Tiresias LPfont</default>
 		</parameter>
