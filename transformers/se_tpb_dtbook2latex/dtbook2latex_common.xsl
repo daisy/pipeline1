@@ -956,12 +956,12 @@
      <xsl:text>\end{tcolorbox}&#10;</xsl:text>
    </xsl:template>
 
-   <!-- <xsl:template match="dtb:sidebar[@class='no-float']"> -->
-   <!--   <xsl:text>\begin{tcolorbox}[breakable,nofloat]&#10;</xsl:text> -->
-   <!--   <xsl:text>\raggedright&#10;</xsl:text> -->
-   <!--   <xsl:apply-templates/> -->
-   <!--   <xsl:text>\end{tcolorbox}&#10;</xsl:text> -->
-   <!-- </xsl:template> -->
+   <xsl:template match="dtb:sidebar[@class='no-float']">
+     <xsl:text>\begin{tcolorbox}[breakable,nofloat]&#10;</xsl:text>
+     <xsl:text>\raggedright&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+   </xsl:template>
 
    <xsl:template match="dtb:sidebar//dtb:sidebar">
      <!-- a nested sidebar should obviously not float and cannot be
