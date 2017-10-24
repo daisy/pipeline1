@@ -16,7 +16,8 @@
     
     <mkdir dir="${build.dir}/debian/control"/>
     
-    <copy todir="${build.dir}/debian/control">
+    <copy todir="${build.dir}/debian/control"
+	  overwrite="true">
       <fileset dir="${base.dir}/debian"/>
       <filterset begintoken="[[" endtoken="]]">
 	<filter token="version" value="${deb.version}"/>
