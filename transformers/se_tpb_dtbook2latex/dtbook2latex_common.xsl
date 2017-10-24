@@ -281,13 +281,11 @@
          <xsl:text>%%Use a secondary font for some Unicode ranges&#10;</xsl:text>
          <xsl:text>%%Warning: the package ucharclasses must be installed&#10;</xsl:text>
          <xsl:text>\usepackage{ucharclasses}&#10;</xsl:text>
-         <xsl:text>\setDefaultTransitions{\fontspec{</xsl:text><xsl:value-of select="$font"/><xsl:text>}}{}&#10;</xsl:text>
+	 <xsl:text>\newfontfamily\lpfont{</xsl:text><xsl:value-of select="$font"/><xsl:text>}&#10;</xsl:text>
+	 <xsl:text>\newfontfamily\unicodefont{</xsl:text><xsl:value-of select="$backupFont"/><xsl:text>}&#10;</xsl:text>
+         <xsl:text>\setDefaultTransitions{\lpfont}{}&#10;</xsl:text>
          <xsl:for-each select="$backup-unicode-ranges">
-           <xsl:text>\setTransitionTo{</xsl:text>
-           <xsl:value-of select="."/>
-           <xsl:text>}{\fontspec{</xsl:text>
-           <xsl:value-of select="$backupFont"/>
-           <xsl:text>}}&#10;</xsl:text>
+           <xsl:text>\setTransitionTo{</xsl:text><xsl:value-of select="."/><xsl:text>}{\unicodefont}&#10;</xsl:text>
          </xsl:for-each>
          <xsl:text>&#10;</xsl:text>
        </xsl:if>
