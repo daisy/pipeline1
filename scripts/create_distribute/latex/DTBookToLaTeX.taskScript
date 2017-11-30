@@ -76,6 +76,7 @@
     <datatype>
      <enum>
        <item nicename="Plain" value="plain"/>
+       <item nicename="Compact" value="compact"/>
        <item nicename="With original page numbers" value="withPageNums"/>
        <item nicename="Scientific" value="scientific"/>
      </enum>

@@ -36,9 +36,12 @@
   <xsl:param name="stocksize">a4paper</xsl:param>
   <!-- Possible values are 'left', 'justified' -->
   <xsl:param name="alignment">justified</xsl:param>
-  <!-- Possible values are 'plain', 'withPageNums' and 'scientific' 
+  <!-- Possible values are 'plain', 'compact', 'withPageNums' and 'scientific'
        - 'plain' contains no original page numbers, no section numbering
-         and uses the 'plain' pagestyle.
+         and uses the 'plain' pagestyle. Chapters always start on a
+	 new recto page.
+       - 'compact' is just like 'plain' but chapters start on any new page be
+	 it recto or verso.
        - 'withPageNums' is similar to 'plain' but enables the display of the
          original page numbers.
        - 'scientific' has original page numbers, has section numbering
@@ -196,7 +199,7 @@
 	<xsl:text>% ***********************&#10;</xsl:text>
    	<xsl:text>\documentclass[</xsl:text>
 	<xsl:value-of select="concat($fontsize, ',', $stocksize, ',')"/>
-	<xsl:text>extrafontsizes,twoside,showtrims,openright]{memoir}&#10;</xsl:text>
+	<xsl:text>extrafontsizes,twoside,showtrims]{memoir}&#10;</xsl:text>
 	<xsl:text>\usepackage{calc}&#10;</xsl:text>
 	<!-- Tables -->
 	<xsl:if test="//dtb:table">
@@ -327,8 +330,30 @@
 	<!-- avoid random stretches in the middle of a page, if need be stretch at the bottom -->
 	<xsl:text>\raggedbottom&#10;</xsl:text>
 
-	<!-- use slightly smaller fonts for headings -->
-	<xsl:text>\renewcommand*{\chaptitlefont}{\normalfont\LARGE\bfseries\raggedright}&#10;</xsl:text>
+	<!-- Define a chapter style suited for large print -->
+	<xsl:text>\makechapterstyle{largePrint}{%&#10;</xsl:text>
+	<xsl:text>  \renewcommand*{\chapterheadstart}{} %% no space before chapter&#10;</xsl:text>
+	<xsl:text>  \renewcommand*{\printchaptername}{} %% do not print "Chapter"&#10;</xsl:text>
+	<xsl:text>  \renewcommand*{\chaptitlefont}{\normalfont\LARGE\bfseries\raggedright} %% set the font for the title&#10;</xsl:text>
+	<xsl:text>  \renewcommand*{\printchapternum}{} %% do not print chapter number&#10;</xsl:text>
+	<xsl:text>  \renewcommand*{\afterchapternum}{} %% no space after the number (since it isn't printed)&#10;</xsl:text>
+	<xsl:text>}&#10;</xsl:text>
+
+	<xsl:text>\makechapterstyle{largePrintScientific}{%&#10;</xsl:text>
+	<xsl:text>  \renewcommand*{\chaptitlefont}{\normalfont\LARGE\bfseries\raggedright} %% set the font for the title&#10;</xsl:text>
+	<xsl:text>}&#10;</xsl:text>
+
+	<!-- Use one of the chapter styles we just defined -->
+	<xsl:choose>
+	  <xsl:when test="$pageStyle='scientific'">
+	    <xsl:text>\chapterstyle{largePrintScientific}&#10;</xsl:text>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <xsl:text>\chapterstyle{largePrint}&#10;</xsl:text>
+	  </xsl:otherwise>
+	</xsl:choose>
+
+	<!-- use slightly smaller fonts for section headings -->
 	<xsl:text>\setsecheadstyle{\Large\bfseries\raggedright}&#10;</xsl:text>
 	<xsl:text>\setsubsecheadstyle{\large\bfseries\raggedright}&#10;</xsl:text>
 	<xsl:text>\setsubsubsecheadstyle{\bfseries\raggedright}&#10;</xsl:text>
@@ -337,7 +362,7 @@
 	<xsl:text>\newlength{\textheightMinusCaption}&#10;</xsl:text>
 	<xsl:text>\setlength{\textheightMinusCaption}{\textheight - \baselineskip}&#10;</xsl:text>
 
-	<xsl:if test="$pageStyle='plain'">
+	<xsl:if test="$pageStyle=('plain', 'compact')">
 	  <!-- do not number the sections -->
 	  <xsl:text>\setsecnumdepth{book}&#10;&#10;</xsl:text>
 	</xsl:if>
@@ -394,7 +419,7 @@
 	      <xsl:text>\renewcommand{\notedivision}{\section{\notesname}}&#10;</xsl:text>
 	      <xsl:text>\renewcommand{\pagenotesubhead}[3]{}&#10;</xsl:text>
 	    </xsl:if>
-	    <xsl:if test="$endnotes='document' and ($pageStyle='plain' or $pageStyle='withPageNums')">
+	    <xsl:if test="$endnotes='document' and $pageStyle=('plain', 'compact', 'withPageNums')">
 	      <!-- do not number the sections in the footnote chapter -->
 	      <xsl:text>\renewcommand{\pagenotesubhead}[3]{\section*{#3}}&#10;</xsl:text>
 	    </xsl:if>
@@ -495,20 +520,24 @@
    </xsl:template>
 
   <xsl:template name="set_frontmatter_pagestyle">
-    <xsl:if test="$pageStyle='plain'">
+    <xsl:if test="$pageStyle=('plain', 'compact')">
       <xsl:text>\pagestyle{empty}&#10;</xsl:text>
       <xsl:text>\aliaspagestyle{chapter}{empty}&#10;</xsl:text>
     </xsl:if>
     <xsl:if test="$pageStyle='withPageNums'">
       <xsl:text>\pagestyle{plain}&#10;</xsl:text>
     </xsl:if>
+    <xsl:text>\openright&#10;</xsl:text>
   </xsl:template>
 
   <xsl:template name="restore_pagestyle">
     <xsl:value-of 
-	select="if ($pageStyle='plain' or $pageStyle='withPageNums') 
+	select="if ($pageStyle=('plain', 'compact', 'withPageNums'))
 		then '\pagestyle{plain}&#10;' else '\pagestyle{Ruled}&#10;'"/>
-      <xsl:text>\aliaspagestyle{chapter}{plain}&#10;</xsl:text>
+    <xsl:text>\aliaspagestyle{chapter}{plain}&#10;</xsl:text>
+    <xsl:if test="$pageStyle='compact'">
+      <xsl:text>\openany&#10;</xsl:text>
+    </xsl:if>
   </xsl:template>
 
    <xsl:template name="current_volume_string">
@@ -726,7 +755,7 @@
    </xsl:template>
 
    <xsl:template match="dtb:pagenum">
-     <xsl:if test="$pageStyle!='plain'">
+     <xsl:if test="$pageStyle=('withPageNums', 'scientific')">
        <xsl:text>\marginpar{</xsl:text>
        <xsl:apply-templates/>
        <xsl:text>}&#10;</xsl:text>
