@@ -309,8 +309,27 @@
        <xsl:text>\sideparmargin{left}&#10;</xsl:text>
      </xsl:if>
 
-	<xsl:text>\usepackage{hyperref}&#10;</xsl:text>
-	<xsl:value-of select="concat('\hypersetup{pdftitle={', my:quoteSpecialChars(//dtb:meta[@name='dc:title' or @name='dc:Title']/@content), '}, pdfauthor={', my:quoteSpecialChars(//dtb:meta[@name='dc:creator' or @name='dc:Creator']/@content), '}}&#10;')"/>
+     <xsl:text>\usepackage{hyperref}&#10;</xsl:text>
+     <xsl:text>\hypersetup{&#10;</xsl:text>
+     <xsl:text>pdfinfo={&#10;</xsl:text>
+     <xsl:value-of select="concat('  Title={', my:quoteSpecialChars(//dtb:meta[@name='dc:title' or @name='dc:Title']/@content), '},&#10;')"/>
+     <xsl:value-of select="concat('  Author={', my:quoteSpecialChars(//dtb:meta[@name='dc:creator' or @name='dc:Creator']/@content), '},&#10;')"/>
+     <xsl:value-of select="concat('  Subject={', my:quoteSpecialChars(//dtb:meta[@name='dc:subject' or @name='dc:Subject']/@content), '},&#10;')"/>
+     <xsl:value-of select="concat('  Lang={', my:quoteSpecialChars(//dtb:meta[@name='dc:language' or @name='dc:Language']/@content), '},&#10;')"/>
+     <xsl:value-of select="concat('  Producer={', my:quoteSpecialChars(//dtb:meta[@name='dc:publisher' or @name='dc:Publisher']/@content), '},&#10;')"/>
+     <xsl:value-of select="concat('  Source={', my:quoteSpecialChars(//dtb:meta[@name='dc:source' or @name='dc:Source']/@content), '},&#10;')"/>
+     <xsl:value-of select="concat('  Identifier={', my:quoteSpecialChars(//dtb:meta[@name='dc:identifier' or @name='dc:Identifier']/@content), '},&#10;')"/>
+     <xsl:value-of select="concat('  Fontsize={', my:quoteSpecialChars($fontsize), '},&#10;')"/>
+     <xsl:value-of select="concat('  Font={', my:quoteSpecialChars($font), '},&#10;')"/>
+     <xsl:value-of select="concat('  Stocksize={', my:quoteSpecialChars($stocksize), '},&#10;')"/>
+     <xsl:value-of select="concat('  Alignment={', my:quoteSpecialChars($alignment), '},&#10;')"/>
+     <xsl:value-of select="concat('  PageStyle={', my:quoteSpecialChars($pageStyle), '},&#10;')"/>
+     <xsl:value-of select="concat('  LineSpacing={', my:quoteSpecialChars($line_spacing), '},&#10;')"/>
+     <xsl:value-of select="concat('  ReplaceEmWithQuote={', my:quoteSpecialChars($replace_em_with_quote), '},&#10;')"/>
+     <xsl:value-of select="concat('  EndNotes={', my:quoteSpecialChars($endnotes), '}&#10;')"/>
+     <xsl:text>}&#10;</xsl:text>
+     <xsl:text>}&#10;</xsl:text>
+
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
 	<xsl:text>\usepackage{alphalph}&#10;&#10;</xsl:text>
 
