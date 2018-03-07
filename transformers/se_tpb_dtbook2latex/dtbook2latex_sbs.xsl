@@ -222,7 +222,7 @@
    </xsl:template>
 
    <xsl:template match="dtb:p[contains(@class,'precedingseparator')]">   
-     <xsl:text>\fancybreak{***}&#10;&#10;</xsl:text>
+     <xsl:text>\fancybreak{\vskip\onelineskip{\LARGE ***}\vskip\onelineskip}&#10;&#10;</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>&#10;&#10;</xsl:text>
    </xsl:template>
