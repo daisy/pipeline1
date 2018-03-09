@@ -76,6 +76,7 @@
 		  <enum>
 		    <value>plain</value>
 		    <value>compact</value>
+		    <value>spacious</value>
 		    <value>withPageNums</value>
 		    <value>scientific</value>
 		  </enum>

@@ -36,12 +36,13 @@
   <xsl:param name="stocksize">a4paper</xsl:param>
   <!-- Possible values are 'left', 'justified' -->
   <xsl:param name="alignment">justified</xsl:param>
-  <!-- Possible values are 'plain', 'compact', 'withPageNums' and 'scientific'
+  <!-- Possible values are 'plain', 'compact', 'spacious', 'withPageNums' and 'scientific'
        - 'plain' contains no original page numbers, no section numbering
          and uses the 'plain' pagestyle. Chapters always start on a
 	 new recto page.
        - 'compact' is just like 'plain' but chapters start on any new page be
-	 it recto or verso.
+         it recto or verso.
+       - 'spacious' is like 'plain' but level2 start on a new page.
        - 'withPageNums' is similar to 'plain' but enables the display of the
          original page numbers.
        - 'scientific' has original page numbers, has section numbering
@@ -134,6 +135,24 @@
   <xsl:function name="my:has-preceding-non-empty-textnode-within-block" as="xs:boolean">
     <xsl:param name="context"/>
     <xsl:sequence select="some $t in ($context/preceding::text() intersect $context/ancestor-or-self::*[my:is-block-element(.)][1]//text()) satisfies normalize-space($t) != ''"/>
+  </xsl:function>
+
+  <xsl:function name="my:is-level-element" as="xs:boolean">
+    <xsl:param name="node" as="node()"/>
+    <xsl:apply-templates select="$node" mode="is-level-element"/>
+  </xsl:function>
+
+  <xsl:template match="node()" as="xs:boolean" mode="is-level-element" priority="10">
+    <xsl:sequence select="false()"/>
+  </xsl:template>
+
+  <xsl:template match="dtb:level1|dtb:level2|dtb:level3|dtb:level4|dtb:level5|dtb:level6" as="xs:boolean" mode="is-level-element" priority="12">
+    <xsl:sequence select="true()"/>
+  </xsl:template>
+
+  <xsl:function name="my:has-preceding-para-within-parent-level" as="xs:boolean">
+    <xsl:param name="context"/>
+    <xsl:sequence select="exists($context/preceding::dtb:p intersect $context/ancestor::*[my:is-level-element(.)][1]//dtb:p)"/>
   </xsl:function>
 
   <xsl:variable name="level_to_section_map">
@@ -381,7 +400,7 @@
 	<xsl:text>\newlength{\textheightMinusCaption}&#10;</xsl:text>
 	<xsl:text>\setlength{\textheightMinusCaption}{\textheight - \baselineskip}&#10;</xsl:text>
 
-	<xsl:if test="$pageStyle=('plain', 'compact')">
+	<xsl:if test="$pageStyle=('plain', 'compact', 'spacious')">
 	  <!-- do not number the sections -->
 	  <xsl:text>\setsecnumdepth{book}&#10;&#10;</xsl:text>
 	</xsl:if>
@@ -438,7 +457,7 @@
 	      <xsl:text>\renewcommand{\notedivision}{\section{\notesname}}&#10;</xsl:text>
 	      <xsl:text>\renewcommand{\pagenotesubhead}[3]{}&#10;</xsl:text>
 	    </xsl:if>
-	    <xsl:if test="$endnotes='document' and $pageStyle=('plain', 'compact', 'withPageNums')">
+	    <xsl:if test="$endnotes='document' and $pageStyle=('plain', 'compact', 'spacious', 'withPageNums')">
 	      <!-- do not number the sections in the footnote chapter -->
 	      <xsl:text>\renewcommand{\pagenotesubhead}[3]{\section*{#3}}&#10;</xsl:text>
 	    </xsl:if>
@@ -539,7 +558,7 @@
    </xsl:template>
 
   <xsl:template name="set_frontmatter_pagestyle">
-    <xsl:if test="$pageStyle=('plain', 'compact')">
+    <xsl:if test="$pageStyle=('plain', 'compact', 'spacious')">
       <xsl:text>\pagestyle{empty}&#10;</xsl:text>
       <xsl:text>\aliaspagestyle{chapter}{empty}&#10;</xsl:text>
     </xsl:if>
@@ -551,7 +570,7 @@
 
   <xsl:template name="restore_pagestyle">
     <xsl:value-of 
-	select="if ($pageStyle=('plain', 'compact', 'withPageNums'))
+	select="if ($pageStyle=('plain', 'compact', 'spacious', 'withPageNums'))
 		then '\pagestyle{plain}&#10;' else '\pagestyle{Ruled}&#10;'"/>
     <xsl:text>\aliaspagestyle{chapter}{plain}&#10;</xsl:text>
     <xsl:if test="$pageStyle='compact'">
@@ -713,8 +732,25 @@
       <xsl:text>\plainbreak{1}&#10;</xsl:text>
     </xsl:if>
   </xsl:template>
-  
+
+  <!-- Insert a pagebreak before the level if $pageStyle is set to
+       'spacious' and there is some text before within the block -->
+
+  <!-- Note: The question whether there should be a clearpage before
+       which sectional divison is really orthogonal to the pageStyle.
+       However in order to keep the api simple we are mixing this with
+       the pageStyle concept. In theory you could want the compact
+       page style and have level2 on a new page. But in reallity you
+       don't :-). So we go for this simplification of mixing the two
+       concepts. -->
+  <xsl:template name="maybe-insert-clearpage">
+    <xsl:if test="$pageStyle=('spacious') and ancestor::dtb:bodymatter and my:has-preceding-para-within-parent-level(.)">
+      <xsl:text>\clearpage&#10;</xsl:text>
+    </xsl:if>
+  </xsl:template>
+
   <xsl:template match="dtb:level2">
+    <xsl:call-template name="maybe-insert-clearpage"/>
     <!-- Insert an empty header if a level 2 has no h2 -->
     <xsl:if test="empty(dtb:h2)">
       <xsl:text>\section*{\ }&#10;</xsl:text>
