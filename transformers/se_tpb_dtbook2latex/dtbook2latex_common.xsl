@@ -723,6 +723,7 @@
     <!-- Insert an empty header if a level 1 has no h1 -->
     <xsl:if test="empty(dtb:h1)">
       <xsl:text>\chapter*{\ }&#10;</xsl:text>
+      <xsl:text>\plainbreak{3}&#10;</xsl:text>
     </xsl:if>
     <xsl:apply-templates/>
     <xsl:if test=".//(dtb:noteref|dtb:annoref) and $endnotes = 'chapter'">
@@ -754,6 +755,7 @@
     <!-- Insert an empty header if a level 2 has no h2 -->
     <xsl:if test="empty(dtb:h2)">
       <xsl:text>\section*{\ }&#10;</xsl:text>
+      <xsl:text>\plainbreak{3}&#10;</xsl:text>
     </xsl:if>
     <xsl:apply-templates/>
     <xsl:if test="following::*[1][self::dtb:p]">
@@ -765,6 +767,7 @@
     <!-- Insert an empty header if a level 3 has no h3 -->
     <xsl:if test="empty(dtb:h3)">
       <xsl:text>\subsection*{\ }&#10;</xsl:text>
+      <xsl:text>\plainbreak{2}&#10;</xsl:text>
     </xsl:if>
     <xsl:apply-templates/>
     <xsl:if test="following::*[1][self::dtb:p]">
@@ -776,6 +779,7 @@
     <!-- Insert an empty header if a level 4 has no h4 -->
     <xsl:if test="empty(dtb:h4)">
       <xsl:text>\subsubsection*{\ }&#10;</xsl:text>
+      <xsl:text>\plainbreak{1}&#10;</xsl:text>
     </xsl:if>
     <xsl:apply-templates/>
     <xsl:if test="following::*[1][self::dtb:p]">
