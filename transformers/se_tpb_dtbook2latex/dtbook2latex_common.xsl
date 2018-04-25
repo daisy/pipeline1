@@ -760,7 +760,9 @@
        don't :-). So we go for this simplification of mixing the two
        concepts. -->
   <xsl:template name="maybe-insert-clearpage">
-    <xsl:if test="$pageStyle=('spacious') and ancestor::dtb:bodymatter and my:has-preceding-para-within-parent-level(.)">
+    <xsl:if test="$pageStyle=('spacious') and
+		  ancestor::dtb:bodymatter and
+		  my:has-preceding-para-within-parent-level(.)">
       <xsl:text>\clearpage&#10;</xsl:text>
     </xsl:if>
   </xsl:template>
