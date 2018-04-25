@@ -467,6 +467,21 @@
 	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
 	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
 	<xsl:text>\renewcommand{\labelenumii}{\theenumii}&#10;&#10;</xsl:text>
+
+        <!-- Monkey patch the memoir plainbreak command as it results
+             in weird page breaks -->
+	<!-- FIXME: Check if this still is needed in memoir above 3.7f -->
+        <xsl:text>\makeatletter&#10;</xsl:text>
+        <xsl:text>\renewcommand*{\@pbreak}[1]{\par&#10;</xsl:text>
+        <xsl:text>\penalty -100&#10;</xsl:text>
+	<xsl:text>%% \vskip #1\onelineskip \@plus 2\onelineskip&#10;</xsl:text>
+        <xsl:text>%% \penalty -20&#10;</xsl:text>
+        <xsl:text>%% \vskip \z@ \@plus -2\onelineskip&#10;</xsl:text>
+        <xsl:text>\vskip #1\onelineskip&#10;</xsl:text>
+        <xsl:text>\@afterindentfalse&#10;</xsl:text>
+	<xsl:text>\@afterheading}&#10;</xsl:text>
+	<xsl:text>\makeatletter&#10;</xsl:text>
+
 	<xsl:if test="$line_spacing = 'onehalfspacing'">
 	  <xsl:text>\OnehalfSpacing&#10;</xsl:text>
 	</xsl:if>
