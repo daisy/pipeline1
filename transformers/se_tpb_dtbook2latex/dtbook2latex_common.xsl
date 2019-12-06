@@ -952,6 +952,23 @@
      <xsl:value-of select="concat('\addcontentsline{lof}{figure}{',$caption,'}&#10;')"/>
    </xsl:template>
 
+   <xsl:template match="dtb:imggroup//dtb:prodnote" priority="100">
+     <xsl:choose>
+       <xsl:when test="exists(//dtb:img[@id=tokenize(translate(current()/@imgref,'#',''),'\s+')]|preceding-sibling::*[1][self::dtb:img])">
+	 <!-- if a prodnote inside an imggroup is associated with an image it is
+	      really an extended image description. -->
+	 <!-- Most likely the large print user rather wants to see the image not
+	      the description, so ignore the description. -->
+       </xsl:when>
+       <xsl:otherwise>
+	 <xsl:text>\begin{tcolorbox}[colback=black!10,floatplacement=h!]</xsl:text>
+	 <xsl:text>&#10;\raggedright&#10;</xsl:text>
+	 <xsl:apply-templates/>
+	 <xsl:text>\end{tcolorbox}&#10;</xsl:text>
+       </xsl:otherwise>
+     </xsl:choose>
+   </xsl:template>
+
    <!-- What's the point of a div? Usually you want some visual clue
         that the content inside the div is special, hence the break
         before and after -->
