@@ -212,6 +212,17 @@
     </datatype>
   </parameter>
 
+  <parameter name="image_visibility" value="show" required="false">
+    <nicename>Visibility of images</nicename>
+    <description>How to show images. They can be hidden or shown as is.</description>
+    <datatype>
+     <enum>
+       <item nicename="Show Images" value="show"/>
+       <item nicename="Hide Images" value="ignore"/>
+     </enum>
+    </datatype>
+  </parameter>
+
   &ValidatorScriptParamsSimpleStatic;		
   
   <task name="int_daisy_validator" interactive="false">
@@ -323,6 +334,11 @@
       <name>endnotes</name>
       <value>${endnotes}</value>			
     </parameter>				
+
+    <parameter>
+      <name>image_visibility</name>
+      <value>${image_visibility}</value>
+    </parameter>
 
   </task>		
 

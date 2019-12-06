@@ -205,6 +205,18 @@
 		  <default>none</default>
 		</parameter>
 
+		<parameter type="enum" direction="in" required="false">
+		  <name>image_visibility</name>
+		  <description>The default action on images is to simply include them in the LaTeX
+		  output. Under some circumstances you might want to hide them.</description>
+		  <example>ignore</example>
+		  <enum>
+		    <value>ignore</value>
+		    <value>show</value>
+		  </enum>
+		  <default>show</default>
+		</parameter>
+
 		<parameter required="true" direction="out" type="application/x-latex">
 			<name>out</name>
 			<description>The output LaTeX document</description>

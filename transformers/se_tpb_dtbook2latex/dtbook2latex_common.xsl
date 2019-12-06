@@ -77,6 +77,10 @@
        Possible values are none, document and chapter -->
   <xsl:param name="endnotes">none</xsl:param> 
 
+  <!-- Ignore images or show them.
+       Possible values are ignore and show -->
+  <xsl:param name="image_visibility">show</xsl:param>
+
   <xsl:variable name="number_of_volumes" select="count(//*['volume-split-point'=tokenize(@class, '\s+')])+1"/>
 
   <xsl:function name="my:includegraphics-command" as="xs:string">
@@ -919,27 +923,48 @@
    </xsl:template>
 
    <xsl:template match="dtb:img">
-     <xsl:variable name="captions" select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]"/>
-     <xsl:text>\begin{figure}[htbp!]&#10;</xsl:text>
-     <xsl:value-of select="my:includegraphics-command(@src, exists($captions))"/>
-     <!-- a caption is associated with an image through an imgref attribute or a bit less formal
-          simply by following it immediately -->
-     <xsl:apply-templates select="$captions" mode="referenced-caption" />
-     <xsl:text>\end{figure}&#10;&#10;</xsl:text>   	
+     <xsl:choose>
+       <xsl:when test="$image_visibility='ignore'">
+	 <!-- ignore the image -->
+       </xsl:when>
+       <xsl:otherwise>
+	 <xsl:variable name="captions" select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]"/>
+	 <xsl:text>\begin{figure}[htbp!]&#10;</xsl:text>
+	 <xsl:value-of select="my:includegraphics-command(@src, exists($captions))"/>
+	 <!-- a caption is associated with an image through an imgref attribute or a bit less formal
+              simply by following it immediately -->
+	 <xsl:apply-templates select="$captions" mode="referenced-caption" />
+	 <xsl:text>\end{figure}&#10;&#10;</xsl:text>
+       </xsl:otherwise>
+     </xsl:choose>
    </xsl:template>
 
    <xsl:template match="dtb:h1/dtb:img|dtb:h2/dtb:img|dtb:h3/dtb:img|dtb:h4/dtb:img|dtb:h5/dtb:img|dtb:h6/dtb:img">
-     <xsl:value-of select="my:includegraphics-command(@src, false())"/>
+     <xsl:choose>
+       <xsl:when test="$image_visibility='ignore'">
+	 <!-- ignore the image -->
+       </xsl:when>
+       <xsl:otherwise>
+	 <xsl:value-of select="my:includegraphics-command(@src,false())"/>
+       </xsl:otherwise>
+     </xsl:choose>
    </xsl:template>
 
    <xsl:template match="dtb:table//dtb:img|dtb:sidebar//dtb:img" priority="10">
-     <xsl:variable name="captions" select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]"/>
-     <!-- images inside tables and sidebars do not float -->
-     <xsl:value-of select="my:includegraphics-command(@src, exists($captions))"/>
-     <!-- a caption is associated with an image through an imgref attribute or a bit less formal
-          simply by following it immediately -->
-     <xsl:apply-templates select="$captions" mode="referenced-caption">
-     </xsl:apply-templates>
+     <xsl:choose>
+       <xsl:when test="$image_visibility='ignore'">
+	 <!-- ignore the image -->
+       </xsl:when>
+       <xsl:otherwise>
+	 <xsl:variable name="captions" select="//dtb:caption[@id=tokenize(translate(current()/@imgref,'#',''), '\s+')]|following-sibling::*[1][self::dtb:caption]"/>
+	 <!-- images inside tables and sidebars do not float -->
+	 <xsl:value-of select="my:includegraphics-command(@src, exists($captions))"/>
+	 <!-- a caption is associated with an image through an imgref attribute or a bit less formal
+              simply by following it immediately -->
+	 <xsl:apply-templates select="$captions" mode="referenced-caption">
+	 </xsl:apply-templates>
+       </xsl:otherwise>
+     </xsl:choose>
    </xsl:template>
 
    <xsl:template match="dtb:caption">
