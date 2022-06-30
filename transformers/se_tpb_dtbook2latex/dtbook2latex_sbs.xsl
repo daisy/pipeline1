@@ -215,7 +215,9 @@
      <xsl:apply-templates/>
    </xsl:template>
 
-   <xsl:template match="dtb:p[contains(@class,'precedingemptyline')]">   
+   <!-- Put a plainbreak before a p with class 'precedingemptyline' unless it happens to be the very
+        first node inside a blockquote -->
+   <xsl:template match="dtb:p[contains(@class,'precedingemptyline') and not(parent::dtb:blockquote/*[1] eq .)]">
      <xsl:text>\plainbreak{1.5}&#10;&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>&#10;&#10;</xsl:text>
