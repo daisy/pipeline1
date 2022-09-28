@@ -1117,7 +1117,10 @@
      <xsl:text>\end{tcolorbox}&#10;</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:sidebar/dtb:hd">
+   <!-- Headings inside sidebars and linegroups aren't real headings in
+        the sense that they contribute to the hierarchy and need to be
+        in the toc. Simply make them stand out by making them bold -->
+   <xsl:template match="dtb:sidebar/dtb:hd|dtb:linegroup/dtb:hd">
      <xsl:text>\textbf{</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>}&#10;&#10;</xsl:text>
@@ -1135,6 +1138,9 @@
      <xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
+   <!-- Headings inside lists aren't real headings in the sense that
+        they contribute to the hierarchy and need to be in the toc.
+        Simply make them stand out by making them bold -->
    <xsl:template match="dtb:list/dtb:hd">
 	<xsl:text>\item \textbf{</xsl:text>
 	<xsl:apply-templates/>
@@ -1318,7 +1324,7 @@
 	<xsl:text>&#10;</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:poem/dtb:title">
+   <xsl:template match="dtb:poem/dtb:title|dtb:poem/dtb:hd">
      <xsl:text>\PoemTitle*[]{</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>}&#10;</xsl:text>
