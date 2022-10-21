@@ -1,8 +1,49 @@
 package se_tpb_speechgen2.external.win.sapi5  ;
 
+import com4j.*;
 
-public enum SpeechRecognitionType {
-    SRTStandard, // 0
-    SRTAutopause, // 1
-    SRTEmulated, // 2
+/**
+ */
+public enum SpeechRecognitionType implements ComEnum {
+  /**
+   * <p>
+   * The value of this constant is 0
+   * </p>
+   */
+  SRTStandard(0),
+  /**
+   * <p>
+   * The value of this constant is 1
+   * </p>
+   */
+  SRTAutopause(1),
+  /**
+   * <p>
+   * The value of this constant is 2
+   * </p>
+   */
+  SRTEmulated(2),
+  /**
+   * <p>
+   * The value of this constant is 4
+   * </p>
+   */
+  SRTSMLTimeout(4),
+  /**
+   * <p>
+   * The value of this constant is 8
+   * </p>
+   */
+  SRTExtendableParse(8),
+  /**
+   * <p>
+   * The value of this constant is 16
+   * </p>
+   */
+  SRTReSent(16),
+  ;
+
+  private final int value;
+  SpeechRecognitionType(int value) { this.value=value; }
+  public int comEnumValue() { return value; }
 }

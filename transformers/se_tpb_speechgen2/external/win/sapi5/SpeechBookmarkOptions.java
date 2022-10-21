@@ -1,7 +1,20 @@
 package se_tpb_speechgen2.external.win.sapi5  ;
 
+import com4j.*;
 
+/**
+ */
 public enum SpeechBookmarkOptions {
-    SBONone, // 0
-    SBOPause, // 1
+  /**
+   * <p>
+   * The value of this constant is 0
+   * </p>
+   */
+  SBONone, // 0
+  /**
+   * <p>
+   * The value of this constant is 1
+   * </p>
+   */
+  SBOPause, // 1
 }

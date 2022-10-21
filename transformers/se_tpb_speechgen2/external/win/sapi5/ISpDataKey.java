@@ -7,49 +7,134 @@ import com4j.*;
  */
 @IID("{14056581-E16C-11D2-BB90-00C04F8EE6C0}")
 public interface ISpDataKey extends Com4jObject {
-    @VTID(3)
-    void setData(
-        @MarshalAs(NativeType.Unicode) java.lang.String pszValueName,
-        int cbData,
-        Holder<Byte> pData);
+  // Methods:
+  /**
+   * @param pszValueName Mandatory java.lang.String parameter.
+   * @param cbData Mandatory int parameter.
+   * @param pData Mandatory Holder<Byte> parameter.
+   */
 
-    @VTID(4)
-    void getData(
-        @MarshalAs(NativeType.Unicode) java.lang.String pszValueName,
-        Holder<Integer> pcbData,
-        Holder<Byte> pData);
+  @VTID(3)
+  void setData(
+    @MarshalAs(NativeType.Unicode) java.lang.String pszValueName,
+    int cbData,
+    Holder<Byte> pData);
 
-    @VTID(5)
-    void setStringValue(
-        @MarshalAs(NativeType.Unicode) java.lang.String pszValueName,
-        @MarshalAs(NativeType.Unicode) java.lang.String pszValue);
 
-        @VTID(7)
-        void setDWORD(
-            @MarshalAs(NativeType.Unicode) java.lang.String pszValueName,
-            int dwValue);
+  /**
+   * @param pszValueName Mandatory java.lang.String parameter.
+   * @param pcbData Mandatory Holder<Integer> parameter.
+   * @return  Returns a value of type byte
+   */
 
-        @VTID(8)
-        void getDWORD(
-            @MarshalAs(NativeType.Unicode) java.lang.String pszValueName,
-            Holder<Integer> pdwValue);
+  @VTID(4)
+  byte getData(
+    @MarshalAs(NativeType.Unicode) java.lang.String pszValueName,
+    Holder<Integer> pcbData);
 
-        @VTID(9)
-        void openKey(
-            @MarshalAs(NativeType.Unicode) java.lang.String pszSubKeyName,
-            Holder<se_tpb_speechgen2.external.win.sapi5.ISpDataKey> ppSubKey);
 
-        @VTID(10)
-        void createKey(
-            @MarshalAs(NativeType.Unicode) java.lang.String pszSubKey,
-            Holder<se_tpb_speechgen2.external.win.sapi5.ISpDataKey> ppSubKey);
+  /**
+   * @param pszValueName Mandatory java.lang.String parameter.
+   * @param pszValue Mandatory java.lang.String parameter.
+   */
 
-        @VTID(11)
-        void deleteKey(
-            @MarshalAs(NativeType.Unicode) java.lang.String pszSubKey);
+  @VTID(5)
+  void setStringValue(
+    @MarshalAs(NativeType.Unicode) java.lang.String pszValueName,
+    @MarshalAs(NativeType.Unicode) java.lang.String pszValue);
 
-        @VTID(12)
-        void deleteValue(
-            @MarshalAs(NativeType.Unicode) java.lang.String pszValueName);
 
-            }
+  /**
+   * @param pszValueName Mandatory java.lang.String parameter.
+   * @return  Returns a value of type java.lang.String
+   */
+
+  @VTID(6)
+  @ReturnValue(type=NativeType.Unicode)
+  java.lang.String getStringValue(
+    @MarshalAs(NativeType.Unicode) java.lang.String pszValueName);
+
+
+  /**
+   * @param pszValueName Mandatory java.lang.String parameter.
+   * @param dwValue Mandatory int parameter.
+   */
+
+  @VTID(7)
+  void setDWORD(
+    @MarshalAs(NativeType.Unicode) java.lang.String pszValueName,
+    int dwValue);
+
+
+  /**
+   * @param pszValueName Mandatory java.lang.String parameter.
+   * @return  Returns a value of type int
+   */
+
+  @VTID(8)
+  int getDWORD(
+    @MarshalAs(NativeType.Unicode) java.lang.String pszValueName);
+
+
+  /**
+   * @param pszSubKeyName Mandatory java.lang.String parameter.
+   * @return  Returns a value of type se_tpb_speechgen2.external.win.sapi5.ISpDataKey
+   */
+
+  @VTID(9)
+  se_tpb_speechgen2.external.win.sapi5.ISpDataKey openKey(
+    @MarshalAs(NativeType.Unicode) java.lang.String pszSubKeyName);
+
+
+  /**
+   * @param pszSubKey Mandatory java.lang.String parameter.
+   * @return  Returns a value of type se_tpb_speechgen2.external.win.sapi5.ISpDataKey
+   */
+
+  @VTID(10)
+  se_tpb_speechgen2.external.win.sapi5.ISpDataKey createKey(
+    @MarshalAs(NativeType.Unicode) java.lang.String pszSubKey);
+
+
+  /**
+   * @param pszSubKey Mandatory java.lang.String parameter.
+   */
+
+  @VTID(11)
+  void deleteKey(
+    @MarshalAs(NativeType.Unicode) java.lang.String pszSubKey);
+
+
+  /**
+   * @param pszValueName Mandatory java.lang.String parameter.
+   */
+
+  @VTID(12)
+  void deleteValue(
+    @MarshalAs(NativeType.Unicode) java.lang.String pszValueName);
+
+
+  /**
+   * @param index Mandatory int parameter.
+   * @return  Returns a value of type java.lang.String
+   */
+
+  @VTID(13)
+  @ReturnValue(type=NativeType.Unicode)
+  java.lang.String enumKeys(
+    int index);
+
+
+  /**
+   * @param index Mandatory int parameter.
+   * @return  Returns a value of type java.lang.String
+   */
+
+  @VTID(14)
+  @ReturnValue(type=NativeType.Unicode)
+  java.lang.String enumValues(
+    int index);
+
+
+  // Properties:
+}

@@ -1,10 +1,38 @@
 package se_tpb_speechgen2.external.win.sapi5  ;
 
+import com4j.*;
 
+/**
+ */
 public enum SPFILEMODE {
-    SPFM_OPEN_READONLY, // 0
-    SPFM_OPEN_READWRITE, // 1
-    SPFM_CREATE, // 2
-    SPFM_CREATE_ALWAYS, // 3
-    SPFM_NUM_MODES, // 4
+  /**
+   * <p>
+   * The value of this constant is 0
+   * </p>
+   */
+  SPFM_OPEN_READONLY, // 0
+  /**
+   * <p>
+   * The value of this constant is 1
+   * </p>
+   */
+  SPFM_OPEN_READWRITE, // 1
+  /**
+   * <p>
+   * The value of this constant is 2
+   * </p>
+   */
+  SPFM_CREATE, // 2
+  /**
+   * <p>
+   * The value of this constant is 3
+   * </p>
+   */
+  SPFM_CREATE_ALWAYS, // 3
+  /**
+   * <p>
+   * The value of this constant is 4
+   * </p>
+   */
+  SPFM_NUM_MODES, // 4
 }
