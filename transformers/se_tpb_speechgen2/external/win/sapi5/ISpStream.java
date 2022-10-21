@@ -7,11 +7,21 @@ import com4j.*;
  */
 @IID("{12E3CCA9-7518-44C5-A5E7-BA5A79CB929E}")
 public interface ISpStream extends se_tpb_speechgen2.external.win.sapi5.ISpStreamFormat {
-        @VTID(16)
-        void getBaseStream(
-            Holder<se_tpb_speechgen2.external.win.sapi5.IStream> ppStream);
+  // Methods:
+    /**
+     * @return  Returns a value of type se_tpb_speechgen2.external.win.sapi5.IStream
+     */
 
-            @VTID(18)
-            void close();
+    @VTID(16)
+    se_tpb_speechgen2.external.win.sapi5.IStream getBaseStream();
 
-        }
+
+      /**
+       */
+
+      @VTID(18)
+      void close();
+
+
+      // Properties:
+    }

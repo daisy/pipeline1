@@ -2,14 +2,36 @@ package se_tpb_speechgen2.external.win.sapi5  ;
 
 import com4j.*;
 
+/**
+ */
 public enum SpeechDataKeyLocation implements ComEnum {
-    SDKLDefaultLocation(0),
-    SDKLCurrentUser(1),
-    SDKLLocalMachine(2),
-    SDKLCurrentConfig(5),
-    ;
+  /**
+   * <p>
+   * The value of this constant is 0
+   * </p>
+   */
+  SDKLDefaultLocation(0),
+  /**
+   * <p>
+   * The value of this constant is 1
+   * </p>
+   */
+  SDKLCurrentUser(1),
+  /**
+   * <p>
+   * The value of this constant is 2
+   * </p>
+   */
+  SDKLLocalMachine(2),
+  /**
+   * <p>
+   * The value of this constant is 5
+   * </p>
+   */
+  SDKLCurrentConfig(5),
+  ;
 
-    private final int value;
-    SpeechDataKeyLocation(int value) { this.value=value; }
-    public int comEnumValue() { return value; }
+  private final int value;
+  SpeechDataKeyLocation(int value) { this.value=value; }
+  public int comEnumValue() { return value; }
 }

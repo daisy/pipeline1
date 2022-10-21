@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <project name="sapi-wrapper" default="tlbimp" basedir=".">
   
-
-  <property name="com4j.dir" value="C:/Dev/com4j-20080107"/>
+  <property name="com4j.dir" value="${basedir}/com4jTools"/>
   
   <taskdef resource="com4j/tlbimp/ant.properties">
     <classpath>
@@ -13,8 +12,13 @@
   
   <target name="tlbimp">
     <!-- compile Microsoft Speech API -->
-    <tlbimp libid="C866CA3A-32F7-11D2-9602-00C04F8EE628"
-      destdir="src" package="org.daisy.util.wincom.sapi5" />
+  	<!-- In the registry Found in the TypeLib/ default value for the library SAPI.SpLexicon.1
+  	The LIBID seems linked to in %SystemRoot%\System32\Speech\Common\sapi.dll -->
+  	<tlbimp libid="C866CA3A-32F7-11D2-9602-00C04F8EE628" destdir="transformers" package="se_tpb_speechgen2.external.win.sapi5" />
+  	
+  	<!-- Onecore dll (to check for sapi extensions, and possibly voices) -->
+  	<tlbimp libid="E6DA930B-BBA5-44DF-AC6F-FE60C1EDDEC8" destdir="transformers" package="se_tpb_speechgen2.external.win.sapi5.onecore" />
+  	
   </target>
  
   

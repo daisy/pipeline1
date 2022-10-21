@@ -7,7 +7,14 @@ import com4j.*;
  */
 @IID("{BE7A9CC9-5F9E-11D2-960F-00C04F8EE628}")
 public interface ISpEventSink extends Com4jObject {
-        @VTID(4)
-        long getEventInterest();
+  // Methods:
+    /**
+     * @return  Returns a value of type long
+     */
 
-    }
+    @VTID(4)
+    long getEventInterest();
+
+
+    // Properties:
+  }

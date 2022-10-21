@@ -7,61 +7,137 @@ import com4j.*;
  */
 @IID("{F740A62F-7C15-489E-8234-940A33D9272D}")
 public interface ISpRecoContext extends se_tpb_speechgen2.external.win.sapi5.ISpEventSource {
-    @VTID(13)
-    se_tpb_speechgen2.external.win.sapi5.ISpRecognizer getRecognizer();
+  // Methods:
+  /**
+   * @return  Returns a value of type se_tpb_speechgen2.external.win.sapi5.ISpRecognizer
+   */
 
-    @VTID(14)
-    se_tpb_speechgen2.external.win.sapi5.ISpRecoGrammar createGrammar(
-        long ullGrammarID);
+  @VTID(13)
+  se_tpb_speechgen2.external.win.sapi5.ISpRecognizer getRecognizer();
 
-    @VTID(16)
-    void getMaxAlternates(
-        Holder<Integer> pcAlternates);
 
-    @VTID(17)
-    void setMaxAlternates(
-        int cAlternates);
+  /**
+   * @param ullGrammarID Mandatory long parameter.
+   * @return  Returns a value of type se_tpb_speechgen2.external.win.sapi5.ISpRecoGrammar
+   */
 
-                @VTID(21)
-                void bookmark(
-                    se_tpb_speechgen2.external.win.sapi5.SPBOOKMARKOPTIONS options,
-                    long ullStreamPosition,
-                    int lparamEvent);
+  @VTID(14)
+  se_tpb_speechgen2.external.win.sapi5.ISpRecoGrammar createGrammar(
+    long ullGrammarID);
 
-                @VTID(22)
-                void setAdaptationData(
-                    @MarshalAs(NativeType.Unicode) java.lang.String pAdaptationData,
-                    int cch);
 
-                @VTID(23)
-                void pause(
-                    int dwReserved);
+  /**
+   * @param pcAlternates Mandatory Holder<Integer> parameter.
+   */
 
-                @VTID(24)
-                void resume(
-                    int dwReserved);
+  @VTID(16)
+  void getMaxAlternates(
+    Holder<Integer> pcAlternates);
 
-                @VTID(25)
-                void setVoice(
-                    se_tpb_speechgen2.external.win.sapi5.ISpVoice pVoice,
-                    int fAllowFormatChanges);
 
-                @VTID(26)
-                se_tpb_speechgen2.external.win.sapi5.ISpVoice getVoice();
+  /**
+   * @param cAlternates Mandatory int parameter.
+   */
 
-                @VTID(27)
-                void setVoicePurgeEvent(
-                    long ullEventInterest);
+  @VTID(17)
+  void setMaxAlternates(
+    int cAlternates);
 
-                @VTID(28)
-                long getVoicePurgeEvent();
 
-                @VTID(29)
-                void setContextState(
-                    se_tpb_speechgen2.external.win.sapi5.SPCONTEXTSTATE eContextState);
+        /**
+         * @param options Mandatory se_tpb_speechgen2.external.win.sapi5.SPBOOKMARKOPTIONS parameter.
+         * @param ullStreamPosition Mandatory long parameter.
+         * @param lparamEvent Mandatory long parameter.
+         */
 
-                @VTID(30)
-                void getContextState(
-                    Holder<se_tpb_speechgen2.external.win.sapi5.SPCONTEXTSTATE> peContextState);
+        @VTID(21)
+        void bookmark(
+          se_tpb_speechgen2.external.win.sapi5.SPBOOKMARKOPTIONS options,
+          long ullStreamPosition,
+          long lparamEvent);
 
-            }
+
+        /**
+         * @param pAdaptationData Mandatory java.lang.String parameter.
+         * @param cch Mandatory int parameter.
+         */
+
+        @VTID(22)
+        void setAdaptationData(
+          @MarshalAs(NativeType.Unicode) java.lang.String pAdaptationData,
+          int cch);
+
+
+        /**
+         * @param dwReserved Mandatory int parameter.
+         */
+
+        @VTID(23)
+        void pause(
+          int dwReserved);
+
+
+        /**
+         * @param dwReserved Mandatory int parameter.
+         */
+
+        @VTID(24)
+        void resume(
+          int dwReserved);
+
+
+        /**
+         * @param pVoice Mandatory se_tpb_speechgen2.external.win.sapi5.ISpVoice parameter.
+         * @param fAllowFormatChanges Mandatory int parameter.
+         */
+
+        @VTID(25)
+        void setVoice(
+          se_tpb_speechgen2.external.win.sapi5.ISpVoice pVoice,
+          int fAllowFormatChanges);
+
+
+        /**
+         * @return  Returns a value of type se_tpb_speechgen2.external.win.sapi5.ISpVoice
+         */
+
+        @VTID(26)
+        se_tpb_speechgen2.external.win.sapi5.ISpVoice getVoice();
+
+
+        /**
+         * @param ullEventInterest Mandatory long parameter.
+         */
+
+        @VTID(27)
+        void setVoicePurgeEvent(
+          long ullEventInterest);
+
+
+        /**
+         * @return  Returns a value of type long
+         */
+
+        @VTID(28)
+        long getVoicePurgeEvent();
+
+
+        /**
+         * @param eContextState Mandatory se_tpb_speechgen2.external.win.sapi5.SPCONTEXTSTATE parameter.
+         */
+
+        @VTID(29)
+        void setContextState(
+          se_tpb_speechgen2.external.win.sapi5.SPCONTEXTSTATE eContextState);
+
+
+        /**
+         * @return  Returns a value of type se_tpb_speechgen2.external.win.sapi5.SPCONTEXTSTATE
+         */
+
+        @VTID(30)
+        se_tpb_speechgen2.external.win.sapi5.SPCONTEXTSTATE getContextState();
+
+
+        // Properties:
+      }
