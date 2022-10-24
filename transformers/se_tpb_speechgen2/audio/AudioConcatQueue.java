@@ -371,7 +371,7 @@ public class AudioConcatQueue implements Runnable {
 		String lameCommand = System.getProperty("pipeline.lame.path");
 		String bitrate = String.valueOf(mp3bitrate);
 
-		String cmd[] = { lameCommand, "--quiet", "-h", "-m", "m", "-a", "-cbr",
+		String cmd[] = { lameCommand, "--quiet", "-h", "-m", "m", "-a", "--cbr",
 				"-b", bitrate, "--resample", "22.50", "-", "-" };
 		try {
 		    // LE 2008-12-11: Read and write from stdin/stdout. That way we don't have
