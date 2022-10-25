@@ -128,7 +128,7 @@ public class SimpleNamespaceContext implements NamespaceContext {
 	/* (non-Javadoc)
 	 * @see javax.xml.namespace.NamespaceContext#getPrefixes(java.lang.String)
 	 */
-	public Iterator<?> getPrefixes(String nsURI) {
+	public Iterator<String> getPrefixes(String nsURI) {
 		if (nsURI == null) {
 			String msg = "The namespace URI must not be null!";
 			throw new IllegalArgumentException(msg);

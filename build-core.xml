@@ -15,7 +15,7 @@
 	<property name="release.name" value="pipeline-${ISO-TODAY}"/>
 	
 	<property name="base.dir" value="."/>
-		
+
 	<property name="dmfc.src.dir" value="${base.dir}/src"/>
 	<property name="build.dir" value="${base.dir}/bin"/>
 	
@@ -35,8 +35,7 @@
 		<include name="commons-cli-1.1.jar"/>
 		<include name="commons-pool-1.4.jar"/>
 		<include name="epubcheck-3.0.jar"/>
-		<include name="icu4j-3_8.jar"/>		
-        <!-- <include name="icu4j-charsets.jar"/> -->    
+		<include name="icu4j-66_1.jar"/>
 		<include name="jaudiotagger.jar"/>
 		<include name="jl1.0.jar"/>
 		<include name="junit-4.7.jar"/>
@@ -194,13 +193,13 @@
 		<javac 	srcdir="${dmfc.src.dir}" 
 				destdir="${build.dir}" 
 				includes="**/*.java" 
-				debug="true" encoding="UTF-8" target="1.5">
+				debug="true" encoding="UTF-8" source="1.8" target="1.8">
 			<classpath refid="path.utilJars"/>
 		</javac>
 		<javac 	srcdir="${transformers.dir}" 
 				destdir="${transformers.dir}" 
 				includes="**/*.java" 
-				debug="true" encoding="UTF-8" target="1.5">
+				debug="true" encoding="UTF-8" source="1.8" target="1.8">
 			<classpath refid="path.build.transformers"/>
 		</javac>
 		<copy todir="${build.dir}" failonerror="true" overwrite="false">
@@ -220,8 +219,8 @@
 		  
 		  Builds a binary release package, source packages and documentation.
 		 ================================= -->
-	<target name="all" 
-		    description="Builds a binary release package, source package and documentation." 
+	<target name="all"
+		    description="Builds a binary release package, source package and documentation."
 		    depends="buildReleaseZip,buildSrcZip,buildJavadoc"/>
 			
 	
@@ -259,13 +258,14 @@
 	<!-- ================================= 
 		  target: buildJavadoc
 		 ================================= -->
-	<target name="buildJavadoc" 
+	<target name="buildJavadoc"
 			description="Creates three javadoc archives in the distribution folder"
 			depends="createDistributionDir">
 		
-		<javadoc destdir="${javadoc.dir}/util" 			     
+		<javadoc destdir="${javadoc.dir}/util"
 			     classpathref="path.combined"
-			     windowtitle="DAISY Utility Library API documentation">
+			     windowtitle="DAISY Utility Library API documentation"
+				 useexternalfile="true">
 			<fileset dir="${base.dir}/src">
 				<patternset refid="patternset.util"/>
 				<and>					
@@ -275,11 +275,12 @@
 		</javadoc>
 		<zip zipfile="${distribution.dir}/org.daisy.util-docs-${ISO-TODAY}.zip" >
 			<fileset dir="${javadoc.dir}/util" includes="**"/>
-		</zip>		
+		</zip>
 		
 		<javadoc destdir="${javadoc.dir}/framework" 			     
 			     classpathref="path.combined"
-			     windowtitle="Daisy Pipeline Framework API documentation">
+			     windowtitle="Daisy Pipeline Framework API documentation"
+				 useexternalfile="true">
 			<fileset dir="${base.dir}/src">
 				<patternset refid="patternset.framework"/>
 				<and>					
@@ -293,7 +294,8 @@
 				
 		<javadoc destdir="${javadoc.dir}/transformers" 
 			     classpathref="path.combined"
-		         windowtitle="Daisy Pipeline Transformer API documentation">
+		         windowtitle="Daisy Pipeline Transformer API documentation"
+				 useexternalfile="true">
 			<fileset dir="${base.dir}/transformers">
 				<patternset refid="patternset.transformers"/>
 				<and>					
