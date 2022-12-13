@@ -888,6 +888,11 @@
    	</xsl:if>
    </xsl:template>
 
+   <!-- Older versions of memoir really do not like linebreaks in the form of '\\' inside headings. So we use '\newline' instead -->
+   <xsl:template match="dtb:h1/dtb:br|dtb:h2/dtb:br|dtb:h3/dtb:br|dtb:h4/dtb:br|dtb:h5/dtb:br|dtb:h6/dtb:br|dtb:bridgehead/dtb:br">
+   	<xsl:text>\newline </xsl:text>
+   </xsl:template>
+
    <xsl:template match="dtb:br">
    	<xsl:text>\\*&#10;</xsl:text>
    </xsl:template>
