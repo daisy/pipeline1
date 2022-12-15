@@ -354,7 +354,12 @@
      <xsl:text>}&#10;</xsl:text>
 
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
-	<xsl:text>\usepackage{alphalph}&#10;&#10;</xsl:text>
+	<xsl:text>\usepackage{alphalph}&#10;</xsl:text>
+
+	<!-- to break long urls across lines -->
+	<xsl:text>\usepackage{url}&#10;</xsl:text>
+	<!-- Use the same font for urls as for the rest -->
+	<xsl:text>\urlstyle{same}&#10;</xsl:text>
 
 	<!-- avoid overfull \hbox (which is a serious problem with large fonts) -->
 	<xsl:text>\sloppy&#10;</xsl:text>
@@ -1415,6 +1420,13 @@
 
    <xsl:template match="dtb:a">
      <xsl:apply-templates/>
+   </xsl:template>
+
+   <!-- Render external links as URLs -->
+   <xsl:template match="dtb:a[@external='true']">
+     <!-- Drop { and } as they might lead to unbalanced braces which the url packacke really doesn't
+          like. Also drop a '\' if it happens to be the last character -->
+     <xsl:text>\url{</xsl:text><xsl:value-of select="replace(normalize-space(replace(string(), '(\{|\})', '')), '\\$', '')"/><xsl:text>}</xsl:text>
    </xsl:template>
 
    <!-- cross references that contain only original page numbers -->
