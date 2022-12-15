@@ -12,7 +12,7 @@
   <property name="deb.install.doc" value="${deb.install.root}/share/doc/${deb.name}"/>
   
   <target name="package" depends="buildCoreJar,buildUtil,createDistributionDir">
-    <taskdef name="deb" classname="org.vafer.jdeb.ant.DebAntTask"/>
+    <taskdef name="deb" classname="org.vafer.jdeb.ant.DebAntTask" classpath="/usr/share/java/jdeb.jar"/>
     
     <mkdir dir="${build.dir}/debian/control"/>
     
