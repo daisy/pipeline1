@@ -1543,10 +1543,24 @@
     <xsl:value-of select="my:quoteSpecialChars(replace(normalize-space(string(current())), ' ', ' '))"/>
    </xsl:template>
 
-   <xsl:template match="text()">
-     <xsl:value-of select="my:quoteSpecialChars(string(current()))"/>
+   <!-- If a given word is longer than a certain threshhold add hyphenation points ('\-') between
+        each character. This is a crude method to make sure long words (often nonsensical such as
+        "aaaarghhhhhhhhhhhh") do not run into the margin -->
+  <xsl:function name="my:add-hyphenation-points" as="xs:string">
+    <xsl:param name="word" as="xs:string"/>
+    <xsl:variable name="margin" select="3"/>
+    <xsl:sequence select="if (string-length($word) > 40)
+                          then string-join((substring($word,1,$margin),
+			                    replace(substring($word,$margin+1,string-length($word)-(2*$margin+1)), '\w', '$0\\-'),
+                                            substring($word,string-length($word)-$margin)),'')
+                          else $word"/>
+  </xsl:function>
+
+  <xsl:template match="text()">
+    <xsl:variable name="sanitized" select="my:quoteSpecialChars(current())"/>
+    <xsl:value-of select="string-join(for $word in tokenize(string($sanitized),' ') return my:add-hyphenation-points($word), ' ')"/>
    </xsl:template>
-   	
+
    <xsl:template match="text()" mode="textOnly">
      <xsl:value-of select="my:quoteSpecialChars(string(current()))"/>
    </xsl:template>
