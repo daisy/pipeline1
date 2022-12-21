@@ -147,42 +147,6 @@
      <xsl:text>\restorepagenumber&#10;</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:frontmatter//dtb:h1">
-   	<xsl:text>\chapter*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h2">
-   	<xsl:text>\section*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h3">
-   	<xsl:text>\subsection*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h4">
-   	<xsl:text>\subsubsection*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h5">
-   	<xsl:text>\paragraph*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h6">
-   	<xsl:text>\subparagraph*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
    <!-- Do not fake an empty chapter if the only children are level2 -->
    <xsl:template match="dtb:frontmatter/dtb:level1[not(child::*[not(self::dtb:level2)])]">
      <xsl:apply-templates/>
