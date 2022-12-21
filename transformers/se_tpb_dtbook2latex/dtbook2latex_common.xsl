@@ -861,6 +861,8 @@
    <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
      <xsl:variable name="level" select="local-name(ancestor::dtb:*[matches(local-name(),'^level[1-6]$')][1])"/>
      <xsl:value-of select="$level_to_section_map/entry[@key=$level]"/>
+     <!-- do not add the title to the toc if we are in the frontmatter -->
+     <xsl:if test="ancestor::dtb:frontmatter"><xsl:text>*</xsl:text></xsl:if>
      <xsl:text>[</xsl:text>
      <xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
      <xsl:text>]{</xsl:text>
