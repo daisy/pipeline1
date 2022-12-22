@@ -147,11 +147,6 @@
      <xsl:text>\restorepagenumber&#10;</xsl:text>
    </xsl:template>
 
-   <!-- Do not fake an empty chapter if the only children are level2 -->
-   <xsl:template match="dtb:frontmatter/dtb:level1[not(child::*[not(self::dtb:level2)])]">
-     <xsl:apply-templates/>
-   </xsl:template>
-
    <xsl:template match="dtb:level1[@class='titlepage']" priority="100">
      <xsl:apply-templates/>
    </xsl:template>
