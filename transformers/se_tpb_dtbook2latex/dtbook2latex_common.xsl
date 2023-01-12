@@ -357,7 +357,7 @@
 	<xsl:text>\usepackage{alphalph}&#10;</xsl:text>
 
 	<!-- to break long urls across lines -->
-	<xsl:text>\usepackage{url}&#10;</xsl:text>
+	<xsl:text>\usepackage[hyphens]{url}&#10;</xsl:text>
 	<!-- Use the same font for urls as for the rest -->
 	<xsl:text>\urlstyle{same}&#10;</xsl:text>
 
