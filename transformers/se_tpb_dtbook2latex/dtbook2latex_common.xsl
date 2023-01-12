@@ -332,6 +332,11 @@
        <xsl:text>\sideparmargin{left}&#10;</xsl:text>
      </xsl:if>
 
+     <!-- to break long urls across lines -->
+     <xsl:text>\usepackage[hyphens]{url}&#10;</xsl:text>
+     <!-- Use the same font for urls as for the rest -->
+     <xsl:text>\urlstyle{same}&#10;</xsl:text>
+
      <xsl:text>\usepackage{hyperref}&#10;</xsl:text>
      <xsl:text>\hypersetup{&#10;</xsl:text>
      <xsl:text>pdfinfo={&#10;</xsl:text>
@@ -355,11 +360,6 @@
 
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
 	<xsl:text>\usepackage{alphalph}&#10;</xsl:text>
-
-	<!-- to break long urls across lines -->
-	<xsl:text>\usepackage[hyphens]{url}&#10;</xsl:text>
-	<!-- Use the same font for urls as for the rest -->
-	<xsl:text>\urlstyle{same}&#10;</xsl:text>
 
 	<!-- avoid overfull \hbox (which is a serious problem with large fonts) -->
 	<xsl:text>\sloppy&#10;</xsl:text>
