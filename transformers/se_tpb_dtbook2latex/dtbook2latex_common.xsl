@@ -1153,30 +1153,37 @@
    <!-- Headings inside lists aren't real headings in the sense that
         they contribute to the hierarchy and need to be in the toc.
         Simply make them stand out by making them bold -->
-   <xsl:template match="dtb:list/dtb:hd">
-	<xsl:text>\item \textbf{</xsl:text>
+   <xsl:template match="dtb:list/dtb:hd" mode="insert-heading">
+	<xsl:text>\noindent \textbf{</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:list[@type='ol']">
-    <xsl:text>\begin{enumerate}</xsl:text>
-    <xsl:value-of select="concat('[', if (index-of(('1','a','A','i', 'I'), string(@enum))) then string(@enum) else '1', '.]')"/>
-    <xsl:text>&#10;</xsl:text>
-	<xsl:apply-templates/>
-	<xsl:text>\end{enumerate}&#10;</xsl:text>
+   <!-- Ignore heading inside lists as they already have been dealt with -->
+   <xsl:template match="dtb:list/dtb:hd">
    </xsl:template>
-   
+
+   <xsl:template match="dtb:list[@type='ol']">
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
+     <xsl:text>\begin{enumerate}</xsl:text>
+     <xsl:value-of select="concat('[', if (index-of(('1','a','A','i', 'I'), string(@enum))) then string(@enum) else '1', '.]')"/>
+     <xsl:text>&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{enumerate}&#10;</xsl:text>
+   </xsl:template>
+
    <xsl:template match="dtb:list[@type='ul']">
-   	<xsl:text>\begin{itemize}&#10;</xsl:text>
-	<xsl:apply-templates/>
-	<xsl:text>\end{itemize}&#10;</xsl:text>
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
+     <xsl:text>\begin{itemize}&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{itemize}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:list[@type='pl']">
-   	<xsl:text>\begin{trivlist}&#10;</xsl:text>
-	<xsl:apply-templates/>
-	<xsl:text>\end{trivlist}&#10;</xsl:text>
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
+     <xsl:text>\begin{trivlist}&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{trivlist}&#10;</xsl:text>
    </xsl:template>
 
   <xsl:template match="dtb:list//dtb:list[@type='pl']" priority="10">
