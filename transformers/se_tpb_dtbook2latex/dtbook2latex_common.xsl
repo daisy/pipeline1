@@ -1161,7 +1161,7 @@
         they contribute to the hierarchy and need to be in the toc.
         Simply make them stand out by making them bold -->
    <xsl:template match="dtb:list/dtb:hd" mode="insert-heading">
-	<xsl:text>\noindent \textbf{</xsl:text>
+	<xsl:text>\paragraph{</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>}&#10;</xsl:text>
    </xsl:template>
