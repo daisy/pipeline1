@@ -505,7 +505,7 @@
 	<xsl:text>\setlength{\vindent}{0em}&#10;</xsl:text>
 
 	<!-- Poem titles should be left aligned (instead of centered) -->
-	<xsl:if test="//dtb:poem/dtb:title">
+	<xsl:if test="//dtb:poem/dtb:title|//dtb:poem/dtb:hd">
 	  <xsl:text>\renewcommand*{\PoemTitlefont}{\normalfont\large}&#10;</xsl:text>
 	</xsl:if>
 
