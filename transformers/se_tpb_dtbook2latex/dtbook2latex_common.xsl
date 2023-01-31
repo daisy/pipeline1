@@ -1194,6 +1194,7 @@
    </xsl:template>
 
   <xsl:template match="dtb:list//dtb:list[@type='pl']" priority="10">
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
     <xsl:text>\begin{indentedlist}&#10;</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>\end{indentedlist}&#10;</xsl:text>
