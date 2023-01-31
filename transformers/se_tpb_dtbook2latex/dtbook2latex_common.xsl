@@ -332,6 +332,11 @@
        <xsl:text>\sideparmargin{left}&#10;</xsl:text>
      </xsl:if>
 
+     <xsl:if test="//dtb:dl">
+       <!-- Use the enumitem class to avoid overflowing description labels -->
+       <xsl:text>\usepackage{enumitem}&#10;</xsl:text>
+     </xsl:if>
+
      <!-- to break long urls across lines -->
      <xsl:text>\usepackage[hyphens]{url}&#10;</xsl:text>
      <!-- Use the same font for urls as for the rest -->
@@ -517,7 +522,15 @@
     <xsl:text>    \setlength{\labelwidth}{0pt}%&#10;</xsl:text>
     <xsl:text>    \setlength{\itemindent}{0pt}}}%&#10;</xsl:text>
     <xsl:text>  {\end{list}}&#10;</xsl:text>
-    
+
+    <xsl:if test="//dtb:dl">
+      <!-- New environment for description lists (with potentially long description labels) -->
+      <!-- see https://tex.stackexchange.com/a/35494 -->
+      <xsl:text>\newenvironment{longdescription}&#10;</xsl:text>
+      <xsl:text>  {\begin{description}[style=unboxed]}&#10;</xsl:text>
+      <xsl:text>  {\end{description}}&#10;</xsl:text>
+    </xsl:if>
+
     <xsl:apply-templates select="." mode="localizeWords"/>
     <xsl:apply-templates/>
    </xsl:template>
@@ -1211,9 +1224,9 @@
    </xsl:template>
 
    <xsl:template match="dtb:dl">
-   	<xsl:text>\begin{description}</xsl:text>
+   	<xsl:text>\begin{longdescription}</xsl:text>
    	<xsl:apply-templates/>
-   	<xsl:text>\end{description}</xsl:text>
+   	<xsl:text>\end{longdescription}</xsl:text>
    </xsl:template>
 
   <xsl:template match="dtb:dt">
