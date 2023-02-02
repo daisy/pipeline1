@@ -1224,9 +1224,9 @@
    </xsl:template>
 
    <xsl:template match="dtb:dl">
-   	<xsl:text>\begin{longdescription}</xsl:text>
+   	<xsl:text>\begin{longdescription}&#10;</xsl:text>
    	<xsl:apply-templates/>
-   	<xsl:text>\end{longdescription}</xsl:text>
+   	<xsl:text>\end{longdescription}&#10;</xsl:text>
    </xsl:template>
 
   <xsl:template match="dtb:dt">
