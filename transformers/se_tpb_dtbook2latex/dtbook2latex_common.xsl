@@ -332,10 +332,8 @@
        <xsl:text>\sideparmargin{left}&#10;</xsl:text>
      </xsl:if>
 
-     <xsl:if test="//dtb:dl">
-       <!-- Use the enumitem class to avoid overflowing description labels -->
-       <xsl:text>\usepackage{enumitem}&#10;</xsl:text>
-     </xsl:if>
+     <!-- Use the enumitem class to avoid overflowing description labels -->
+     <xsl:text>\usepackage{enumitem}&#10;</xsl:text>
 
      <!-- to break long urls across lines -->
      <xsl:text>\usepackage[hyphens]{url}&#10;</xsl:text>
@@ -478,9 +476,17 @@
 	  </xsl:otherwise>
 	</xsl:choose>
 
-	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
-	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
-	<xsl:text>\renewcommand{\labelenumii}{\theenumii}&#10;&#10;</xsl:text>
+	<!-- Make sure enumerations (such as 'a)') can handle more that 26 items. This is done using the
+	     enumitem and the alphalph packages. See https://tex.stackexchange.com/a/269559 -->
+	<xsl:text>&#10;</xsl:text>
+	<xsl:text>\makeatletter&#10;</xsl:text>
+	<xsl:text>\newcommand{\AlphUpper}[1]{\@AlphUpper{#1}} % Define the \AlphAlph wrapper for enumitem&#10;</xsl:text>
+	<xsl:text>\newcommand{\AlphLower}[1]{\@AlphLower{#1}} % Define the \alphalph wrapper for enumitem&#10;</xsl:text>
+	<xsl:text>\newcommand{\@AlphUpper}[1]{\AlphAlph{\value{#1}}} % Internal representation&#10;</xsl:text>
+	<xsl:text>\newcommand{\@AlphLower}[1]{\alphalph{\value{#1}}} % Internal representation&#10;</xsl:text>
+	<xsl:text>\AddEnumerateCounter{\AlphUpper}{\@AlphUpper}{AAA} % Register this new format&#10;</xsl:text>
+	<xsl:text>\AddEnumerateCounter{\AlphLower}{\@AlphLower}{aaa} % Register this new format&#10;</xsl:text>
+	<xsl:text>\makeatother&#10;&#10;</xsl:text>
 
         <!-- Monkey patch the memoir plainbreak command as it results
              in weird page breaks -->
@@ -1186,8 +1192,16 @@
    <xsl:template match="dtb:list[@type='ol']">
      <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
      <xsl:text>\begin{enumerate}</xsl:text>
-     <xsl:value-of select="concat('[', if (index-of(('1','a','A','i', 'I'), string(@enum))) then string(@enum) else '1', '.]')"/>
-     <xsl:text>&#10;</xsl:text>
+     <xsl:text>[</xsl:text>
+     <!-- Set the label to be used -->
+       <xsl:choose>
+	 <xsl:when test="index-of(('1'), string(@enum))"><xsl:text>label=\arabic*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('a'), string(@enum))"><xsl:text>label=\AlphLower*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('A'), string(@enum))"><xsl:text>label=\AlphUpper*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('i'), string(@enum))"><xsl:text>label=\roman*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('I'), string(@enum))"><xsl:text>label=\Roman*.</xsl:text></xsl:when>
+       </xsl:choose>
+     <xsl:text>]</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{enumerate}&#10;</xsl:text>
    </xsl:template>
