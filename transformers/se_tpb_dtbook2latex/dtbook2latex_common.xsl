@@ -1193,13 +1193,18 @@
      <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
      <xsl:text>\begin{enumerate}</xsl:text>
      <xsl:text>[</xsl:text>
+     <!-- Set the number of the first item -->
+     <xsl:choose>
+       <xsl:when test="@start"><xsl:text>start=</xsl:text><xsl:value-of select="@start"/></xsl:when>
+       <xsl:otherwise><xsl:text>start=1</xsl:text></xsl:otherwise>
+     </xsl:choose>
      <!-- Set the label to be used -->
        <xsl:choose>
-	 <xsl:when test="index-of(('1'), string(@enum))"><xsl:text>label=\arabic*.</xsl:text></xsl:when>
-	 <xsl:when test="index-of(('a'), string(@enum))"><xsl:text>label=\AlphLower*.</xsl:text></xsl:when>
-	 <xsl:when test="index-of(('A'), string(@enum))"><xsl:text>label=\AlphUpper*.</xsl:text></xsl:when>
-	 <xsl:when test="index-of(('i'), string(@enum))"><xsl:text>label=\roman*.</xsl:text></xsl:when>
-	 <xsl:when test="index-of(('I'), string(@enum))"><xsl:text>label=\Roman*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('1'), string(@enum))"><xsl:text>,label=\arabic*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('a'), string(@enum))"><xsl:text>,label=\AlphLower*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('A'), string(@enum))"><xsl:text>,label=\AlphUpper*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('i'), string(@enum))"><xsl:text>,label=\roman*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('I'), string(@enum))"><xsl:text>,label=\Roman*.</xsl:text></xsl:when>
        </xsl:choose>
      <xsl:text>]</xsl:text>
      <xsl:apply-templates/>
