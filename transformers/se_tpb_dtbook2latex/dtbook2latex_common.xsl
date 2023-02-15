@@ -1189,6 +1189,8 @@
        <xsl:when test="@start"><xsl:text>start=</xsl:text><xsl:value-of select="@start"/></xsl:when>
        <xsl:otherwise><xsl:text>start=1</xsl:text></xsl:otherwise>
      </xsl:choose>
+     <!-- Make sure the list is not indented -->
+     <xsl:text>,leftmargin=*</xsl:text>
      <!-- Set the label to be used -->
        <xsl:choose>
 	 <xsl:when test="index-of(('1'), string(@enum))"><xsl:text>,label=\arabic*.</xsl:text></xsl:when>
@@ -1197,14 +1199,15 @@
 	 <xsl:when test="index-of(('i'), string(@enum))"><xsl:text>,label=\roman*.</xsl:text></xsl:when>
 	 <xsl:when test="index-of(('I'), string(@enum))"><xsl:text>,label=\Roman*.</xsl:text></xsl:when>
        </xsl:choose>
-     <xsl:text>]</xsl:text>
+     <xsl:text>]&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{enumerate}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:list[@type='ul']">
      <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
-     <xsl:text>\begin{itemize}&#10;</xsl:text>
+     <!-- Make sure the list is not indented -->
+     <xsl:text>\begin{itemize}[leftmargin=*]&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{itemize}&#10;</xsl:text>
    </xsl:template>
