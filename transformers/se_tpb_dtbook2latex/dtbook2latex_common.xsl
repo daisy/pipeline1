@@ -484,8 +484,8 @@
 	<xsl:text>\newcommand{\AlphLower}[1]{\@AlphLower{#1}} % Define the \alphalph wrapper for enumitem&#10;</xsl:text>
 	<xsl:text>\newcommand{\@AlphUpper}[1]{\AlphAlph{\value{#1}}} % Internal representation&#10;</xsl:text>
 	<xsl:text>\newcommand{\@AlphLower}[1]{\alphalph{\value{#1}}} % Internal representation&#10;</xsl:text>
-	<xsl:text>\AddEnumerateCounter{\AlphUpper}{\@AlphUpper}{AAA} % Register this new format&#10;</xsl:text>
-	<xsl:text>\AddEnumerateCounter{\AlphLower}{\@AlphLower}{aaa} % Register this new format&#10;</xsl:text>
+	<xsl:text>\AddEnumerateCounter{\AlphUpper}{\@AlphUpper}{A} % Register this new format&#10;</xsl:text>
+	<xsl:text>\AddEnumerateCounter{\AlphLower}{\@AlphLower}{a} % Register this new format&#10;</xsl:text>
 	<xsl:text>\makeatother&#10;&#10;</xsl:text>
 
         <!-- Monkey patch the memoir plainbreak command as it results
