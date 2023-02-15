@@ -520,15 +520,6 @@
 	  <xsl:text>\renewcommand*{\PoemTitlefont}{\normalfont\large}&#10;</xsl:text>
 	</xsl:if>
 
-    <!-- New environment for nested pl-type lists -->
-    <xsl:text>\newenvironment{indentedlist}%&#10;</xsl:text>
-    <xsl:text>  {\begin{list}{}{%&#10;</xsl:text>
-    <xsl:text>    \setlength{\leftmargin}{1.5em}%&#10;</xsl:text>
-    <xsl:text>    \setlength{\rightmargin}{0pt}%&#10;</xsl:text>
-    <xsl:text>    \setlength{\labelwidth}{0pt}%&#10;</xsl:text>
-    <xsl:text>    \setlength{\itemindent}{0pt}}}%&#10;</xsl:text>
-    <xsl:text>  {\end{list}}&#10;</xsl:text>
-
     <xsl:if test="//dtb:dl">
       <!-- New environment for description lists (with potentially long description labels) -->
       <!-- see https://tex.stackexchange.com/a/35494 -->
@@ -1220,16 +1211,18 @@
 
    <xsl:template match="dtb:list[@type='pl']">
      <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
-     <xsl:text>\begin{trivlist}&#10;</xsl:text>
+     <xsl:choose>
+       <xsl:when test="not(parent::dtb:li)">
+	 <!-- set the margin to 0 for the root list -->
+	 <xsl:text>\begin{enumerate}[label=,leftmargin=0pt,labelsep=*]&#10;</xsl:text>
+       </xsl:when>
+       <xsl:otherwise>
+	 <!-- use a normal indent for nested list -->
+	 <xsl:text>\begin{enumerate}[label=,leftmargin=*,labelsep=*]&#10;</xsl:text>
+       </xsl:otherwise>
+     </xsl:choose>
      <xsl:apply-templates/>
-     <xsl:text>\end{trivlist}&#10;</xsl:text>
-   </xsl:template>
-
-  <xsl:template match="dtb:list//dtb:list[@type='pl']" priority="10">
-     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
-    <xsl:text>\begin{indentedlist}&#10;</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>\end{indentedlist}&#10;</xsl:text>
+     <xsl:text>\end{enumerate}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:li">
