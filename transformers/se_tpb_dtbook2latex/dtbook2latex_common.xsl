@@ -1232,7 +1232,11 @@
      <xsl:variable name="itemContent">
 	<xsl:apply-templates/>
      </xsl:variable>
-     <xsl:text>\item </xsl:text>
+     <!-- if the item contains a sublist and no text for the actual
+          item itself drop the '\item' -->
+     <xsl:if test="not(./dtb:list) or ./text()[1][normalize-space() != '']">
+       <xsl:text>\item </xsl:text>
+     </xsl:if>
      <!-- quote [] right after an \item with {} -->
      <xsl:value-of select="replace($itemContent,'^(\s*)(\[.*\])','$1{$2}')"/>
      <xsl:text>&#10;</xsl:text>
