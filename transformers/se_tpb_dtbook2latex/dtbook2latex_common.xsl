@@ -1223,7 +1223,7 @@
      <xsl:choose>
        <xsl:when test="not(parent::dtb:li)">
 	 <!-- set the margin to 0 for the root list -->
-	 <xsl:text>\begin{enumerate}[label=,leftmargin=0pt,labelsep=*]&#10;</xsl:text>
+	 <xsl:text>\begin{enumerate}[label=,leftmargin=0pt]&#10;</xsl:text>
        </xsl:when>
        <xsl:otherwise>
 	 <!-- use a normal indent for nested list -->
