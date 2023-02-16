@@ -1208,28 +1208,31 @@
 
    <xsl:template match="dtb:list[@type='ul']">
      <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
-     <xsl:text>\begin{itemize}</xsl:text>
-     <!-- Make sure the list is not indented unless it is a nested list -->
-     <xsl:if test="not(parent::dtb:li)">
-       <xsl:text>[leftmargin=*]</xsl:text>
-     </xsl:if>
-     <xsl:text>&#10;</xsl:text>
+     <!-- Make sure the list is not indented -->
+     <xsl:text>\begin{itemize}[leftmargin=*]&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{itemize}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:list//dtb:list[@type='ul']" priority="10">
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
+     <xsl:text>\begin{itemize}&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{itemize}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:list[@type='pl']">
      <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
-     <xsl:choose>
-       <xsl:when test="not(parent::dtb:li)">
-	 <!-- set the margin to 0 for the root list -->
-	 <xsl:text>\begin{enumerate}[label=,leftmargin=0pt]&#10;</xsl:text>
-       </xsl:when>
-       <xsl:otherwise>
-	 <!-- use a normal indent for nested list -->
-	 <xsl:text>\begin{enumerate}[label=,leftmargin=*,labelsep=*]&#10;</xsl:text>
-       </xsl:otherwise>
-     </xsl:choose>
+     <!-- Use a plain old trivlist for root lists of pl style -->
+     <xsl:text>\begin{trivlist}&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{trivlist}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:list//dtb:list[@type='pl']" priority="10">
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
+     <!-- use a normal indent for nested list -->
+     <xsl:text>\begin{enumerate}[label=,leftmargin=*,labelsep=*]&#10;</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>\end{enumerate}&#10;</xsl:text>
    </xsl:template>
