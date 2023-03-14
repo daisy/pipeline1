@@ -1483,8 +1483,8 @@
    <!-- Render external links as URLs -->
    <xsl:template match="dtb:a[@external='true']">
      <!-- Drop { and } as they might lead to unbalanced braces which the url packacke really doesn't
-          like. Also drop a '\' if it happens to be the last character -->
-     <xsl:text>\url{</xsl:text><xsl:value-of select="replace(normalize-space(replace(string(), '(\{|\})', '')), '\\$', '')"/><xsl:text>}</xsl:text>
+          like. Also drop '\' if it happens to be the last character. Escape the rest so LaTeX doesn't fall over -->
+     <xsl:text>\url{</xsl:text><xsl:value-of select="my:quoteSpecialChars(replace(normalize-space(replace(string(), '(\{|\})', '')), '\\$', ''))"/><xsl:text>}</xsl:text>
    </xsl:template>
 
    <!-- cross references that contain only original page numbers -->
