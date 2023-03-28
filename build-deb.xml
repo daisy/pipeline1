@@ -45,7 +45,7 @@
 	<include name="commons-cli-1.1.jar"/>
 	<include name="commons-pool-1.4.jar"/>
 	<include name="epubcheck-3.0.jar"/>
-	<include name="icu4j-66_1.jar"/>
+	<include name="icu4j-72_1.jar"/>
 	<include name="jaudiotagger.jar"/>
 	<include name="jl1.0.jar"/>
 	<include name="junit-4.7.jar"/>
