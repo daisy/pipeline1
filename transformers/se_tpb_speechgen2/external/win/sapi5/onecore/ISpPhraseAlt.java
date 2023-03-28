@@ -9,10 +9,10 @@ import com4j.*;
 public interface ISpPhraseAlt extends se_tpb_speechgen2.external.win.sapi5.onecore.ISpPhrase {
   // Methods:
   /**
-   * @param ppParent Mandatory Holder<se_tpb_speechgen2.external.win.sapi5.onecore.ISpPhrase> parameter.
-   * @param pulStartElementInParent Mandatory Holder<Integer> parameter.
-   * @param pcElementsInParent Mandatory Holder<Integer> parameter.
-   * @param pcElementsInAlt Mandatory Holder<Integer> parameter.
+   * @param ppParent Mandatory Holder&lt;se_tpb_speechgen2.external.win.sapi5.onecore.ISpPhrase&gt; parameter.
+   * @param pulStartElementInParent Mandatory Holder&lt;Integer&gt; parameter.
+   * @param pcElementsInParent Mandatory Holder&lt;Integer&gt; parameter.
+   * @param pcElementsInAlt Mandatory Holder&lt;Integer&gt; parameter.
    */
 
   @VTID(7)

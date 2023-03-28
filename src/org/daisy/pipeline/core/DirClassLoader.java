@@ -101,7 +101,7 @@ public class DirClassLoader extends URLClassLoader {
 	 * @param className
 	 *            class name of the Class to load
 	 * @return the loaded Class
-	 * @throws if the specified class is not found
+	 * @throws ClassNotFoundException if the specified class is not found
 	 */
 	@Override
 	public Class<?> loadClass(String className) throws ClassNotFoundException {

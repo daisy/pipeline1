@@ -11,10 +11,10 @@ public interface ISpeechResourceLoader extends Com4jObject {
   /**
    * @param bstrResourceUri Mandatory java.lang.String parameter.
    * @param fAlwaysReload Mandatory boolean parameter.
-   * @param pStream Mandatory Holder<com4j.Com4jObject> parameter.
-   * @param pbstrMIMEType Mandatory Holder<java.lang.String> parameter.
-   * @param pfModified Mandatory Holder<Boolean> parameter.
-   * @param pbstrRedirectUrl Mandatory Holder<java.lang.String> parameter.
+   * @param pStream Mandatory Holder&lt;com4j.Com4jObject&gt; parameter.
+   * @param pbstrMIMEType Mandatory Holder&lt;java.lang.String&gt; parameter.
+   * @param pfModified Mandatory Holder&lt;Boolean&gt; parameter.
+   * @param pbstrRedirectUrl Mandatory Holder&lt;java.lang.String&gt; parameter.
    */
 
   @DISPID(1) //= 0x1. The runtime will prefer the VTID if present
@@ -30,9 +30,9 @@ public interface ISpeechResourceLoader extends Com4jObject {
 
   /**
    * @param bstrResourceUri Mandatory java.lang.String parameter.
-   * @param pbstrLocalPath Mandatory Holder<java.lang.String> parameter.
-   * @param pbstrMIMEType Mandatory Holder<java.lang.String> parameter.
-   * @param pbstrRedirectUrl Mandatory Holder<java.lang.String> parameter.
+   * @param pbstrLocalPath Mandatory Holder&lt;java.lang.String&gt; parameter.
+   * @param pbstrMIMEType Mandatory Holder&lt;java.lang.String&gt; parameter.
+   * @param pbstrRedirectUrl Mandatory Holder&lt;java.lang.String&gt; parameter.
    */
 
   @DISPID(2) //= 0x2. The runtime will prefer the VTID if present

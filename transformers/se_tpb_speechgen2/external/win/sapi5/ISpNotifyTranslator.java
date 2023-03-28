@@ -24,7 +24,7 @@ public interface ISpNotifyTranslator extends se_tpb_speechgen2.external.win.sapi
 
 
   /**
-   * @param pfnCallback Mandatory Holder<java.nio.Buffer> parameter.
+   * @param pfnCallback Mandatory Holder&lt;java.nio.Buffer&gt; parameter.
    * @param wParam Mandatory long parameter.
    * @param lParam Mandatory long parameter.
    */
@@ -37,7 +37,7 @@ public interface ISpNotifyTranslator extends se_tpb_speechgen2.external.win.sapi
 
 
   /**
-   * @param pSpCallback Mandatory Holder<java.nio.Buffer> parameter.
+   * @param pSpCallback Mandatory Holder&lt;java.nio.Buffer&gt; parameter.
    * @param wParam Mandatory long parameter.
    * @param lParam Mandatory long parameter.
    */

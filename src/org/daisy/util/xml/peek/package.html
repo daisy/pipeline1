@@ -12,7 +12,7 @@
   the peeker to the pool  when done.</p>
     
   <p>Usage example:</p>
-  <code><pre>
+  <code>
      Peeker peeker = PeekerPool.getInstance().acquire();
      try{
 		PeekResult result = peeker.peek(url);
@@ -23,6 +23,6 @@
        PeekerPool.getInstance().release(peeker);
      }
           
-  </pre></code>
+  </code>
 </body>
 </html>

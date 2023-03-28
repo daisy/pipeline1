@@ -27,7 +27,6 @@ import org.daisy.util.fileset.manipulation.FilesetManipulationException;
 
 /**
  * Copies a Fileset file unaltered to the destination
- * @param overwrite if true, overwrite an existing destination, 
  * if false, throw an exception if destination exists
  * @author Markus Gylling
  */

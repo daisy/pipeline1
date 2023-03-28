@@ -45,7 +45,7 @@ public interface TTSGroupFacade {
 	 * Called by a TTSRunner when a slave has terminated abnormally.
 	 * @param slave the terminated slave.
 	 * @param myLastInput the slaves last input.
-	 * @param e the exception that occurred, possibly <code>null</code>.
+	 * @param t the exception that occurred, possibly <code>null</code>.
 	 */
 	public void slaveTerminated(TTSAdapter slave, TTSInput myLastInput, Throwable t);
 }

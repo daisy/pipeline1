@@ -56,7 +56,6 @@ public class DtbSplitterTransformer extends Transformer implements DtbTransforma
 	 
 	/**
 	 * @param inListener
-	 * @param eventListeners
 	 * @param isInteractive
 	 */
 	public DtbSplitterTransformer(InputListener inListener, Boolean isInteractive) {

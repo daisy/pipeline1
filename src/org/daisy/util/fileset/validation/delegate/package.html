@@ -14,17 +14,18 @@
 
   <p>A concrete implementation of <code>org.daisy.util.fileset.validation.Validator</code> may
   use statically assigned <code>ValidatorDelegate</code>s. It is also possible to attach additional
-  delegates to a Validator at runtime using the setDelegate methods of the Validator. <br/>
+  delegates to a Validator at runtime using the setDelegate methods of the Validator.
+
   Given this, it is possible to extend a Validators behavior for localization and customization purposes.</p>
     
   <p>In the case several delegates are attached to a validator, no guarantees are given on the order of execution.</p>
   
   <p>Usage example:</p>
-  	<code><pre>  	    
+  	<code>
   		validator.setDelegate(myValidatorDelegateImpl);
   		validator.setDelegate("com.acme.myValidatorDelegateImpl");
   		validator.validate();
-	</pre></code>
+	</code>
 	
   <p>The abstract Validator base class (org.daisy.util.fileset.validation.ValidatorImplAbstract) encapsulates all the
   code for registering and executing Delegates, so a concrete Validator implementation does not need any code to support this feature, apart

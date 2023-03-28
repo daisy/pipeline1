@@ -40,7 +40,7 @@ public interface IInternetSecurityManager extends Com4jObject {
 
   /**
    * @param pwszUrl Mandatory java.lang.String parameter.
-   * @param pcbSecurityId Mandatory Holder<Integer> parameter.
+   * @param pcbSecurityId Mandatory Holder&lt;Integer&gt; parameter.
    * @param dwReserved Mandatory long parameter.
    * @return  Returns a value of type byte
    */
@@ -57,7 +57,7 @@ public interface IInternetSecurityManager extends Com4jObject {
    * @param pwszUrl Mandatory java.lang.String parameter.
    * @param dwAction Mandatory int parameter.
    * @param cbPolicy Mandatory int parameter.
-   * @param pContext Mandatory Holder<Byte> parameter.
+   * @param pContext Mandatory Holder&lt;Byte&gt; parameter.
    * @param cbContext Mandatory int parameter.
    * @param dwFlags Mandatory int parameter.
    * @param dwReserved Mandatory int parameter.

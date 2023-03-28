@@ -19,7 +19,7 @@ opaque and orthogonal way.</p>
 <p>The JRE shipped {@link javax.xml.validation.SchemaFactoryFinder} is used to locate the factories, still
 the following system properties <strong>must</strong> be set in order for the implementations in this package to be discovered:</p>
 
-<code><pre>
+<code>
 		System.setProperty(
 				"javax.xml.validation.SchemaFactory:http://relaxng.org/ns/structure/1.0",
 				"org.daisy.util.xml.validation.jaxp.RelaxNGSchemaFactory");
@@ -29,10 +29,10 @@ the following system properties <strong>must</strong> be set in order for the im
 		System.setProperty(
 				"javax.xml.validation.SchemaFactory:http://purl.oclc.org/dsdl/schematron",
 				"org.daisy.util.xml.validation.jaxp.ISOSchematronSchemaFactory");				
-</pre></code>
+</code>
 
 <p>Usage Example:</p>
-<code><pre>
+<code>
 		javax.xml.validation.SchemaFactory rngFactory = 
 			SchemaFactory.newInstance(SchemaLanguageConstants.RELAXNG_NS_URI);		
 		rngFactory.setErrorHandler(this);
@@ -41,10 +41,10 @@ the following system properties <strong>must</strong> be set in order for the im
 		javax.xml.validation.Validator v = s.newValidator();	
 		//validator is reusable, given that the schema is the same:						
 		File[] files = new File[] {new File("D:\\doc.dtbook"),new File("D:\\doc2.dtbook")};
-		for (int i = 0; i < files.length; i++) {
+		for (int i = 0; i &lt; files.length; i++) {
 			v.validate(new StreamSource(files[i]));
 		}
-</pre></code>
+</code>
 
 <p>Constants for the SchemaFactory <code>newInstance()</code> call are avaialable in 
 {@link org.daisy.util.xml.validation.SchemaLanguageConstants}.</p>

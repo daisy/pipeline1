@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 /**
  * <p>
  * Contains utility methods related to URI creation and manipulation.
- * <p/>
  * </p>
  *
  * @author Romain Deltour
@@ -255,7 +254,6 @@ public final class URIUtils {
      * @param spec the string to be parsed into a URI.
      * @return the URI specified in the specified string.
      * @throws URISyntaxException    if the specified string violates RFC 3986, as augmented by the above deviations.
-     * @throws NullArgumentException if <code>spec</code> is <code>null</code>.
      * @see URI#URI(String)
      */
     public static URI createURI(String spec) throws URISyntaxException {
@@ -452,9 +450,7 @@ public final class URIUtils {
      * </p>
      * <p>
      * See the following example for a better understanding of this method:
-     * <blockquote>
-     * <code>&lt;b:b:b/b:b?b:b&gt;</code> is rewritten as <code>&lt;b%3ab%3ab/b:b?b:b&gt;</code><br/>
-     * </blockquote>
+     * <code>&lt;b:b:b/b:b?b:b&gt;</code> is rewritten as <code>&lt;b%3ab%3ab/b:b?b:b&gt;</code>
      * </p>
      *
      * @param path the path to encode
@@ -517,9 +513,12 @@ public final class URIUtils {
      * for the same UNC name.</p>
      * <p>Examples of normalizations following this rules are:</p>
      * <blockquote>
-     * <code>&lt;file://host/path&gt;</code> is unchanged.<br/>
-     * <code>&lt;file://host&gt;</code> is rewritten as <code>&lt;file://host/&gt;</code><br/>
-     * <code>&lt;file:////host/share/path&gt;</code> is rewritten as <code>&lt;file://host/share/path&gt;</code><br/>
+     * <code>&lt;file://host/path&gt;</code> is unchanged.
+
+     * <code>&lt;file://host&gt;</code> is rewritten as <code>&lt;file://host/&gt;</code>
+
+     * <code>&lt;file:////host/share/path&gt;</code> is rewritten as <code>&lt;file://host/share/path&gt;</code>
+
      * </blockquote>
      * </li>
      * <li>If the URI specifies an absolute file path, the resulting URI will have the form:
@@ -530,15 +529,19 @@ public final class URIUtils {
      * is specified jsut after, the URI will be recognized as an absolute file path.</p>
      * <p>Examples of normalizations following this rules are:</p>
      * <blockquote>
-     * <code>&lt;file:/dir/path&gt;</code> is rewritten as <code>&lt;file:///dir/path&gt;</code><br/>
-     * <code>&lt;file:c:/dir/file.tmp&gt;</code> is rewritten as <code>&lt;file:///c:/dir/file.tmp&gt;</code><br/>
-     * <code>&lt;file:/c:/dir/file.tmp&gt;</code> is rewritten as <code>&lt;file:///c:/dir/file.tmp&gt;</code><br/>
-     * <code>&lt;file://localhost/c:/dir/file.tmp&gt;</code> is rewritten as <code>&lt;file:///c:/dir/file.tmp&gt;</code><br/>
-     * <code>&lt;file://c:/dir/file.tmp&gt;</code> is rewritten as <code>&lt;file:///c:/dir/file.tmp&gt;</code><br/>
+     * <code>&lt;file:/dir/path&gt;</code> is rewritten as <code>&lt;file:///dir/path&gt;</code>
+
+     * <code>&lt;file:c:/dir/file.tmp&gt;</code> is rewritten as <code>&lt;file:///c:/dir/file.tmp&gt;</code>
+
+     * <code>&lt;file:/c:/dir/file.tmp&gt;</code> is rewritten as <code>&lt;file:///c:/dir/file.tmp&gt;</code>
+
+     * <code>&lt;file://localhost/c:/dir/file.tmp&gt;</code> is rewritten as <code>&lt;file:///c:/dir/file.tmp&gt;</code>
+
+     * <code>&lt;file://c:/dir/file.tmp&gt;</code> is rewritten as <code>&lt;file:///c:/dir/file.tmp&gt;</code>
+
      * <code>&lt;file:////&gt;</code> is rewritten as <code>&lt;file:///&gt;</code>
      * </blockquote>
      * </li>
-     * </ul>
      * <li>If the URI specifies a relative file path, the resulting URI will have the form:
      * <blockquote><pre>rel-path</pre></blockquote>
      * <p>Note that colon charachters (<code>':'</code>) possibly present in the first segment
@@ -549,10 +552,14 @@ public final class URIUtils {
      * <blockquote><code>c%3Apath</code> is the normal form of <code>file:///c:path</code></blockquote>
      * <p>Examples of normalizations following this rules are:</p>
      * <blockquote>
-     * <code>&lt;file://///dir/path&gt;</code> is rewritten as <code>&lt;file:///dir/path&gt;</code><br/>
-     * <code>&lt;file:dir/file.tmp&gt;</code> is rewritten as <code>&lt;dir/file.tmp&gt;</code><br/>
-     * <code>&lt;file:dir:dir/path&gt;</code> is rewritten as <code>&lt;dir%3Adir/path&gt;</code><br/>
-     * <code>&lt;file:///c:dir/file.tmp&gt;</code> is rewritten as <code>&lt;c%3Adir/file.tmp&gt;</code><br/>
+     * <code>&lt;file://///dir/path&gt;</code> is rewritten as <code>&lt;file:///dir/path&gt;</code>
+
+     * <code>&lt;file:dir/file.tmp&gt;</code> is rewritten as <code>&lt;dir/file.tmp&gt;</code>
+
+     * <code>&lt;file:dir:dir/path&gt;</code> is rewritten as <code>&lt;dir%3Adir/path&gt;</code>
+
+     * <code>&lt;file:///c:dir/file.tmp&gt;</code> is rewritten as <code>&lt;c%3Adir/file.tmp&gt;</code>
+
      * <code>&lt;file:///c:&gt;</code> is rewritten as <code>&lt;c%3A&gt;</code>
      * </blockquote>
      * </li>
@@ -566,7 +573,6 @@ public final class URIUtils {
      *
      * @param uri the <code>file</code> URI to normalize.
      * @return a URI equivalent to the interpretation of the specified <code>file</code> URI as described above.
-     * @throws NullArgumentException    if <code>uri</code> is <code>null</code>.
      * @throws IllegalArgumentException if <code>uri</code> is not a <code>file</code> URI.
      * @see java.io.File
      */
@@ -763,7 +769,7 @@ public final class URIUtils {
 	 * <code>file:////server/path</code> or <code>file://server/path</code>).
 	 * </p>
 	 * 
-	 * @param the
+	 * @param ref
 	 *            reference URI against which the second argument will be
 	 *            resolved
 	 * @param str

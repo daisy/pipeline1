@@ -180,11 +180,11 @@ public interface ISpeechRecoResultDispatch extends Com4jObject {
    * <p>
    * GetXMLErrorInfo
    * </p>
-   * @param lineNumber Mandatory Holder<Integer> parameter.
-   * @param scriptLine Mandatory Holder<java.lang.String> parameter.
-   * @param source Mandatory Holder<java.lang.String> parameter.
-   * @param description Mandatory Holder<java.lang.String> parameter.
-   * @param resultCode Mandatory Holder<Integer> parameter.
+   * @param lineNumber Mandatory Holder&lt;Integer&gt; parameter.
+   * @param scriptLine Mandatory Holder&lt;java.lang.String&gt; parameter.
+   * @param source Mandatory Holder&lt;java.lang.String&gt; parameter.
+   * @param description Mandatory Holder&lt;java.lang.String&gt; parameter.
+   * @param resultCode Mandatory Holder&lt;Integer&gt; parameter.
    * @return  Returns a value of type boolean
    */
 

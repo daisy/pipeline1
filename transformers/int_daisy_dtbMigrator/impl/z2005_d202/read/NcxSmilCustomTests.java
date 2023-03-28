@@ -25,7 +25,7 @@ public class NcxSmilCustomTests extends HashSet<NcxSmilCustomTest> {
 	
 	/**
 	 * Constructor.
-	 * @param tests
+	 * @param ncx
 	 * @throws CatalogExceptionNotRecoverable 
 	 * @throws XMLStreamException 
 	 * @throws IOException 

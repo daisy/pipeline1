@@ -33,7 +33,7 @@ public interface ISpNotifySource extends Com4jObject {
 
 
   /**
-   * @param pfnCallback Mandatory Holder<java.nio.Buffer> parameter.
+   * @param pfnCallback Mandatory Holder&lt;java.nio.Buffer&gt; parameter.
    * @param wParam Mandatory long parameter.
    * @param lParam Mandatory long parameter.
    */
@@ -46,7 +46,7 @@ public interface ISpNotifySource extends Com4jObject {
 
 
   /**
-   * @param pSpCallback Mandatory Holder<java.nio.Buffer> parameter.
+   * @param pSpCallback Mandatory Holder&lt;java.nio.Buffer&gt; parameter.
    * @param wParam Mandatory long parameter.
    * @param lParam Mandatory long parameter.
    */
