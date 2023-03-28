@@ -3,7 +3,7 @@
 <project name="Pipeline Lite AddIn" default="buildDistForWin">
 	<description>Buildfile for the Daisy Pipeline Lite.
 		Note that it requires libs from 
-		https://sourceforge.net/p/daisymfcgui/code/HEAD/tree/trunk/bundles/
+		https://sourceforge.net/p/gui/bundles/code/HEAD/tree/trunk/bundles/
 		to be build</description>
 
 	<!-- Build for 32 bit -->
@@ -14,8 +14,8 @@
 	<import file="${basedir}/build-core.xml"/>
   
 	<property name="addin.name" value="pipeline-lite"/>
-	<property name="lite.lib.home" value="${basedir}/daisymfcgui/libs"/>
-	<property name="launchers.home" value="${basedir}/daisymfcgui/libs"/>
+	<property name="lite.lib.home" value="${basedir}/gui/bundles/libs"/>
+	<property name="launchers.home" value="${basedir}/gui/bundles/libs"/>
 
 	<target name="requiredProperties"
 			description="Check for property">
@@ -149,12 +149,17 @@
 	<target name="buildUI"
 			depends="buildCoreJar,buildUtil,createDistributionDir"
 			description="Builds the pipeline lite libray (need maven in path)">
-		<delete dir="${basedir}/daisymfcgui/org.daisy.pipeline.lite/libs" />
-		<delete dir="${basedir}/daisymfcgui/org.daisy.pipeline.scripts.ui/libs" />
-		<delete dir="${basedir}/daisymfcgui/org.daisy.util.jface/libs" />
-		<delete dir="${basedir}/daisymfcgui/org.daisy.util.swt/libs" />
-		<delete dir="${basedir}/daisymfcgui/libs" />
-		<exec dir="${basedir}/daisymfcgui" executable="cmd">
+		<delete dir="${basedir}/gui/bundles/org.daisy.pipeline.lite/libs" />
+		<delete dir="${basedir}/gui/bundles/org.daisy.pipeline.scripts.ui/libs" />
+		<delete dir="${basedir}/gui/bundles/org.daisy.util.jface/libs" />
+		<delete dir="${basedir}/gui/bundles/org.daisy.util.swt/libs" />
+		<delete dir="${basedir}/gui/bundles/libs" />
+		<copy file="${distribution.dir}/pipeline.jar"
+			  tofile="${basedir}/gui/bundles/local-repo/org/daisy/pipeline/org.daisy.pipeline/1.0.12/org.daisy.pipeline-1.0.12.jar" />
+		<copy file="${distribution.dir}/org.daisy.util.jar"
+			  tofile="${basedir}/gui/bundles/local-repo/org/daisy/pipeline/org.daisy.util/1.0.12/org.daisy.util-1.0.12.jar" />
+
+		<exec dir="${basedir}/gui/bundles" executable="cmd">
 				<arg value="/C"/>
 				<arg value="mvn"/>
 		        <arg line="clean package -Dosgi.platform=${platform}" />

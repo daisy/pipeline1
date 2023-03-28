@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.daisy.util.swt</groupId>
+  <artifactId>org.daisy.util.swt</artifactId>
+  <name>SWT utils</name>
+  <parent>
+  <groupId>org.daisy.pipeline.lite</groupId>
+    <artifactId>org.daisy.pipeline.lite.libs</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  
+  <dependencies>
+	<dependency>
+      <groupId>org.daisy.pipeline</groupId>
+      <artifactId>org.daisy.pipeline</artifactId>
+      <version>1.0.12</version>
+    </dependency>
+    <dependency>
+      <groupId>org.daisy.pipeline</groupId>
+      <artifactId>org.daisy.util</artifactId>
+      <version>1.0.12</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

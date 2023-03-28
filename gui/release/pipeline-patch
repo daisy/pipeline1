@@ -1,0 +1,155 @@
+#!/bin/bash
+
+# Usage
+usageExit ()
+{
+if [[ $2 ]]; then echo -e $2; fi
+echo "Usage: `basename $0` [options]"
+echo "Options:"
+echo "    -c         : create an update patch skeleton dir"
+echo "    -d DIR     : create the patch in DIR"
+echo "                 default is ~/Desktop"
+echo "    -f FILE    : feeds the patch with the listing in \$FILE"
+echo "    -h         : print this help"
+echo "    -m MESSAGE : the patch description"
+echo "                 launch Vim if not specified"
+echo "    -n NAME    : the patch name"
+echo "                 default is update-\`date +%Y%m%d\`"
+echo "    -p DIR     : use DIR as the pipeline home"
+echo "                 default is \$PIPELINE_HOME"
+echo "    -v VERSION : set the patch target version to VERSION"
+echo "                 default is picked in  \$DIR/src/org/daisy/pipeline/Version.java"
+echo "    -q         : quiet"
+echo "    -z         : zip an update patch"
+echo "Example:"
+echo "    `basename $0` -c -m \"Patch to fix minor bugs\""
+echo "    `basename $0` -f \"update-listing.txt\""
+echo "    `basename $0` -z"
+exit ${1:-1}
+}
+
+VERBOSE="true"
+
+# Parse the Options
+while getopts "cd:f:hm:n:p:qv:z" OPTION
+do
+  case $OPTION in
+	c) MODE="CREATE";;
+	d) OUT_DIR="$OPTARG";;
+	f) MODE="FEED";FILE_LIST="$OPTARG";;
+	h) usageExit 0 "Build an update patch for the Pipeline GUI.\n";;
+	m) MESSAGE="$OPTARG";;
+	n) NAME="$OPTARG";;
+	p) PIPELINE_HOME="$OPTARG";;
+	q) VERBOSE="";;
+	v) VERSION="$OPTARG";;
+	z) MODE="ZIP";;
+  esac
+done
+shift $(($OPTIND - 1))
+
+
+# Check that MODE is set
+if [[ -z $MODE ]]
+then	
+	usageExit 1 "One of the options -c, -f and -z must be specified\n"
+fi
+
+# Check that PIPELINE_HOME is not empty and set the version
+if [[ -z $PIPELINE_HOME ]]
+then	
+	usageExit 1 "\$PIPELINE_HOME must not be empty (it can be set with the -p option)\n"
+fi
+VERSION="${VERSION:-`grep "VERSION =" "$PIPELINE_HOME/src/org/daisy/pipeline/Version.java" | sed 's/.*"\(.*\)".*/\1/'`}"
+
+# Set other vars
+OUT_DIR="${OUT_DIR:-~/Desktop}"
+NAME="${NAME:-update-`date +%Y%m%d`}"
+PATCH_DIR="$OUT_DIR/$NAME"
+PLUGIN_DIR="$PATCH_DIR/plugins/org.daisy.pipeline_`\
+grep "Bundle-Version" "$PIPELINE_HOME/META-INF/MANIFEST.MF" | sed 's/Bundle-Version: *\(.*\) */\1/'`"
+
+createPatch() {
+
+	# Prompt for a message if empty
+	if [[ -e $MESSAGE ]]; then MESSAGE="`cat $MESSAGE`"; fi
+	if [[ -z $MESSAGE ]]
+	then
+		MSG_FILE="patch-msg-`date +%Y%m%d%H%M%S`.tmp"
+		vim $MSG_FILE
+		if [[ -e $MSG_FILE ]]
+		then
+			MESSAGE=`cat "$MSG_FILE"`
+			rm $MSG_FILE
+		else	
+			usageExit 1 "A description message must be specified\n"
+		fi
+	fi
+
+	# Create patch temporary dir
+	if [[ $VERBOSE ]]; then echo "- creating patch dir..."; fi
+	mkdir "$PATCH_DIR"
+	
+	# Write the patch properties
+	if [[ $VERBOSE ]]; then echo "- writing patch properties..."; fi
+	echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>"                              >> "$PATCH_DIR/update.properties"
+	echo "<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">" >> "$PATCH_DIR/update.properties"
+	echo "<properties>"                                                            >> "$PATCH_DIR/update.properties"
+	echo "  <comment>"                                                             >> "$PATCH_DIR/update.properties"
+	echo "    Contains metadata for DAISY Pipeline zipped update patches."         >> "$PATCH_DIR/update.properties"
+	echo "  </comment>"                                                            >> "$PATCH_DIR/update.properties"
+	echo "  <entry key=\"description\">${MESSAGE}</entry>"                         >> "$PATCH_DIR/update.properties"
+	echo "  <entry key=\"version\">${VERSION}</entry>"                             >> "$PATCH_DIR/update.properties"
+	echo "</properties>"                                                           >> "$PATCH_DIR/update.properties"
+	
+	# Create plugins dir
+	if [[ $VERBOSE ]]; then echo "- creating plugins dir..."; fi	
+	mkdir -p "$PLUGIN_DIR"
+
+	if [[ $VERBOSE ]]; then echo "Done."; fi
+	exit 0;
+
+}
+
+feedPatch() {
+	if [[ ! -e $FILE_LIST ]]; then usageExit 1 "The given listing does not exist\n"; fi
+		
+	if [[ $VERBOSE ]]; then echo "- feeding patch dir..."; fi
+	for file in `cat $FILE_LIST`
+	do
+		if [[ -d "$PIPELINE_HOME/$file" ]]; then 
+			ditto "$PIPELINE_HOME/$file" "$PLUGIN_DIR/$file"
+		else
+			ditto "$PIPELINE_HOME/"$file "$PLUGIN_DIR/`dirname $file`/"
+		fi
+	done
+	if [[ $VERBOSE ]]; then echo "Done."; fi
+	exit 0;
+}
+
+zipPatch() {
+	oldDir=`pwd`
+	cd "$PATCH_DIR"
+
+	# Clean
+	if [[ $VERBOSE ]]; then echo "- cleaning..."; fi
+	find . -name ".DS_Store" -delete
+	find . -name ".svn" -exec rm -Rf {} \;
+
+	# Creating zip 
+	if [[ $VERBOSE ]]; then echo "- creating zip..."; fi
+	zip="${OUT_DIR}/${NAME}.zip"
+	if [[ -e "$zip" ]]; then
+		zip="${OUT_DIR}/${NAME}-`date +%Y%m%d%H%M%S`.zip"
+	fi
+	zip -r9 $zip *
+	cd "$oldDir"
+
+	if [[ $VERBOSE ]]; then echo "Done."; fi
+	exit 0;
+}
+
+if [[ $MODE == "CREATE" ]]; then createPatch;
+elif [[ $MODE == "FEED" ]]; then feedPatch;
+elif [[ $MODE == "ZIP" ]]; then zipPatch;
+else usageExit 1 "Invalid mode\n"; fi

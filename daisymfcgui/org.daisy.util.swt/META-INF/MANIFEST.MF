@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Util
-Bundle-SymbolicName: org.daisy.util.swt
-Bundle-Version: 1.0.0.qualifier
-Export-Package: org.daisy.util.swt
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.eclipse.swt;bundle-version="3.3.2"
-Import-Package: org.daisy.util.mime

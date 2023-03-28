@@ -1,0 +1,10 @@
+Package: daisy-pipeline-gui
+Priority: optional
+Section: devel
+Installed-Size: 45
+Maintainer: DAISY Consortium
+Architecture: i386
+Version: 20080502
+Depends: 
+Description: DAISY Pipeline
+ This is a cool package
