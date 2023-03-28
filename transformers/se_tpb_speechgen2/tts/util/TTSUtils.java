@@ -114,8 +114,6 @@ public class TTSUtils {
 	/**
 	 * A DOM containing text to read.
 	 * @param doc A part of the manuscript identified as a point of synchronization.
-	 * @throws UnsupportedAudioFileException 
-	 * @throws TransformerRunException 
 	 */
 	public void expandAbbrs(Document doc) {
 		NodeList abbrs = XPathUtils.selectNodes(doc.getDocumentElement(), "//*[@exp]");
@@ -366,7 +364,7 @@ public class TTSUtils {
 
 
 	/**
-	 * Uses regexes to manipulate the text <code>text</text>.
+	 * Uses regexes to manipulate the text <code>text</code>.
 	 * First, the regexes from the specificRegexFilename are applied, 
 	 * then the general ones.
 	 * @param text the text to manipulate.
@@ -467,11 +465,11 @@ public class TTSUtils {
 
 
 	/**
-	 * Returns <tt>true</tt> iff the string contains any digits or
+	 * Returns <b>true</b> iff the string contains any digits or
 	 * letters apart from the optional xml.
 	 * @param input the input
-	 * @return <tt>true</tt> iff the string contains any digits or
-	 * letters apart from the optional xml, <tt>false</tt> otherwise.
+	 * @return <b>true</b> iff the string contains any digits or
+	 * letters apart from the optional xml, <b>false</b> otherwise.
 	 */
 	public static boolean containsLetterOrDigit(TTSInput input) {
 		if (null == input) {
@@ -599,9 +597,9 @@ public class TTSUtils {
 	}
 	
 	/**
-	 * Waits for bytes to become available at <tt>is</tt>, in
-	 * at most <tt>timeout</tt> milliseconds.
-	 * @param is the <tt>InputStream</tt>
+	 * Waits for bytes to become available at <b>is</b>, in
+	 * at most <b>timeout</b> milliseconds.
+	 * @param is the <b>InputStream</b>
 	 * @param timeout the desired timeout in milliseconds.
 	 * @return the number of milliseconds we had to wait for IO.
 	 * @throws IOException
@@ -611,9 +609,9 @@ public class TTSUtils {
 	}
 	
 	/**
-	 * Waits for bytes to become available at <tt>is</tt>, in
-	 * at most <tt>timeout</tt> milliseconds.
-	 * @param is the <tt>InputStream</tt>.
+	 * Waits for bytes to become available at <b>is</b>, in
+	 * at most <b>timeout</b> milliseconds.
+	 * @param is the <b>InputStream</b>.
 	 * @param timeout the desired timeout in milliseconds.
 	 * @param sleep the number of milliseconds to sleep after
 	 * a negative io poll.

@@ -97,10 +97,8 @@ public class DtbSerializer {
 	}
 	/**
 	 * 
-	 * <p>
-	 * Serielizes a document to a file. The file is being encoded in accordance with 
-	 * the value given in the xml declaration. If no encoding is found then "utf-8" is used. 
-	 * </p>
+	 * <p>Serializes a document to a file. The file is being encoded in accordance with 
+	 * the value given in the xml declaration. If no encoding is found then "utf-8" is used.</p>
 	 * The method covers for some Daisy 2.02 readers related problems:
 	 * <ol>
 	 * <li> 
@@ -111,23 +109,23 @@ public class DtbSerializer {
 	 * </li>
 	 * </ol>
 	 * <p>
-	 * 
-	 * Ad. 1.<br/>
+	 * Ad. 1.
 	 * Some Daisy readers require that each navigation point in an ncc document 
-	 * constitues a single line in html code.<br/><br/>
+	 * constitues a single line in html code.
 	 * 
-	 * Such readers require also CRLF line break markers.<br/><br/>
+	 * Such readers require also CRLF line break markers.
 	 * 
 	 * The input navigation file document uses LF as line break markers, 
 	 * which formatNavPointsLineBreaks replaces with LFCR in such a manner 
-	 * that each navigation point constitues a single line in html code of an ncc.<br/><br/>
+	 * that each navigation point constitues a single line in html code of an ncc.
 	 * 
 	 * In other kinds of documents it just replaces LF with CRLF.
 	 * </p>
+	 *
 	 * <p>
-	 * 
-	 * Ad. 2.<br/>
+	 * Ad. 2.
 	 * PlexTalk Daisy reader requires a specific order of attributes,
+	 * </p>
 	 * <ul>
 	 * <li>
 	 * in meta elements: - name="" content="" 
@@ -135,8 +133,7 @@ public class DtbSerializer {
 	 * <li>
 	 * in smil/audio elements: src="" clip-begin="" clip-end="" id=""
 	 * </li>
-	 * <ul> 
-	 * </p>
+	 * </ul>
 	 */
 	public static File serializeDaisy202DocToFile(Document doc, String outputFilePath) throws IOException{
 		

@@ -51,9 +51,9 @@ import org.xml.sax.SAXException;
 
 /**
  * Generates an XSLT to introduce structural announcements in a XML file.
- * By setting the value of <tt>outputFilename</tt> to other than 
- * <tt>null</tt> by using the the <tt>setOutputFilename(String)</tt> method, the
- * <tt>AnnonsatorXSLTBuilder</tt> instance writes the produced xsl to file. 
+ * By setting the value of <b>outputFilename</b> to other than 
+ * <b>null</b> by using the the <b>setOutputFilename(String)</b> method, the
+ * <b>AnnonsatorXSLTBuilder</b> instance writes the produced xsl to file. 
  * 
  * @author Linus Ericson
  * @author Martin Blomberg
@@ -74,7 +74,7 @@ public class AnnonsatorXSLTBuilder {
 	
 	
 	/**
-	 * Constructs an <tt>AnnonsatorXSLTBuilder</tt> instance that uses the following 
+	 * Constructs an <b>AnnonsatorXSLTBuilder</b> instance that uses the following 
 	 * files to work.
 	 * 
 	 * @param configFile the file used for configuration of the XSLT generator.
@@ -128,11 +128,11 @@ public class AnnonsatorXSLTBuilder {
         
     
 	/**
-	 * Generates an XSLT from the template pointed to by <tt>templateFile</tt>. The
+	 * Generates an XSLT from the template pointed to by <b>templateFile</b>. The
 	 * generated XSLT modifies text nodes in an input XML document in order to make 
 	 * strucural announcements. 
 	 * 
-	 * @param templateFile a <tt>URL</tt> pointing at the xsl-template file
+	 * @param templateFile a <b>URL</b> pointing at the xsl-template file
 	 * @throws TransformerRunException
 	 */
 	private void modifyTextNodes(URL templateFile) throws TransformerRunException {
@@ -270,11 +270,11 @@ public class AnnonsatorXSLTBuilder {
 	
 	/**
 	 * Prints the generated XSLT to the file pointed to by the
-	 * variable <tt>outputFilename</tt>. Returns <tt>true</tt> in
-	 * case of success, <tt>false</tt> otherwise.
+	 * variable <b>outputFilename</b>. Returns <b>true</b> in
+	 * case of success, <b>false</b> otherwise.
 	 * 
-	 * @return Returns <tt>true</tt> in
-	 * case of success, <tt>false</tt> otherwise.
+	 * @return Returns <b>true</b> in
+	 * case of success, <b>false</b> otherwise.
 	 */
 	public boolean printToFile() {
 		if (null == outputFilename) {
@@ -312,7 +312,7 @@ public class AnnonsatorXSLTBuilder {
 	 * Generates an XSLT that adds attributes to the input XML-file. The attributes
 	 * can be used to announce structural events.
 	 * 
-	 * @param templateFile a <tt>URL</tt> pointing at the xsl-template file
+	 * @param templateFile a <b>URL</b> pointing at the xsl-template file
 	 * @throws TransformerRunException
 	 */
     private void addAttributes(URL templateFile) throws TransformerRunException {
@@ -441,12 +441,12 @@ public class AnnonsatorXSLTBuilder {
 
 
     /**
-     * Adds a parameter to the produced XSL. The parameter <tt>template</tt> is an 
-     * <tt>xsl:param<tt> element that is used as a template.
+     * Adds a parameter to the produced XSL. The parameter <b>template</b> is an 
+     * <b>xsl:param<b> element that is used as a template.
      *  
      * @param paramName name of the produced parameter.
      * @param paramValue value of the produced parameter.
-     * @param paramTemplate an <tt>xsl:param</tt> element used as a template. 
+     * @param paramTemplate an <b>xsl:param</b> element used as a template. 
      */
     private void addParameter(String paramName, String paramValue, Element paramTemplate) {
     	Element templateClone = (Element) paramTemplate.cloneNode(true);
@@ -465,7 +465,7 @@ public class AnnonsatorXSLTBuilder {
     }
     
     /**
-     * Sets the value of the variable <tt>outputFilename</tt>.
+     * Sets the value of the variable <b>outputFilename</b>.
      * 
      * @param newOutputFilename the new filename.
      */
@@ -474,8 +474,8 @@ public class AnnonsatorXSLTBuilder {
     }
     
     /**
-     * Returns the value of <tt>outputFilename</tt>.
-     * @return returns the value of <tt>outputFilename</tt>.
+     * Returns the value of <b>outputFilename</b>.
+     * @return returns the value of <b>outputFilename</b>.
      */
     public String getOutputFilename() {
     	return outputFilename;

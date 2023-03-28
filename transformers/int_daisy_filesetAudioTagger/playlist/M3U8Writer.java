@@ -31,7 +31,7 @@ import org.daisy.util.fileset.util.FilesetLabelProvider;
  * <ul>
  * <li>http://www.assistanttools.com/articles/m3u_playlist_format.shtml</li>
  * <li>http://forums.winamp.com/showthread.php?threadid=65772</li>
- * <ul>
+ * </ul>
  * @author Markus Gylling
  */
 

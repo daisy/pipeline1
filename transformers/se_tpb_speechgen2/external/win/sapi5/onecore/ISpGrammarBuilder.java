@@ -44,7 +44,7 @@ public interface ISpGrammarBuilder extends Com4jObject {
 
   /**
    * @param hState Mandatory java.nio.Buffer parameter.
-   * @param phState Mandatory Holder<java.nio.Buffer> parameter.
+   * @param phState Mandatory Holder&lt;java.nio.Buffer&gt; parameter.
    */
 
   @VTID(6)

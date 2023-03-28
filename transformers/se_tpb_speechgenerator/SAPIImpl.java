@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
  * Uses simple stdin-stdout piping to communicate with an 
  * external sapi process.
  * 
- * Looks for the system variable <tt>org.daisy.debug</tt> to decide
+ * Looks for the system variable <b>org.daisy.debug</b> to decide
  * whether to print debug messages or not.
  * @author Martin Blomberg
  */
@@ -61,7 +61,7 @@ public final class SAPIImpl extends ExternalTTS {
 	/**
 	 * Constructs an instance.
 	 * @param params A map containing parameters for the run. Specifically:
-	 * the parameter <tt>TTSBuilder.BINARY</tt> must point to the binary program
+	 * the parameter <b>TTSBuilder.BINARY</b> must point to the binary program
 	 * used for communication with SAPI.
 	 * 
 	 * @throws IOException
@@ -273,7 +273,7 @@ public final class SAPIImpl extends ExternalTTS {
 	
 	/**
 	 * Prints conditional debug messages on System.out. Messages are printed 
-	 * if the system property <tt>org.daisy.debug</tt> is set.
+	 * if the system property <b>org.daisy.debug</b> is set.
 	 * 
 	 * @param msg the message.
 	 */

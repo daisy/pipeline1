@@ -65,7 +65,7 @@ import com.ibm.icu.text.Normalizer;
  * 
  * <p>See <a href="http://www.w3.org/TR/charmod-norm">http://www.w3.org/TR/charmod-norm</a></p>
  * 
- *<p>From <a href="http://www.w3.org/TR/charmod-norm/#sec-ChoiceNFC>http://www.w3.org/TR/charmod-norm/#sec-ChoiceNFC</a>:</p>
+ *<p>From <a href="http://www.w3.org/TR/charmod-norm/#sec-ChoiceNFC">http://www.w3.org/TR/charmod-norm/#sec-ChoiceNFC</a>:</p>
  *<p>The Unicode Consortium provides four standard normalization forms 
  *(see Unicode Normalization Forms  [UTR #15]). These forms differ in 1 
  *whether they normalize towards decomposed characters (NFD, NFKD) or 

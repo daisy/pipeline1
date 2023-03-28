@@ -48,7 +48,7 @@ public class AudioClip {
 	 * @param format the AudioFileFormat of the physical file backing this clip
 	 * @param startSeconds the start time of the clip within the physical file backing it 
 	 * @param endSeconds the end time of the clip within the physical file backing it
-	 * @param nature Whether this clip should be maintained in the output Daisy DTB. This can be used for example for page number announcements or other items that benefit from a start and endtime.	 
+	 * @param transcience Whether this clip should be maintained in the output Daisy DTB. This can be used for example for page number announcements or other items that benefit from a start and endtime.
 	 */
 	public AudioClip(File file, AudioFileFormat format, double startSeconds, double endSeconds, Nature transcience) {
 		mFile = file;

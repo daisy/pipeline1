@@ -10,8 +10,8 @@ public interface IEnumSpObjectTokens extends Com4jObject {
   // Methods:
   /**
    * @param celt Mandatory int parameter.
-   * @param pelt Mandatory Holder<se_tpb_speechgen2.external.win.sapi5.onecore.ISpObjectToken> parameter.
-   * @param pceltFetched Mandatory Holder<Integer> parameter.
+   * @param pelt Mandatory Holder&lt;se_tpb_speechgen2.external.win.sapi5.onecore.ISpObjectToken&gt; parameter.
+   * @param pceltFetched Mandatory Holder&lt;Integer&gt; parameter.
    */
 
   @VTID(3)

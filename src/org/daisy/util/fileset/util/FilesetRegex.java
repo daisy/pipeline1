@@ -23,11 +23,11 @@ import java.util.regex.Pattern;
 /**
  * <p>A singleton source for common and <em>compiled</em> regex patterns.</p>
  * <p>Usage example:</p>
- * <code><pre>
+ * <code>
  *   if (Regex.getInstance().matches(Regex.getInstance().URI_REMOTE), string)) {
  *     //match
  *   }		    
- * </pre></code>
+ * </code>
  * @author Markus Gylling
  */
 public class FilesetRegex {

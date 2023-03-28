@@ -170,7 +170,7 @@ public class Script {
 	
 	/**
 	 * Sets the URI of the documentation of this script.
-	 * @param description
+	 * @param uri
 	 */
 	void setDocumentation(URI uri) {
 		File test = new File(uri);

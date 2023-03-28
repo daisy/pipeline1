@@ -26,7 +26,7 @@ public interface ISpMMSysAudio extends se_tpb_speechgen2.external.win.sapi5.onec
 
 
   /**
-   * @param pHandle Mandatory Holder<java.nio.Buffer> parameter.
+   * @param pHandle Mandatory Holder&lt;java.nio.Buffer&gt; parameter.
    */
 
   @VTID(28)

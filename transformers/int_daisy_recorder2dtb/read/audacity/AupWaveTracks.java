@@ -137,7 +137,6 @@ public class AupWaveTracks extends LinkedList<AupWaveTrack> {
 	 * Retrieve the one or several AudioClips needed to represent the incoming
 	 * time interval in the presentation as a whole. If the inparam interval spans several wavefiles and/or
 	 * wavetracks, then several clips are returned.
-	 * @param label The AupLabel to be associated with AudioClips
 	 * @param labelStart start value in seconds
 	 * @param labelEnd end value in seconds
 	 */

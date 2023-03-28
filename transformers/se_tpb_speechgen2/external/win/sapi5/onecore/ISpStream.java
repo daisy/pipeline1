@@ -9,7 +9,7 @@ import com4j.*;
 public interface ISpStream extends se_tpb_speechgen2.external.win.sapi5.onecore.ISpStreamFormat {
   // Methods:
     /**
-     * @param ppStream Mandatory Holder<se_tpb_speechgen2.external.win.sapi5.onecore.IStream> parameter.
+     * @param ppStream Mandatory Holder&lt;se_tpb_speechgen2.external.win.sapi5.onecore.IStream&gt; parameter.
      */
 
     @VTID(16)

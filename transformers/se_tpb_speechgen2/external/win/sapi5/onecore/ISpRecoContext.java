@@ -27,7 +27,7 @@ public interface ISpRecoContext extends se_tpb_speechgen2.external.win.sapi5.one
 
 
   /**
-   * @param pcAlternates Mandatory Holder<Integer> parameter.
+   * @param pcAlternates Mandatory Holder&lt;Integer&gt; parameter.
    */
 
   @VTID(16)

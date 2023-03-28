@@ -12,8 +12,8 @@ public interface ISpRecoResult extends se_tpb_speechgen2.external.win.sapi5.onec
    * @param ulStartElement Mandatory int parameter.
    * @param cElements Mandatory int parameter.
    * @param ulRequestCount Mandatory int parameter.
-   * @param ppPhrases Mandatory Holder<se_tpb_speechgen2.external.win.sapi5.onecore.ISpPhraseAlt> parameter.
-   * @param pcPhrasesReturned Mandatory Holder<Integer> parameter.
+   * @param ppPhrases Mandatory Holder&lt;se_tpb_speechgen2.external.win.sapi5.onecore.ISpPhraseAlt&gt; parameter.
+   * @param pcPhrasesReturned Mandatory Holder&lt;Integer&gt; parameter.
    */
 
   @VTID(8)

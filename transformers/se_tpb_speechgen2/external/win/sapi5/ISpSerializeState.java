@@ -9,7 +9,7 @@ import com4j.*;
 public interface ISpSerializeState extends Com4jObject {
   // Methods:
     /**
-     * @param pbData Mandatory Holder<Byte> parameter.
+     * @param pbData Mandatory Holder&lt;Byte&gt; parameter.
      * @param ulSize Mandatory int parameter.
      * @param dwReserved Mandatory int parameter.
      */
