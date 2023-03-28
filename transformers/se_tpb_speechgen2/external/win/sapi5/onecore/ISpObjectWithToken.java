@@ -18,7 +18,7 @@ public interface ISpObjectWithToken extends Com4jObject {
 
 
   /**
-   * @param ppToken Mandatory Holder<se_tpb_speechgen2.external.win.sapi5.onecore.ISpObjectToken> parameter.
+   * @param ppToken Mandatory Holder&lt;se_tpb_speechgen2.external.win.sapi5.onecore.ISpObjectToken&gt; parameter.
    */
 
   @VTID(4)

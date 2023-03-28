@@ -244,13 +244,13 @@ public class NCXMaker implements BusListener {
 	
 	
 	/**
-	 * Returns an XMLEventWriter pointed to the file <tt>outputFile</tt>. The 
-	 * writer has the property <tt>XMLOutputFactory.IS_REPAIRING_NAMESPACES</tt>
-	 * set to the value <tt>Boolean.FALSE</tt>.
+	 * Returns an XMLEventWriter pointed to the file <b>outputFile</b>. The 
+	 * writer has the property <b>XMLOutputFactory.IS_REPAIRING_NAMESPACES</b>
+	 * set to the value <b>Boolean.FALSE</b>.
 	 * 
 	 * @param outputFile the file to which content will be written.
 	 * @param encoding the preferred output encoding.
-	 * @return an XMLEventWriter pointed to the file <tt>outputFile</tt>.
+	 * @return an XMLEventWriter pointed to the file <b>outputFile</b>.
 	 * @throws FileNotFoundException
 	 * @throws XMLStreamException
 	 */
@@ -1304,7 +1304,6 @@ public class NCXMaker implements BusListener {
 	/**
 	 * Creates a new navPoint element. Connects it to the ncx-DOM and
 	 * pushes it on the stack <code>openLevels</code>.
-	 * @param navNodeName typically "navPoint".
 	 */
 	private void handlePushLevel() {
 		Element navNode = createNCXNode("navPoint");
@@ -1449,7 +1448,7 @@ public class NCXMaker implements BusListener {
 	 * has attributes from the smil namespace with the namespace URI "http://www.w3.org/2001/SMIL20/",
 	 * <code>false</code> otherwise.
 	 * 
-	 * @param se The element to be examined.
+	 * @param e The element to be examined.
 	 * @return <code>true</code> if and only if <code>e</code>
 	 * has attributes from the smil namespace with the namespace URI "http://www.w3.org/2001/SMIL20/",
 	 * <code>false</code> otherwise.
@@ -1706,8 +1705,8 @@ public class NCXMaker implements BusListener {
 	
 	/**
 	 * Prints debug messages on System.out iff the system property 
-	 * represented by <tt>NCXMaker.DEBUG_PROPERTY</tt> is defined.
-	 * Debug messages are prefixed with "<tt>DEBUG: </tt>".
+	 * represented by <b>NCXMaker.DEBUG_PROPERTY</b> is defined.
+	 * Debug messages are prefixed with "<b>DEBUG: </b>".
 	 * @param msg the message.
 	 */
 	private void DEBUG(String msg) {
@@ -1719,8 +1718,8 @@ public class NCXMaker implements BusListener {
 	
 	/**
 	 * Prints debug messages on System.out iff the system property 
-	 * represented by <tt>NCXMaker.DEBUG_PROPERTY</tt> is defined.
-	 * Debug messages are prefixed with "<tt>DEBUG: </tt>".
+	 * represented by <b>NCXMaker.DEBUG_PROPERTY</b> is defined.
+	 * Debug messages are prefixed with "<b>DEBUG: </b>".
 	 * @param se the start element.
 	 */
 	@SuppressWarnings("unused")

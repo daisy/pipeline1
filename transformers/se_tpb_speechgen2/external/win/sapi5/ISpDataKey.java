@@ -11,7 +11,7 @@ public interface ISpDataKey extends Com4jObject {
   /**
    * @param pszValueName Mandatory java.lang.String parameter.
    * @param cbData Mandatory int parameter.
-   * @param pData Mandatory Holder<Byte> parameter.
+   * @param pData Mandatory Holder&lt;Byte&gt; parameter.
    */
 
   @VTID(3)
@@ -23,7 +23,7 @@ public interface ISpDataKey extends Com4jObject {
 
   /**
    * @param pszValueName Mandatory java.lang.String parameter.
-   * @param pcbData Mandatory Holder<Integer> parameter.
+   * @param pcbData Mandatory Holder&lt;Integer&gt; parameter.
    * @return  Returns a value of type byte
    */
 

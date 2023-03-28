@@ -521,8 +521,8 @@ public class FileSetCreator extends Transformer {
 	
 	
 	/**
-	 * Returns <tt>true<tt> if the set of files contains a file with
-	 * a mime type that starts with <tt>prefix</tt>.
+	 * Returns <b>true<b> if the set of files contains a file with
+	 * a mime type that starts with <b>prefix</b>.
 	 * @param filenames
 	 * @param mimetypes
 	 * @param prefix
@@ -552,8 +552,8 @@ public class FileSetCreator extends Transformer {
 	
 	/**
 	 * Prints debug messages on System.out iff the system property 
-	 * represented by <tt>FileSetCreator.DEBUG_PROPERTY</tt> is defined.
-	 * Debug messages are prefixed with "<tt>DEBUG: </tt>".
+	 * represented by <b>FileSetCreator.DEBUG_PROPERTY</b> is defined.
+	 * Debug messages are prefixed with "<b>DEBUG: </b>".
 	 * @param msg the message.
 	 */
 	private void DEBUG(String msg) {

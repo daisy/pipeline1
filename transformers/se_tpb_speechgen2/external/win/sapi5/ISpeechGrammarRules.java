@@ -113,7 +113,7 @@ public interface ISpeechGrammarRules extends Com4jObject,Iterable<Com4jObject> {
    * <p>
    * CommitAndSave
    * </p>
-   * @param errorText Mandatory Holder<java.lang.String> parameter.
+   * @param errorText Mandatory Holder&lt;java.lang.String&gt; parameter.
    * @return  Returns a value of type java.lang.Object
    */
 

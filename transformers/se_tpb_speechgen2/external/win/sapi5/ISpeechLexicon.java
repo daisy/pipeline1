@@ -137,7 +137,7 @@ public interface ISpeechLexicon extends Com4jObject {
    * <p>
    * GetGenerationChange
    * </p>
-   * @param generationId Mandatory Holder<Integer> parameter.
+   * @param generationId Mandatory Holder&lt;Integer&gt; parameter.
    * @return  Returns a value of type se_tpb_speechgen2.external.win.sapi5.ISpeechLexiconWords
    */
 

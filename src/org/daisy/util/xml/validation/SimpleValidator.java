@@ -68,7 +68,6 @@ public class SimpleValidator implements ErrorHandler {
 	 * Constructor. Use this to validate resources against inline schemas and additional schema resources given as param.
 	 * @param schemas A collection of schema identifiers 
 	 * @param handler ErrorHandler to report validation errors to
-	 * @throws IOException
 	 * @throws SAXException
 	 * @throws TransformerException 
 	 */
@@ -89,7 +88,6 @@ public class SimpleValidator implements ErrorHandler {
 	 * Constructor. Use this to validate resources against inline schemas and additional schema resources given as param.
 	 * @param schemas A collection of schema URLs 
 	 * @param handler ErrorHandler to report validation errors to
-	 * @throws IOException
 	 * @throws SAXException
 	 * @throws TransformerException 
 	 */
@@ -109,7 +107,6 @@ public class SimpleValidator implements ErrorHandler {
 	 * Constructor. Use this to validate resources against inline schemas and an additional schema resource given as param.
 	 * @param schema A schema identifier (PID, SID, pathspec, URL)
 	 * @param handler ErrorHandler to report validation errors to
-	 * @throws IOException
 	 * @throws SAXException
 	 * @throws TransformerException 
 	 */
@@ -121,7 +118,6 @@ public class SimpleValidator implements ErrorHandler {
 	 * Constructor. Use this to validate resources against inline schemas and an additional schema resource given as param.
 	 * @param schema A schema identifier (PID, SID, pathspec, URL)
 	 * @param handler ErrorHandler to report validation errors to
-	 * @throws IOException
 	 * @throws SAXException
 	 * @throws TransformerException 
 	 */
@@ -132,9 +128,7 @@ public class SimpleValidator implements ErrorHandler {
 	/**
 	 * Constructor. Use this to validate resources against inline schemas only.
 	 * @param handler ErrorHandler to report validation errors to
-	 * @throws IOException
 	 * @throws SAXException
-	 * @throws TransformerException 
 	 */
 	public SimpleValidator(ErrorHandler handler) throws SAXException {		
 		mErrorHandler = handler;

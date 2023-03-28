@@ -29,13 +29,13 @@ public interface Referable extends Descendant {
 	/**
 	 * @param uri absolute URI of a FilesetFile Fileset member that may or may not refer to this member
 	 * @return the corresponding member (@link FilesetFile) object if referring to this member, null otherwise
-	 * @throws FilesetFatalException if this collection has not been populated
+	 * @throws NullPointerException if this collection has not been populated
 	 */
 	public FilesetFile getReferringLocalMember(URI uri) throws NullPointerException;
 		
 	/**
 	 * @return the referring members collection; not ordered
-	 * @throws FilesetFatalException if this collection has not been populated
+	 * @throws NullPointerException if this collection has not been populated
 	 */
 	public Collection<FilesetFile> getReferringLocalMembers() throws NullPointerException;
 		

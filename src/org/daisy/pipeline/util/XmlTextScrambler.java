@@ -66,8 +66,6 @@ public class XmlTextScrambler {
 	/**
 	 * Scramble all XML docs within a directory, recursively.
 	 * @param input
-	 * @throws XMLStreamException
-	 * @throws IOException 
 	 */
 	public XmlTextScrambler(Directory input) {
 		Collection<?> files = input.getFiles(true);

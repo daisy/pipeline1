@@ -6,9 +6,9 @@ import com4j.*;
 public interface ISequentialStream extends Com4jObject {
   // Methods:
   /**
-   * @param pv Mandatory Holder<Byte> parameter.
+   * @param pv Mandatory Holder&lt;Byte&gt; parameter.
    * @param cb Mandatory int parameter.
-   * @param pcbRead Mandatory Holder<Integer> parameter.
+   * @param pcbRead Mandatory Holder&lt;Integer&gt; parameter.
    */
 
   @VTID(3)
@@ -19,7 +19,7 @@ public interface ISequentialStream extends Com4jObject {
 
 
   /**
-   * @param pv Mandatory Holder<Byte> parameter.
+   * @param pv Mandatory Holder&lt;Byte&gt; parameter.
    * @param cb Mandatory int parameter.
    * @return  Returns a value of type int
    */

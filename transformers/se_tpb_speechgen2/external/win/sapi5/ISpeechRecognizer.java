@@ -288,7 +288,7 @@ public interface ISpeechRecognizer extends Com4jObject {
    * GetPropertyNumber
    * </p>
    * @param name Mandatory java.lang.String parameter.
-   * @param value Mandatory Holder<Integer> parameter.
+   * @param value Mandatory Holder&lt;Integer&gt; parameter.
    * @return  Returns a value of type boolean
    */
 
@@ -320,7 +320,7 @@ public interface ISpeechRecognizer extends Com4jObject {
    * GetPropertyString
    * </p>
    * @param name Mandatory java.lang.String parameter.
-   * @param value Mandatory Holder<java.lang.String> parameter.
+   * @param value Mandatory Holder&lt;java.lang.String&gt; parameter.
    * @return  Returns a value of type boolean
    */
 

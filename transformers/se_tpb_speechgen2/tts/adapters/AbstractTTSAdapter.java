@@ -152,7 +152,8 @@ public abstract class AbstractTTSAdapter implements TTSAdapter {
 	 *            the line to read.
 	 * @param destination
 	 *            the local file in which to store the generated audio.
-	 * @throws TTSException, IOException
+	 * @throws TTSException
+	 * @throws IOException
 	 */
 	public abstract void read(String line, File destination)
 			throws IOException, TTSException;

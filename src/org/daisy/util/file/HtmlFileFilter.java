@@ -22,7 +22,7 @@ import org.daisy.util.xml.peek.Peeker;
 import org.daisy.util.xml.peek.PeekerPool;
 
 /**
- * A file filter that returns HTML files only (checks the presence of an <html>
+ * A file filter that returns HTML files only (checks the presence of a html
  * root element).
  * 
  * @author Romain Deltour

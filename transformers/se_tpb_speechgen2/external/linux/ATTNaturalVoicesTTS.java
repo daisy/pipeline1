@@ -10,12 +10,12 @@ import se_tpb_speechgen2.tts.adapters.AbstractTTSAdapter;
 import se_tpb_speechgen2.tts.util.TTSUtils;
 
 /**
- * An adapter for AT&T Natural Voices
+ * An adapter for AT&amp;T Natural Voices
  * 
- * This is a fairly hackish implementation of an adaptor for the AT&T Natural Voices TTS.
+ * This is a fairly hackish implementation of an adaptor for the AT&amp;T Natural Voices TTS.
  * It is hackish in the sense that it hard codes where the TTS is installed (see ATT_ROOTDIR)
  * and also in that it uses the command line interface of the TTS when there would be a fairly
- * clean Java API. However this would probably require the distribution of the AT&T TTS jars
+ * clean Java API. However this would probably require the distribution of the AT&amp;T TTS jars
  * in order to be able to build the pipeline. This is probably not what we want.
  * 
  * @author Christian Egli

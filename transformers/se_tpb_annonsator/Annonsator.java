@@ -72,7 +72,6 @@ public class Annonsator extends Transformer implements ErrorListener {
     
     /**
      * @param inListener
-     * @param eventListeners
      * @param isInteractive
      */
     public Annonsator(InputListener inListener, Boolean isInteractive) {

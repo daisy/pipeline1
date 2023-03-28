@@ -6,7 +6,7 @@
 <body>
   A factory API for Fileset validators.
   <h2>Discovery</h2>
-  <p>The fact that a certain fileset can be represented as a {@link org.daisy.util.fileset.interfaces.Fileset} does not
+  <p>The fact that a certain fileset can be represented as a {@link org.daisy.util.fileset.Fileset} does not
   mean that it automatically can be validated by a fileset Validator; implementations of the {@link org.daisy.util.fileset.validation.Validator}
   must be available on the system for the particular fileset type, and be registered so that a org.daisy.util.fileset.validation.ValidatorFactory
   can discover it.
@@ -20,11 +20,11 @@
 		 <code>org.daisy.util.fileset.validation:http://www.daisy.org/fileset/FILESETTYPE_STRING_CONSTANT</code>,
 	    where FILESETTYPE_STRING_CONSTANT equals a toString constant in {@link org.daisy.util.fileset.FilesetType}.</p>
 	    <p>Example:</p>
-	    <code><pre>
+	    <code>
 	    	System.setProperty(
 				"org.daisy.util.fileset.validation:http://www.daisy.org/fileset/DTBOOK_DOCUMENT",
 				"org.daisy.util.fileset.validation.ValidatorImplDtbook");
-	    </pre></code>
+	    </code>
 	</li>
 	<li>
 	    If no matching System property is found, a ValidatorNotSupportedException is thrown. 
@@ -38,7 +38,7 @@
   
   
   <h2>Usage example</h2>
-  <code><pre>
+  <code>
 		Fileset mInputFileset = new FilesetImpl(inputURI,this,true,false);		
 		try{
 			//get a handle to the ValidatorFactory
@@ -56,7 +56,7 @@
 		}catch (ValidatorException ve) {
 			//another error than nonsupported type occured
 		}				  
-  </pre></code>
+  </code>
 
 </body>
 </html>

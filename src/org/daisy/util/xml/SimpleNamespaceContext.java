@@ -27,9 +27,9 @@ import javax.xml.namespace.NamespaceContext;
 
 /**
  * Simple implementation of a NamespaceContext. New namespace mappings, 
- * prefix -> uri, are added arbitrary. The prefixes <tt>xmlns</tt> and 
- * <tt>xml</tt> are mapped to namespace URI:s as described in the 
- * <tt>NamespaceContext</tt> javadoc, without the need of specifically
+ * prefix to uri, are added arbitrary. The prefixes <b>xmlns</b> and
+ * <b>xml</b> are mapped to namespace URI:s as described in the 
+ * <b>NamespaceContext</b> javadoc, without the need of specifically
  * adding those two.
  * 
  * @author Martin Blomberg
@@ -51,9 +51,9 @@ public class SimpleNamespaceContext implements NamespaceContext {
 	
 	/**
 	 * Constructs a new namespace context given the mappings/namespaces 
-	 * in <tt>namespaces</tt>.
+	 * in <b>namespaces</b>.
 	 * 
-	 * @param namespaces the initial prefix->nsURI mapping.
+	 * @param namespaces the initial prefix.nsURI mapping.
 	 */
 	public SimpleNamespaceContext(Map<String,String> namespaces) {
 		if (namespaces == null) {
@@ -66,7 +66,7 @@ public class SimpleNamespaceContext implements NamespaceContext {
 	}
 	
 	/**
-	 * Adds a namespace to the context. If <tt>namespacePrefix</tt> already occurrs in
+	 * Adds a namespace to the context. If <b>namespacePrefix</b> already occurrs in
 	 * the context, this new namespace mapping will replace the previous one.
 	 * 
 	 * @param namespacePrefix the namespace prefix.

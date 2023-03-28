@@ -85,7 +85,6 @@ public class CharsetSwitcher extends Transformer implements FilesetErrorHandler 
 	/**
 	 * Constructor.
 	 * @param inListener
-	 * @param eventListeners
 	 * @param isInteractive
 	 */
 	public CharsetSwitcher(InputListener inListener, Boolean isInteractive) {

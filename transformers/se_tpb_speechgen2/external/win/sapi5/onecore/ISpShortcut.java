@@ -39,7 +39,7 @@ public interface ISpShortcut extends Com4jObject {
 
 
     /**
-     * @param pdwGeneration Mandatory Holder<Integer> parameter.
+     * @param pdwGeneration Mandatory Holder&lt;Integer&gt; parameter.
      */
 
     @VTID(6)
