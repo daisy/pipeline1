@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<project name="Pipeline Lite AddIn">
-	<description>Buildfile for the Daisy Pipeline Lite</description>
+<project name="Pipeline Lite AddIn" default="buildDistForWin">
+	<description>Buildfile for the Daisy Pipeline Lite.
+		Note that it requires libs from 
+		https://sourceforge.net/p/daisymfcgui/code/HEAD/tree/trunk/bundles/
+		to be build</description>
+
+	<!-- Build for 32 bit -->
+	<property name="platform" value="win32.win32.x86"/>
+	<!-- Build for 64 bit -->
+	<!--<property name="platform" value="win32.win32.x86_64"/>-->
 	
 	<import file="${basedir}/build-core.xml"/>
   
 	<property name="addin.name" value="pipeline-lite"/>
-	<!--property name="addin.lang.ja" value="true"/-->
-	<property name="lite.lib.home" value="/Users/Romain/Public/build/litelibs"/>
-	<property name="launchers.home" value="/Users/Romain/Public/build/litelibs"/>
-	<property name="lame.home" value="/Users/Romain/Documents/Work/pipeline/release/windows/ext"/>
+	<property name="lite.lib.home" value="${basedir}/gui/bundles/libs"/>
+	<property name="launchers.home" value="${basedir}/gui/bundles/libs"/>
 
+	<target name="requiredProperties"
+			description="Check for property">
+		<fail unless="platform" message="
+&#10;the platform property is not set.
+&#10;Please add a -Dplaform=value to your command line, with a value in
+&#10;[ win32.win32.x86 , win32.win32.x86_64 ... ] "/>
+	</target>
 	
 	<!-- ================================================================== -->
 	<!-- Fileset definitions                                                -->
@@ -57,11 +70,14 @@
 		<include name="se_tpb_filesetcreator/**/*.*"/>		
 		<include name="se_tpb_speechgen2/**/*.*"/>		
 		<include name="se_tpb_xmldetection/**/*.*"/>		
-		<!--<include name="se_tpb_zed2daisy202/**/*.*"/>-->		
+		<include name="se_tpb_zed2daisy202/**/*.*"/>
 		<exclude name="**/*.java"/>
 	</fileset>
 
 	<!-- Scripts -->
+	<fileset dir="${basedir}/scripts" id="fileset.full.scripts">
+		<include name="**/*"/>
+	</fileset>
 	<fileset dir="${basedir}/scripts" id="fileset.addin.scripts">
 		<include name="_dev/_postprocess.taskScript"/>
 		<include name="_dev/default.taskScript"/>
@@ -72,17 +88,18 @@
 
 	<!-- Pipeline Lite Libs -->
 	<fileset dir="${lite.lib.home}" id="fileset.lite.jars">
-		<include name="org.daisy.pipeline.lite_*.jar"/>
-		<include name="org.daisy.pipeline.scripts.ui_*.jar"/>
-		<include name="org.daisy.util.jface_*.jar"/>
-		<include name="org.daisy.util.swt_*.jar"/>
-		<include name="org.eclipse.core.commands_*.jar"/>
-		<include name="org.eclipse.equinox.common_*.jar"/>
-		<include name="org.eclipse.jface_*.jar"/>
-		<include name="org.eclipse.swt_*.jar"/>
+		<include name="org.daisy.pipeline.lite-*.jar"/>
+		<include name="org.daisy.pipeline.scripts.ui-*.jar"/>
+		<include name="org.daisy.util.jface-*.jar"/>
+		<include name="org.daisy.util.swt-*.jar"/>
+		
+		<include name="org.eclipse.core.commands-*.jar"/>
+		<include name="org.eclipse.equinox.common-*.jar"/>
+		<include name="org.eclipse.jface-*.jar"/>
+		<include name="org.eclipse.swt-*.jar"/>
 	</fileset>
 	<fileset dir="${lite.lib.home}" id="fileset.lite.jars.win">
-		<include name="org.eclipse.swt.win32.win32.x86_*.jar"/>
+		<include name="org.eclipse.swt.${platform}-*.jar"/>
 	</fileset>
 	<fileset dir="${lite.lib.home}" id="fileset.lite.jars.mac">
 		<include name="org.eclipse.swt.carbon.macosx_*.jar"/>
@@ -101,6 +118,7 @@
 			<param name="releaseName" value="${addin.name}-ms-${ISO-TODAY}"/>
 		</antcall>
 	</target>
+	
 	<target name="buildDistForWin"
 			description="Builds the Pipeline Lite distribution for Windows">
 		<property name="releaseName" value="${addin.name}-ms-${ISO-TODAY}"/>
@@ -128,8 +146,27 @@
 		<delete dir="${release.dir}"/>
 	</target>
 			
-	<target name="buildReleaseDir"
+	<target name="buildUI"
 			depends="buildCoreJar,buildUtil,createDistributionDir"
+			description="Builds the pipeline lite libray (need maven in path)">
+		<delete dir="${basedir}/gui/bundles/org.daisy.pipeline.lite/libs" />
+		<delete dir="${basedir}/gui/bundles/org.daisy.pipeline.scripts.ui/libs" />
+		<delete dir="${basedir}/gui/bundles/org.daisy.util.jface/libs" />
+		<delete dir="${basedir}/gui/bundles/org.daisy.util.swt/libs" />
+		<delete dir="${basedir}/gui/bundles/libs" />
+		<copy file="${distribution.dir}/pipeline.jar"
+			  tofile="${basedir}/gui/bundles/local-repo/org/daisy/pipeline/org.daisy.pipeline/1.0.12/org.daisy.pipeline-1.0.12.jar" />
+		<copy file="${distribution.dir}/org.daisy.util.jar"
+			  tofile="${basedir}/gui/bundles/local-repo/org/daisy/pipeline/org.daisy.util/1.0.12/org.daisy.util-1.0.12.jar" />
+
+		<exec dir="${basedir}/gui/bundles" executable="cmd">
+				<arg value="/C"/>
+				<arg value="mvn"/>
+		        <arg line="clean package -Dosgi.platform=${platform}" />
+		</exec>
+	</target>
+	<target name="buildReleaseDir"
+			depends="buildCoreJar,buildUtil,createDistributionDir,buildUI"
 			description="Builds a dir containing everything needed in a AddIn release">
 		<copy file="${distribution.dir}/pipeline.jar" tofile="${release.dir}/lib/org.daisy.pipeline_${ISO-TODAY}.jar" />
 		<copy file="${distribution.dir}/org.daisy.util.jar" tofile="${release.dir}/lib/org.daisy.util_${ISO-TODAY}.jar" />

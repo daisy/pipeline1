@@ -43,15 +43,13 @@ public class PipelineLiteCLI {
 		// Fix for MacOSX 10.5: no context class loader was set
 		// which results in factory loading problems in JAXP
 		if (Thread.currentThread().getContextClassLoader() == null) {
-			Thread.currentThread().setContextClassLoader(
-					ClassLoader.getSystemClassLoader());
+			Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
 		}
 
 		PipelineLiteCLI app = new PipelineLiteCLI();
 		CommandLine line = app.parseArgs(args);
 		if (line.getArgList().size() > 0) {
-			app
-					.printError(Messages.getString("cli.error.illegalArgument") + args[0]); //$NON-NLS-1$
+			app.printError(Messages.getString("cli.error.illegalArgument") + args[0]); //$NON-NLS-1$
 			System.exit(1);
 		}
 		if (line.hasOption('h')) {
@@ -65,8 +63,7 @@ public class PipelineLiteCLI {
 		if (line.hasOption('s')) {
 			scriptFile = new File(line.getOptionValue('s'));
 			if (!scriptFile.exists()) {
-				app.printError(Messages.getString(
-						"cli.error.scriptNotFound", scriptFile)); //$NON-NLS-1$
+				app.printError(Messages.getString("cli.error.scriptNotFound", scriptFile)); //$NON-NLS-1$
 				System.exit(1);
 			}
 			// Load pipeline core finally
@@ -74,8 +71,7 @@ public class PipelineLiteCLI {
 		} else {
 			// Load pipeline core first
 			pipeline = app.loadPipeline();
-			scriptFile = gui.openScriptSelectionDialog(new File(pipeline
-					.getHomeDirectory(), "scripts")); //$NON-NLS-1$
+			scriptFile = gui.openScriptSelectionDialog(new File(pipeline.getHomeDirectory(), "scripts")); //$NON-NLS-1$
 			if (scriptFile == null) {
 				System.exit(0);
 			}
@@ -114,8 +110,7 @@ public class PipelineLiteCLI {
 		MessageEvent.Type severity = null;
 		if (line.hasOption("verbosity")) { //$NON-NLS-1$
 			try {
-				severity = MessageEvent.Type.valueOf(line
-						.getOptionValue("verbosity")); //$NON-NLS-1$
+				severity = MessageEvent.Type.valueOf(line.getOptionValue("verbosity")); //$NON-NLS-1$
 			} catch (IllegalArgumentException iae) {
 				// do nothing
 			}
@@ -124,8 +119,7 @@ public class PipelineLiteCLI {
 			severity = MessageEvent.Type.INFO;
 		}
 		MessageManager messMan = new MessageManager();
-		if (gui.openProgressDialogAndExecute(job, pipeline, messMan,
-				monitorSubtasks, severity) != PipelineLiteGUI.OK) {
+		if (gui.openProgressDialogAndExecute(job, pipeline, messMan, monitorSubtasks, severity) != PipelineLiteGUI.OK) {
 			System.exit(2);
 		}
 
@@ -188,8 +182,7 @@ public class PipelineLiteCLI {
 			String value = parameters.get(name);
 			ScriptParameter param = job.getScriptParameter(name);
 			if (param == null) {
-				System.out.println(Messages.getString(
-						"cli.info.ignoringParam", name)); //$NON-NLS-1$
+				System.out.println(Messages.getString("cli.info.ignoringParam", name)); //$NON-NLS-1$
 			}
 			try {
 				job.setParameterValue(name, value);
@@ -207,8 +200,7 @@ public class PipelineLiteCLI {
 	private CommandLine parseArgs(String[] args) {
 		try {
 			options = new Options();
-			options.addOption(
-					"h", "help", false, Messages.getString("cli.info.help")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			options.addOption("h", "help", false, Messages.getString("cli.info.help")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			options.addOption("i", "info", false, //$NON-NLS-1$ //$NON-NLS-2$
 					Messages.getString("cli.info.info")); //$NON-NLS-1$
 			options.addOption("x", "execute", false, //$NON-NLS-1$ //$NON-NLS-2$
@@ -217,20 +209,17 @@ public class PipelineLiteCLI {
 					Messages.getString("cli.info.quit")); //$NON-NLS-1$
 
 			OptionBuilder.withLongOpt("no-subtask"); //$NON-NLS-1$
-			OptionBuilder.withDescription(Messages
-					.getString("cli.info.nosubtask")); //$NON-NLS-1$
+			OptionBuilder.withDescription(Messages.getString("cli.info.nosubtask")); //$NON-NLS-1$
 			options.addOption(OptionBuilder.create());
 
 			OptionBuilder.withLongOpt("verbosity"); //$NON-NLS-1$
-			OptionBuilder.withDescription(Messages
-					.getString("cli.info.verbosity")); //$NON-NLS-1$
+			OptionBuilder.withDescription(Messages.getString("cli.info.verbosity")); //$NON-NLS-1$
 			OptionBuilder.hasArg();
 			OptionBuilder.withArgName("threshold"); //$NON-NLS-1$
 			options.addOption(OptionBuilder.create('v'));
 
 			OptionBuilder.withLongOpt("script"); //$NON-NLS-1$
-			OptionBuilder
-					.withDescription(Messages.getString("cli.info.script")); //$NON-NLS-1$
+			OptionBuilder.withDescription(Messages.getString("cli.info.script")); //$NON-NLS-1$
 			OptionBuilder.hasArg();
 			OptionBuilder.withArgName("file"); //$NON-NLS-1$
 			options.addOption(OptionBuilder.create('s'));
@@ -238,23 +227,20 @@ public class PipelineLiteCLI {
 			OptionBuilder.hasArgs();
 			OptionBuilder.withValueSeparator(',');
 			OptionBuilder.withArgName(Messages.getString("cli.argname.params")); //$NON-NLS-1$
-			OptionBuilder
-					.withDescription(Messages.getString("cli.info.params")); //$NON-NLS-1$
+			OptionBuilder.withDescription(Messages.getString("cli.info.params")); //$NON-NLS-1$
 			OptionBuilder.withLongOpt("params"); //$NON-NLS-1$
 			options.addOption(OptionBuilder.create("p")); //$NON-NLS-1$
 
 			CommandLineParser parser = new PosixParser();
 			return parser.parse(options, args, false);
 		} catch (ParseException e) {
-			System.err
-					.println(Messages.getString("cli.error.parsingFailed") + e.getMessage()); //$NON-NLS-1$
+			System.err.println(Messages.getString("cli.error.parsingFailed") + e.getMessage()); //$NON-NLS-1$
 			return null;
 		}
 	}
 
 	private void printError(String message) {
-		String str = cmdName
-				+ ": " + message + "\n" + Messages.getString("cli.error.tryhelp", cmdName);//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String str = cmdName + ": " + message + "\n" + Messages.getString("cli.error.tryhelp", cmdName);//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		System.out.println(str);
 
