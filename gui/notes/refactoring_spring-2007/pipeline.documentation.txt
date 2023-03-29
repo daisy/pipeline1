@@ -1,0 +1,19 @@
+Spring 2007 refactoring: end user documentation access.
+
+This email describes a refactoring of programmatic access to script and transformer documentation.
+The releases of the Pipeline so far have deemphasized end user documentation. The primary focus of the spring efforts is to remedy this, both through changes in the core and transformers, and through a revamped GUI in RCP (see www.sf.net/projects/daisymfcgui).
+
+Followups and status reports will be made in this thread.
+Responsible for implementation: Markus, Romain
+Implementation in core should be done by: end March. This is for the scheme. Actual document authoring to be done by various people by early May.
+In addition, Michael Zacherle has volunteered to help out with overarching documentation, a work that needs to be synchronized with the changes resulting
+from this refactoring item.
+
+1. Problems   
+  End user documentation emphasis should be on script, not transformer, level. This since the script is what is actually exposed and run.
+  For advanced users, there is no ability to access individual transformer documentation (transformerDir/doc.html) within current GUI.
+
+2. Solution: 
+  Require a separate script documentaton file alongside script file. Solved either through a naming convention, or through a URL in the script file.  
+  The RCP GUI exposes script documentation upfront in a static view (for browsing and learning) and also gives access to this doc during job creation. 
+  The RCP GUI also exposes (for advanced users, less upfront) a list of links to individual transformer doc.htmls  

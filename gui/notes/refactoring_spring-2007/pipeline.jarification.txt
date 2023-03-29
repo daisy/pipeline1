@@ -1,0 +1,18 @@
+Spring 2007 refactoring: jarification
+This email describes a refactoring regarding jarification of core and transformers.
+Followups and status reports will be made in this thread.
+Responsible for implementation: Markus, with help from Linus
+Implementation should be done by: end March. 
+
+1. Problem 	
+The server usecase (such as in Tomcat) needs jarness in order to be manageable. 
+RCP inclusion is very much geared to expect everything to be Jars.
+
+2. Solution 
+  The core must be jarifiable. 
+  Transformers should be jarifiable; however we must expect a slow transition of existing transformers.
+  Its up to the creator of a server service (or any other context requiring jarness) to make sure all scripts used only use jarified transformers. 
+  Also, we need to create a sister method to .getTransformerDirectory() which is something along the lines of InputStream .getTransformerResource(identifier)
+  
+  Note - org.daisy.util is more or less completely jarifiable already, and there is a fork of the core which is jarifiable too. 
+  The major headache (and work) here lies at the transformer level.

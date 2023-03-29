@@ -1,0 +1,145 @@
+BrailleNet / DAISY meeting - Paris, October 2007
+================================================
+%CSS: notes.css 
+%Date: 2007-08-20 
+% Attendees: Dominique Burger (BrailleNet / INSERM), Catherine Desbuquois (BrailleNet), Bruno Marmol (BrailleNet / INRIA), Romain Deltour (DAISY) 
+%Scribe: Romain Deltour 
+
+
+The purpose of this meeting was to investigate on the feasibility of the integration of the DAISY Pipeline in the production chain of BrailleNet.
+
+
+## The "Hélène" server
+
+- 2 different services:
+	- *Serveur Hélène*: to deliver content to transcripters / Braille producers
+	- *Bibliothèque Hélène*: a library service for users of an "IRIS" Braille refreshable display
+- simple user and admin interface (html + forms for the admin interface)
+- each book is represented by a *book note* that contains:
+	- the metadata
+	- a preview of the book structure (in html)
+	- a list of the several formats available
+
+
+## The production chain
+
+### 1. Initial import
+
+1. Receive the original file from publishers (usually in PDF)
+2. Print ToC for later use in the re-structuring phase
+3. Export to RTF using either:
+	- Adobe Reader's export feature
+	- [ABBYY Fine Reader](http://finereader.abbyy.com/) conversion tools (recommended, better conversion)
+
+In parallel, a *book note* is first created on the server using the admin web interface (html form).
+The original PDF is published on the server.
+
+### 2. Structuring
+
+The RTF created in phase 1 is then re-structured from scratch, using MS Word 2007. Default styles are used to map the original structure. The following structuring elements are processed:
+
+- headings
+- tables
+- footnotes
+- links
+- sometimes images (cut & paste) + comment
+- custom comments
+
+Note that math formulas are not processed (yet).
+Page breaks were supported but it seems it no longer works.
+
+A macro (for MS Word) is available to constrain the style of the doc (and later in phase 3 to connect to the server).
+Problems of maintenance occurred (compatibility between Word versions).
+
+=> Use the Pipeline to modernize the Word (or ODF?) to DTBook conversion?
+
+### 3. Conversion to XML
+
+1. The custom macro connects to the server to link the RTF document with the book note.
+2. The structured DTBook-ready RTF is sent to the server
+3. The conversion to DTBook is launched manually from the web admin interface.
+4. Links can then be created to make other formats available with on-the-fly conversion. Available formats are:
+	- single file HTML (for use in a browser)
+	- multiple files HTML (for use with refreshable brailled displays)
+	- large print PDF
+	- Braille-adapted PDF
+
+The RTF to DTBook conversion uses [upCast](http://www.infinity-loop.de/products/upcast/):
+
+- commercial (produced by a German company, Infinity Loop)
+- causes some maintenance issues
+
+The DTBook to other format conversions use home made converters (using mostly XSLT).
+
+Note that the conversion to PDF used  [Apache FOP](http://xmlgraphics.apache.org/fop/) (Java-based XSL-FO to PDF) but should switch to [Prince XML](http://www.princexml.com/) (better PDF accessibility features).
+
+
+
+## DAISY Pipeline demo
+
+A short demo of the Pipeline was made: how to browse the documentation, how to create a Job, how to run a Job, how to analyze the messages.
+
+The Pipeline was then tested with some content produced by BrailleNet:
+
+- Validation of a DTBook file produced by BrailleNet
+	- almost OK :)
+	- declaration of the MathML namespace raises a DTD validation error
+		- the MathML namespace is not used 
+- RTF (formatted with the BrailleNet macro) to DTBook
+	- OK
+	- The book title is level 1, the remaining structure starts with level 2.
+	Note that BrailleNet didn't set the title as level 1, the whole structure is moved one level down.
+	- xml:lang value is an empty string, causing validation problems
+- RTF (produced with Word 2007, no macro) to DTBook
+	- same issues as with previous test
+- WordML to DTBook
+	- had to tell Word 2007 to save as Word 2003 XML
+	- images were not extracted
+- DTBook (produced by BrailleNet) to HTML
+	- didn't work. The HTML tags seem to have not been output
+	- [TODO] report a bug and investigate.
+
+### Questions/issues raised during the demo
+
+- Is the RTF to DTBook stable enough for production ?
+- And WordML to DTBook ? ODF to DTBook ?
+- Is there an OpenXML (or whatever it's called) transformer in development ? i.e. Will WordML to DTBook be upgraded to Word 2007 format ?
+- What can be done to make images extracted by the WordML to DTBook transformer ?
+	- the Pipeline doc describes a step-by-step pre-processing but it seems to be targeting Word 2003. 
+	- Word 2007 does not use an application menu but a ribbon (a mix between a menu and a toolbar), and the pre-processing couldn't be reproduced.
+
+
+## Potential use of the Pipeline by BrailleNet
+
+BrailleNet could benefit from using the Pipeline:
+
+- free open source software
+- supported / maintained software (maintenance of the current macro / tools can be difficult by lack of developers)
+- rely on the user / developer community
+- quality insurance (validation)
+
+The Pipeline can definitely be used for RTF to DTBook conversion and for validation (replacement of the macro + upCast solution).
+It can also potentially be used for on-the-fly conversion of the master DTBook to other formats (higher development cost).
+
+Two different issues at stake:
+
+- integrating the Pipeline to the BrailleNet server-based conversion chain
+- adapting the Pipeline transformers to BrailleNet needs
+
+### Integrating the Pipeline to the server tool chain
+
+The BrailleNet servers are implemented in Perl. There's no existing Java web container.
+
+The call to the Pipeline would be made internally, using the command line version. No need to have a full-blown server-side Pipeline with a servlet container.
+
+The potential move to OSGi (component framework) was raised. It's not a big deal for BrailleNet, the dynamic behavior is not a top priority requirement (low maintenance rate).
+
+### Using the Pipeline for BrailleNet conversions
+
+BrailleNet would need a ToC generator (for HTML generation). It would be easy to create one using existing XSLT-based ToC generators, and to write a script that optionally calls this task in the HTML converter.
+
+BrailleNet would need some custom options in the RTF to DTBook for creating metadata that could be used to link the produced DTBook to the book note on the server.
+
+BrailleNet could possibly contribute some XLST used in their current conversions.
+
+The Pipeline could potentially be used for all the conversions (including PDF generation). 

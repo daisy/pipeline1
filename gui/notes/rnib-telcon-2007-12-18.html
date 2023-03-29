@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/>
+    <title>RNIB/Pipeline TelCon - December 18, 2007</title>
+    <link rel="stylesheet" type="text/css" href="notes.css "/>
+    <meta name="Date" content="2007-12-18 "/>
+    <meta name="Attendees" content="Ian Greenow (RNIB), Stephen Hibberd ? or Mark Frodsham ?, Romain Deltour (DAISY) "/>
+    <meta name="Scribe" content="Romain Deltour"/>
+  </head>
+  <body>
+    <h1 id="rnibpipelinetelcon-december182007">RNIB/Pipeline TelCon - December 18, 2007</h1>
+    <div class="summary">
+      <p><em>Date</em>: 2007-12-18 <br/><em>Attendees</em>: Ian Greenow (RNIB), Stephen Hibberd ? or Mark Frodsham ?, Romain Deltour (DAISY) <br/><em>Scribe</em>: Romain Deltour<br/></p>
+    </div>
+    <div id="toc">
+      <h2>Table of Contents</h2>
+      <ul>
+        <li>
+          <a href="#rnibforenote-agenda">RNIB Forenote - Agenda</a>
+        </li>
+        <li>
+          <a href="#dedicatedguiviability">Dedicated GUI viability</a>
+        </li>
+        <li>
+          <a href="#developersetup">Developer Setup</a>
+        </li>
+        <li>
+          <a href="#todolist">TODO List</a>
+        </li>
+      </ul>
+    </div>
+    <h2 id="rnibforenote-agenda">RNIB Forenote - Agenda</h2>
+    <p>To quote the Deployment Overview document, there is a section which reads:</p>
+    <blockquote>
+      <p>In some circumstances, it is desirable to provide distributions which limit the functionality of the Pipeline for a certain use case, and which provide a &gt;user interface tailored for that limited functionality.</p>
+      <p>The Pipeline can be made to accomplish this by doing the following:</p>
+      <ul>
+        <li>Provide a target subset build, which simply "filters out" any Transformers and Scripts that are not needed. This is achieved by (cloning and) &gt;manipulating the Pipeline "makefile" (which is an Ant script). </li>
+        <li>Provide a specialized UI, either by customizing any of the UIs mentioned above, or by writing a separate standalone UI."</li>
+      </ul>
+    </blockquote>
+    <p>We would be interested in finding out more information on the last 2 points, customizing the pipeline GUI to meet specific requirements.</p>
+    <p>Mark has summarised below a typical example of how we would currently produce accessible media:</p>
+    <p>We have developed a .NET application that transforms a raw fixed-width data file, which we receive on a daily basis from our client, into a set of embossable braille (plain text), Large Print (MS-Word) and Audio (DAISY) files. This data file contains bank statement details for many customers and the application's GUI is VERY simple  -- one-click!</p>
+    <p>If we just concentrate on Audio output for now, we would like to know how we could replace our .NET application with the DAISY Pipeline. In particular the following are causing us some concern:-</p>
+    <ol>
+      <li>We do not want to present a command line interface to our operators.</li>
+      <li>The GUI that we have seen so far is very complex</li>
+    </ol>
+    <h2 id="dedicatedguiviability">Dedicated GUI viability</h2>
+    <p>Ian asks what are the solutions for extending the GUI.</p>
+    <ol>
+      <li>Use .Net for the GUI
+<ol><li>Pipeline CLI as an underlying batch process
+<ul><li>pros: easy integration</li><li>cons: not flexible</li></ul></li><li>call to the Pipeline API via Java/C# bridge
+<ul><li>pros: full access to the Pipeline API</li><li>cons: Java/C# bridge might be clumsy ?</li></ul></li></ol></li>
+      <li>Use of RCP
+<ul><li>pros: single technology (pure-java), full access to the Pipeline API, rely on existing code</li><li>cons: need Java skills</li></ul></li>
+    </ol>
+    <p>RNIB has no Java skills. OTOH using RCP is probably the best solution for full integration. 
+Rom: a minimalistic GUI wouldn't represent a huge effort (rough estimate for a beta: 2 weeks work with RCP skills).</p>
+    <p>Right now, the best is to create a new GUI is to checkout the Pipeline GUI code and start from it by pruning useless parts.</p>
+    <p>The idea is to go to even more modularization/componentization. Once done, pick up the plugin/bundle you need and host only the custom code on RNIB's side.</p>
+    <h2 id="developersetup">Developer Setup</h2>
+    <p>Many questions on the setup requirements:</p>
+    <ul>
+      <li>user access: anonymous checkout / login required to commit </li>
+      <li>2 different projects (daisymfg + daisymfcgui)</li>
+      <li>RCP IDE required for the GUI (Eclipse, open source, eclipse.org)</li>
+      <li>code maintenance / privacy (would RNIB need to host a duplicated code repo ?)</li>
+    </ul>
+    <p>Custom build:</p>
+    <p>small explanation on the Ant build script. Note: ant is used for the Pipeline Core only. Pipeline GUI requires Eclipse PDE tooling.</p>
+    <h2 id="todolist">TODO List</h2>
+    <ul>
+      <li>@Rom: send link to API doc (Javadoc)</li>
+      <li>@Rom: send link to developer setup doc when it's ready</li>
+      <li>@Rom: write doc on how to build from ant</li>
+      <li>@Rom: write doc on how to customize the ant build</li>
+      <li>@RNIB: fetch the code and investigate</li>
+      <li>@Markus: is there an ongoing external project for a dedicated gui (or Pipeline integration in c#) ?</li>
+      <li>@Markus: what can DAISY do to help: refactor, provide some code ? =&gt; very interesting proof of concept of the RCP stack.</li>
+    </ul>
+  </body>
+</html>

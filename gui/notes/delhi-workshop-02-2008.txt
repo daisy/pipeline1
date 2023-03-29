@@ -1,0 +1,150 @@
+DAISY Pipeline Workshop - Feb 2008, Delhi
+=========================================
+%CSS: notes.css
+%Date: 6-9 Feb 2008
+%Attendees: Avneesh & Romain (+Dipendra)
+%modified: 2008-02-10
+
+Agenda
+------
+
+1. Hindi TTS integration in the Narrator
+2. Hindi Localization
+	- Pipeline Core
+	- Pipeline GUI
+	- Eclipse RCP ?
+3. Plans for Pipeline usage in NAB
+
+Hindi TTS integration
+---------------------
+
+### Problem 
+Currently, the TTS engine is called via Runtime.exec(...), which invokes a "console" application on Windows.
+The trouble is "console" applications are UTF-8 only, and cannot use UTF-16 (which is required by the Hindi TTS).
+
+### Current Workaround 
+- the "console" .exe called in the TTSAdapter outputs an intermediary text file
+- a “Windows Forms" application is then called to extract content from this text file
+- the content is moved to UTF-16 and passed to the TTS engine
+
+R: what about the performance impact of this intermediary text file ?  
+A: about 10%¨  
+R: another approach would be to use .Net / Java bridge
+
+### Java / .Net bridge
+
+- JNI: Java Native Interface.   
+	C/C++ code to bridge native code to Java.  
+	From Wikipedia: "The JNI is not trivial and requires a considerable effort to learn" 
+- JNA: Java Native Access  
+	easy access to native shared libraries (DLLs on Windows) without writing anything but Java code  
+	used by successful java projects
+- Jacob: Java / COM bridge  
+	old project but revived on sourceforge, poor documentation though.
+- com4j  
+	new promising project (hobby project from a Sun guy)
+
+JNA (which seem to be the easier to use), is only for c-style libraries and was not made for wrapping COM interfaces.
+
+Two solutions are possible:
+
+1. Wrap the useful SAPI methods in a simple C/C++ library called through JNA
+2. Use a proper Java/COM bridge (Jacob or com4j)
+
+### MS SAPI5 in the Pipeline with com4j
+
+We successfully generated wrappers for COM interfaces of SAPI5 (a build ant script is available to re-generated the wrappers).
+
+The SimpleCommandLineTTS.exe c#-based command line tool was rewritten as a Java class calling the COM wrappers.
+
+A Narrator script was successfully executed from the PipelineTestDriver.
+
+Using the same wrappers, we can now enable a finer-grained configuration of SAPI-compliant TTS.
+
+### Remaining issues
+
+- [DONE] test it with the Pipeline GUI / OSGi runtime  
+  (a bad linkage error prevented me to do that... it should come from my Eclipse/Java setup though.)
+- [TODO] refine the build scripts to include the com bridge for windows only
+
+Localization
+------------
+
+### Resources
+
+- [How to Internationalize your Eclipse Plug-In](http://www.eclipse.org/articles/Article-Internationalization/how2I18n.html#step5)
+- [How to Test Your Internationalized Eclipse Plug-In](http://www.eclipse.org/articles/Article-TVT/how2TestI18n.html "How to Test your Internationalized Eclipse Plug-In")
+
+### Testing list
+
+- Failure to use locale-sensitive functions
+- New code problems introduced by the translation
+- Hardcoded strings
+- Text expansion problems
+- Inadvertently translated strings
+- Font changes, encoding/codepage problems
+- Out-of-context translation errors
+
+### Process
+
+Pipeline core: simply put the messages_hi.properties in the code.
+
+- at some point this will need some customization of the build script to strip out unwanted translation files.
+- may deliver lang packs as Update ZIP ?
+
+Pipeline GUI: define NL fragments à la RCP
+
+- lang packs are plugin fragments
+- simply copy it in the plugin dir
+- write a GUI feature or wait for p2 / pipeline-osgi ?
+
+### Remaining Issues 
+
+- [DONE] mnemonics: work well with Hindi script
+- [DONE] brands (DAISY Pipeline, Python): not to be translated
+- [PROGRESS] P2 Eclipse messages
+- [TODO] P3 Eclipse messages
+- [DONE] localize Script categorization (uses directory names)
+- [TODO] translate Scripts name ?
+- [TODO] translate Documentation ?
+- [TODO] Refactor I18n class ? => there's duplicate boiler-plate code
+- [DONE] hard coded messages in pipeline core
+- [TODO] hard coded messages in transformers
+- [TODO] define a deployment strategy
+	- for RCP: as plugin fragements
+	- use the update feature ?
+	- do separate localized builds ?
+- [TODO] write a GUI command / preference to set the locale
+
+Plans for Pipeline usage in India / NAB
+---------------------------------------
+
+### MP3 file set to DAISY 2.02 DTB 
+
+This conversion would be required as a companion product to the flash-based, low-cost DAISY player.
+
+Idea: a script chaining 3 transformers:
+
+- MP3 file set to playlist (to be developed, probably pick up some code from DTB to Playlist converter)
+- Playlist to DAISY Z (work in progress)
+- Z to DAISY 2.02 (done and stable)
+
+A minimalist, dedicated GUI would be required, probably in .Net (it better fits the developers skills, better accessibility features).
+
+### Simplified app for full-text full-audio production 
+
+- Basically a dedicated GUI for the Narrator.
+- Minimalist GUI approach. Wizards are a pattern easier to understand for VI users.
+	- page 1: get an input word (or dtbook ?) document
+	- page 2: set an output folder
+	- page 3 (optional?): configure the TTS / voice
+- may be an RCP app, to reuse / proof the existing GUI model
+
+### TTS configuration 
+
+A nice addition would be the possibility to configure the voice used in the TTS from the GUI.  
+
+- The use of the SAPI5 bridge ease this functionality on Windows.
+- Greg Kearney has a script that list available voices on Mac.
+
+Dipendra also thinks about a "Universal SAPI Adaptor" (TM), that would facilitate plugging-in non-SAPI compliant TTS to the Pipeline, even from the GUI. Nice idea but not realistic from the technical standpoint .

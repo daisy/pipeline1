@@ -1,0 +1,147 @@
+Accessibility Issues in the DAISY Pipeline
+==========================================
+%CSS: notes.css  
+%Author: Romain Deltour  
+%Date:  2007-08-20
+
+_The following document lists the current accessibility issues of the DAISY Pipeline GUI_.
+
+_The GUI has been tested on Windows XP with both JAWS (by Avneesh and Dipendra) and Windows Eyes (by George)_.
+
+## General comments
+
+The Pipeline GUI is __in general accessible__, yet it's sometimes a bit awkward and is __far from providing a native feel and perfect usability to screen reader users__.
+
+The main source of problems are __custom widgets__ coming from the RCP framework, such as the custom tab controls for views and drop down buttons in toolbars. The integration of the heavy weight browser widget sometimes create some funky issues as well. The standard, simple native widget don't seem to be problematic though.
+
+Paradoxically, the sources of inconveniences  for screen reader users are usually the exact features that aim at improving the efficiency of sighted users (e.g. customizable perspectives, complex custom widgets). While sighted users have access to the information provided by several views at once, screen reader users are __focused on a single view at once__, and sometimes lack the information provided by other views. The overall usability should be greatly improved by:
+
+- improving the navigability between views
+- make the scope of the information obvious (i.e. without having to switch to another view), this can be achieved by duplicating the information hold by a view to any other related views (e.g. the message view should display some info on which job each message relates to)
+
+Note: some issues are fixed for JAWS by the scripts developed by Avneesh. These scripts are written for JAWS 7.0 and should be compatible with newer versions
+
+### Views and Perspectives
+
+View
+:	a modular piece of the GUI with dedicated functionality (e.g. in the Pipeline GUI the *Jobs* view displays the jobs queue and has edition functionality,  while the *Documentation* view consists in a whole documentation browser with table of content and html rendering). 
+
+Perspective
+:	defines the set and layout of views in the application window.
+
+In a perspective, a view might appear by itself or stacked with other views in a tabbed area. A user can change the layout of a perspective by opening and closing views and by docking them in different positions in the Workbench window.
+
+In RPC, each view is embedded in a custom tab control: this tab control displays the view title (and a "close view" button), helps the sighted users to directly identify the view, and allows to select the view when it is stacked amongst other views in a tabbed area.
+
+The trouble is __it's not clear for screen reader how to navigate between views__. Cycling through tab controls only cycle through the views stacked in the same tabbed area. Additionally, the key binding used to navigate between the views (Ctrl+F7) is __based on a custom widget__ showing a pop-up list of the existing views and __only cycles through the 2 most recently used views__.
+
+Action items:
+
+- [TODO] Write a doc targeting screen reader users and describing the views and perspectives concepts, the reason why its used and how to navigate between views (see [request #1777472][1777472])
+- [TODO] Fix the *switch to next view* (Ctrl+F7) action: it should cycle through all the existing views (see [bug #1777477][1777477])
+- [DONE] Add a way to assign a keyboard shortcut per view for direct navigation (already possible in the *keys* preference pane)
+
+## Detailed GUI walkthrough
+
+### Common
+
+- [TODO] rename the startup.jar launcher to something like 'daisy-pipeline.jar' (see [request #1752454][1752454]).
+	- the name of the launcher is used by some screen readers (e.g. JAWS) to persist application-specific settings (**TO BE CONFIRMED**)
+	- the launcher mechanism has changed in Eclipse 3.3 (aka Europa) which will be the target platform of the next Pipeline version, the launcher will use a dedicated name
+
+### Documentation view 
+
+- When using Ctrl+TAB to cycle through the documentation tabs (*Help*, *Scripts* and *Transformers* table of contents), the tab title is not spoken by the screen reader, making it non-obvious to the user that the focus changed and what the new ToC is.
+	- this is fixed by JAWS scripts
+	- there is currently no workaround for Window Eyes
+
+	[TODO] Explicitly call the Accessibility API to speak the ToC title after a Ctrl+TAB access to a ToC (see [bug #1777483][1777483]) 
+
+- [TODO] Fix the browser refresh after a Ctrl+TAB access to a ToC (see [bug #1751023][1751023])
+	- After using Ctrl+TAB to cycle through the documentation tabs, the browser is no longer refreshed when a new toc item is selected.
+	- A workaround is to navigate between ToC by tabbing through the tab controls:
+		- SHIFT+TAB : move the focus from the ToC pane to the corresponding tab control
+		- LEFT/RIGHT ARROW : navigate between the tab controls (i.e. the ToC headers)
+		- TAB: move the focus to the newly selected ToC pane
+
+- [TODO] Directly set the focus to the browser widget after moving to the doc pane with F6 (see [bug #1751017][1751017])
+	- currently an additional TAB press is required
+
+
+### Jobs View
+
+- [TODO] assign a default key binding (e.g. SHIFT+ARROW) to the move up/down/top/bottom actions (see [request #1777487][1777487])
+- The screen reader does not speak the parameter children of a job. The custom code written to use smaller fonts may override the accessibility calls.
+
+	[TODO] investigate on where the accessibility info is set and fix the issue (see [bug #1752458][1752458])
+
+### Progress View
+
+- [TODO] set the accessibility info on the header widget (screen reader currently say "custom control") (see [bug #1777494][1777494])
+- [TODO] change the behavior of the left/down arrows in the task list: it shouldn't cycle (see [bug #1777497][1777497])
+- [TODO] add a textual information on the status of each task (see [request #1777498][1777498])
+	- currently an icon is used for sighted users
+	- the icon should have accessible tooltip, but invoking the tooltip is not the natural way to show the info to screen reader users
+	- __the GUI must be particularly explicit when a job/task failed__
+	- percentage of completion should be available as textual info
+- [TODO] improve the refresh of the progress view (see [request #1777504][1777504])
+	- it's not updated when a parameter is selected in the job view
+	- when no job is selected, it should show the progress of the most recently run job by default
+
+
+### Messages View
+
+- [TODO] add a hint/info on which task a message refers to (see [request #1777506][1777506])
+	- currently it's possible to group the messages by Job
+	- this information is not accessible otherwise
+
+### Jobs Wizard
+
+
+- the wizard banner does not seem to always be spoken to screen reader users **[TO BE CONFIRMED]**
+- [TODO] Investigate on the best way to pass the parameter information to the screen reader users (using the tooltips is not the most natural way) (see [request #1777521][1777521])
+- the browser widget in the help pane of the wizard steal the focus: up/down keys do not read the content but scrolls the browser content. This is not top priority though, as the help files are already available in the documentation perspective.
+
+	[TODO] Investigate and report the bug to Eclipse (see [eclipse bug #][])
+- it seems that "End Help" is spoken when the *help* link is activate.
+ 
+	[TODO] Investigate and report the bug to Eclipse (see [eclipse bug #][])
+
+### Preferences
+
+- [TODO] The *keys* preference dialog (coming from RCP) is poorly designed, it should be replaced by the new 3.3 dialog (see [request #1777526][1777526]).
+
+## Top priority requirements 
+
+1. Improve the way to navigate between the views (fix the *show next/previous view* action)
+- add more textual information in the progress view
+	- status: complete / failed
+	- percentage of completion
+- fix the usability annoyances (e.g. in the documentation view)
+
+## List of RPC/SWT problematic widgets 
+
+- Browser:
+	- steal the focus in the wizard, doesn't seem to be problematic in the documentation view though.
+- Drop-down buttons for the view menu:
+	- spoken as "custom control"
+	- there's a keyboard shortcut to access it, it's a bit hidden in the menu bar though
+	- [DONE] try to manually set the accessible information, and report to Eclipse anyway (see [eclipse bug #204657][204657])
+- *to be continued...*
+
+[204657]: http://bugs.eclipse.org/bugs/show_bug.cgi?id=204657
+[1751017]:  http://sourceforge.net/tracker/index.php?func=detail&aid=1751017&group_id=162777&atid=951926
+[1751023]:  http://sourceforge.net/tracker/index.php?func=detail&aid=1751023&group_id=162777&atid=951926
+[1752458]:  http://sourceforge.net/tracker/index.php?func=detail&aid=1752458&group_id=162777&atid=951926
+[1777472]:  http://sourceforge.net/tracker/index.php?func=detail&aid=1777472&group_id=162777&atid=951927
+[1777477]: http://sourceforge.net/tracker/index.php?func=detail&aid=1777477&group_id=162777&atid=951926
+[1777483]: http://sourceforge.net/tracker/index.php?func=detail&aid=1777483&group_id=162777&atid=951926
+[1777487]: http://sourceforge.net/tracker/index.php?func=detail&aid=1777487&group_id=162777&atid=951927
+[1777494]: http://sourceforge.net/tracker/index.php?func=detail&aid=1777494&group_id=162777&atid=951926
+[1777497]: http://sourceforge.net/tracker/index.php?func=detail&aid=1777497&group_id=162777&atid=951926
+[1777498]: http://sourceforge.net/tracker/index.php?func=detail&aid=1777498&group_id=162777&atid=951927
+[1777504]: http://sourceforge.net/tracker/index.php?func=detail&aid=1777504&group_id=162777&atid=951927
+[1777506]: http://sourceforge.net/tracker/index.php?func=detail&aid=1777506&group_id=162777&atid=951927
+[1752454]: http://sourceforge.net/tracker/index.php?func=detail&aid=1752454&group_id=162777&atid=951927
+[1777521]: http://sourceforge.net/tracker/index.php?func=detail&aid=1777521&group_id=162777&atid=951927
+[1777526]: http://sourceforge.net/tracker/index.php?func=detail&aid=1777526&group_id=162777&atid=951927

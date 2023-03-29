@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=20080502
+Type=Application
+Name=DAISY Pipeline
+Comment=DAISY tool for DTB-related pipelined transformations.
+Exec=/opt/daisy-pipeline/DAISY\ Pipeline
+Icon=/opt/daisy-pipeline/icon.xpm
+Categories=Office;
