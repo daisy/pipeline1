@@ -38,8 +38,7 @@ public class Creator {
 
     /**
      * Constructor.
-     * 
-     * @param loader a TransformerHandlerLoader
+     *
      */
     public Creator() {
     }

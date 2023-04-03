@@ -7,9 +7,17 @@ import com4j.*;
  */
 @IID("{BE7A9CCE-5F9E-11D2-960F-00C04F8EE628}")
 public interface ISpEventSource extends se_tpb_speechgen2.external.win.sapi5.ISpNotifySource {
-    @VTID(10)
-    void setInterest(
-        long ullEventInterest,
-        long ullQueuedInterest);
+  // Methods:
+  /**
+   * @param ullEventInterest Mandatory long parameter.
+   * @param ullQueuedInterest Mandatory long parameter.
+   */
 
-    }
+  @VTID(10)
+  void setInterest(
+    long ullEventInterest,
+    long ullQueuedInterest);
+
+
+    // Properties:
+  }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IFPkgDescriptionDeleteWarning</key>
+	<string></string>
+	<key>IFPkgDescriptionDescription</key>
+	<string>The ImageMagick image manipulation tools. This package only works on Mac OS X Panther and does not include the GUI tools like "display", only the command line utilities. It also includes the PerlMagick Perl modules.</string>
+	<key>IFPkgDescriptionTitle</key>
+	<string>ImageMagick</string>
+	<key>IFPkgDescriptionVersion</key>
+	<string>6.1.7</string>
+</dict>
+</plist>

@@ -101,7 +101,6 @@ public class SmilBuilder {
 	 * @param destination URL of the output file
 	 * @throws IOException
 	 * @throws XMLStreamException
-	 * @throws TransformerRunException
 	 */
 	public void render(URL destination) throws IOException, XMLStreamException {
 		

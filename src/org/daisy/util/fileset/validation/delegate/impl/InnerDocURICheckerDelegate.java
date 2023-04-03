@@ -75,7 +75,6 @@ public class InnerDocURICheckerDelegate extends ValidatorDelegateImplAbstract {
 	 * <p>This primitive check will only report an error if a fragment exists in the URI, and this fragment does not resolve. Subclasses may override and refine the check.</p>
 	 * @param source The FilesetFile in which the URI occurs
 	 * @param uriString The URI value as it appears unresolved in the source
-	 * @param destination The FilesetFile to which the URI path refers
 	 * @param fragment The fragment identifier of the URI, may be null
 	 */
 	protected void checkTarget(XmlFile source, String uriString, String fragment) {		

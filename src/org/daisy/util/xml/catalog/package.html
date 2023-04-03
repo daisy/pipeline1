@@ -23,7 +23,7 @@
   <p>
   Use example within a SAX context:
   </p>
-  <code><pre>
+  <code>
    import org.daisy.util.xml.catalog.CatalogEntityResolver;
    import org.daisy.util.xml.catalog.CatalogException;
    [...]
@@ -36,7 +36,7 @@
      }
    }
    [...]
-  </pre></code>
+  </code>
   
   <p>
   The CatalogException is subclassed in recoverable and irrecoverable
@@ -44,7 +44,7 @@
   using for example
   </p>
   
-  <code><pre>
+  <code>
      } catch (CatalogException ce) {
        if (ce instanceof CatalogExceptionRecoverable) {
          System.err.println(ce.getMessage());                      
@@ -52,18 +52,18 @@
          throw new IOException(ce.getMessage());
        }
      }
-  </pre></code>
+  </code>
   
   <p>
   Use example within a (JAXP) DOM context:
   </p>
-  <code><pre>
+  <code>
     [...]
     builder = factory.newDocumentBuilder();
     builder.setEntityResolver(CatalogEntityResolver.getInstance());  
     Document doc = builder.parse(&quot;E:/file.xml&quot;);
     [...]
-  </pre></code>
+  </code>
   
 
 

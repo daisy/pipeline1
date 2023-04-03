@@ -148,7 +148,7 @@ public class WavConcatWorker implements Runnable {
 				
 		String cmd[] = {
 				lameCommand,
-				"--quiet", "-h", "-m", "m", "-a", "-cbr", "-b", "32", "--resample", "22.50",
+				"--quiet", "-h", "-m", "m", "-a", "--cbr", "-b", "32", "--resample", "22.50",
 				inputFilename,
 				outputFilename
 				};

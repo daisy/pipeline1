@@ -146,9 +146,9 @@ public class SmilClock {
     	this.msecValue = new ClipTime();
     }
     
-    /**
-     * @param msec Time value in milliseconds
-     */
+//    /**
+//     * @param msec Time value in milliseconds
+//     */
 //    public SmilClock(long msec) {
 //        this.msecValue = new ClipTime(msec);
 //    }

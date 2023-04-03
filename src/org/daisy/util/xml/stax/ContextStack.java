@@ -123,7 +123,7 @@ public class ContextStack {
     }
             
     /**
-     * @return the full context stack [Stack&lt;ContextInfo&gt];
+     * @return the full context stack [Stack&lt;ContextInfo&gt;];
      */
 	public Stack<ContextInfo> getContext() {
         Stack<ContextInfo> result = new Stack<ContextInfo>();
@@ -135,7 +135,7 @@ public class ContextStack {
     }
     
     /**
-     * @return the parent context stack [Stack&lt;ContextInfo&gt];
+     * @return the parent context stack [Stack&lt;ContextInfo&gt;];
      */
     public Stack<ContextInfo> getParentContext() {
         Stack<ContextInfo> result = this.getContext();

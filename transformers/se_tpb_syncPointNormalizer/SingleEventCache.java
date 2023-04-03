@@ -22,12 +22,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 
 /**
- * An {@link se_tpb_mixedContentNormalizer.EventWriterCache} that caches one event before writing it
+ * An {@link se_tpb_syncPointNormalizer.EventWriterCache} that caches one event before writing it
  * to the {@link javax.xml.stream.XMLEventWriter}. If a start element and an
  * end element immediately follows each other, and both events have the
  * <code>isSpan</code> parameter set to true, the events are ignored.
  * @author Linus Ericson
- * @see se_tpb_mixedContentNormalizer.DoubleEventCache
+ * @see se_tpb_syncPointNormalizer.DoubleEventCache
  */
 class SingleEventCache extends EventWriterCache {
 

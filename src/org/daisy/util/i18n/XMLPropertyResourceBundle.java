@@ -39,7 +39,7 @@ import java.util.Set;
  * 			classLoaders on jars that are not on the classpath.</li>
  * </ol>
  * <p>To enjoy the features above, users need to create ResourceBundle instances using the <code>getBundle(String, 
- * Locale, ClassLoader)</code> or <code>getBundle(URL, Locale) methods.</p> 
+ * Locale, ClassLoader)</code> or <code>getBundle(URL, Locale)</code> methods.</p>
  * @author Markus Gylling
  */
 

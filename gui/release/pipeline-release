@@ -1,0 +1,195 @@
+#!/bin/sh
+
+# Usage
+USAGE="\
+Release and pack the Pipeline GUI.\n\
+Usage: `basename $0` [options] [final-dir export-dir install-dir]\n\
+Where:\n\
+	- final-dir is the directory where you want to output the installers\n\
+	- export-dir is the directory where you output Eclipse products\n\
+	-isntall-dir is the directory containing the pipeline installer scripts\n\
+Options:\n\
+    -h : print this help\n\
+    -w : create Windows installer\n\
+    -W : create Windows WPF installer\n\
+    -l : create Linux Archive (tar.gz)\n\
+    -m : create MacOSX Disk Image\n\
+    -q : quiet\n\
+    -V : verbose\n\
+    -v VER : set the version to VER"
+
+# Parse the Options
+while getopts "hwWlmqVv:" OPTION
+do
+  case $OPTION in
+    h) echo -e $USAGE
+       exit 0;;
+    w) WIN=true;;
+    W) WPF=true;;
+    l) LINUX=true;;
+    m) MAC=true;;
+    v) VERSION="$OPTARG";;
+    q) QUIET=true;;
+    V) VERBOSE=true;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+# VARS
+OLD_DIR=`pwd`
+FINAL_DIR=${1:-/Users/Romain/Desktop}
+EXPORT_DIR=${2:-/Users/Romain/Public/build}
+INSTALL_SRC_DIR=${3:-/Users/Romain/Documents/Work/pipeline/release}
+VERSION=${VERSION:-`date +%Y%m%d`}
+
+# Check OS flags
+if [[ -z $WIN$LINUX$MAC$WPF ]]
+then
+	echo -e $USAGE
+    exit 0
+fi
+
+# Windows build	
+if [[ ! -z $WIN ]]
+then
+	if [[ -z $QUIET ]]; then echo "Creating Windows release..."; fi
+	cd "$EXPORT_DIR"
+	cd win32.win32.x86
+	cd `ls`
+	cp "$INSTALL_SRC_DIR/windows/pipeline-setup.nsi" .
+	cp -R "$INSTALL_SRC_DIR/windows/ext" .
+	if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
+	makensis pipeline-setup.nsi | tee "$FINAL_DIR/nsis.log"
+	if [[ -z $VERBOSE ]]; then exec 1>&3; fi
+	mv setup.exe "$FINAL_DIR/PipelineGUI-${VERSION}-Win.exe"
+	if [[ -z $QUIET ]]; then echo "Done."; fi
+fi
+
+# Windows WPF build	
+if [[ ! -z $WPF ]]
+then
+	if [[ -z $QUIET ]]; then echo "Creating Windows WPF release..."; fi
+	cd "$EXPORT_DIR"
+	cd win32.wpf.x86
+	cd `ls`
+	cp "$INSTALL_SRC_DIR/windows/pipeline-setup.nsi" .
+	cp -R "$INSTALL_SRC_DIR/windows/ext" .
+	if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
+	makensis pipeline-setup.nsi | tee "$FINAL_DIR/nsis.log"
+	if [[ -z $VERBOSE ]]; then exec 1>&3; fi
+	mv setup.exe "$FINAL_DIR/PipelineGUI-${VERSION}-WinWPF.exe"
+	if [[ -z $QUIET ]]; then echo "Done."; fi
+fi
+
+# Linux build	
+if [[ ! -z $LINUX ]]
+then
+	if [[ -z $QUIET ]]; then echo "Creating Linux release..."; fi
+	cd "$EXPORT_DIR"
+	cd linux.gtk.x86
+	cd `ls`
+	chmod 755 DAISY\ Pipeline
+	tar -czf "$FINAL_DIR/PipelineGUI-${VERSION}-Linux.tar.gz" *
+	if [[ -z $QUIET ]]; then echo "Done."; fi
+fi
+
+# Mac OS X build	
+if [[ ! -z $MAC ]]
+then		
+	if [[ -z $QUIET ]]; then echo "Creating Mac OS X release..."; fi
+		
+makedmg ()
+{
+# Vars
+FILES_DIR="$INSTALL_SRC_DIR/macosx"
+REPACK="$FILES_DIR/EclipseOSXRepackager"
+SRC_DIR="$EXPORT_DIR/macosx.carbon.x86/`ls "$EXPORT_DIR/macosx.carbon.x86"`"
+APP_NAME=DAISY\ Pipeline.app
+VOL_NAME=DAISY\ Pipeline
+TEMP_DMG_SRC="${FINAL_DIR}/tmp_DMGSRC"
+DMG_NAME=PipelineGUI-${VERSION}-Mac.dmg
+TEMP_DMG="${FINAL_DIR}/tmp_${DMG_NAME}"
+
+# Prepare the dmg content
+if [[ -z $QUIET ]]; then echo " - Preparing the disk image content..."; fi
+rm -Rf "${TEMP_DMG_SRC}"
+mkdir "${TEMP_DMG_SRC}"
+mkdir "${TEMP_DMG_SRC}/INFO"
+cp "${SRC_DIR}/release-notes.txt" "${TEMP_DMG_SRC}/INFO/"
+cp "${SRC_DIR}/UserAgreement.txt" "${TEMP_DMG_SRC}/INFO/"
+cp -R "${SRC_DIR}/licenses" "${TEMP_DMG_SRC}/INFO/"
+ln -s /Applications "${TEMP_DMG_SRC}/Applications"
+if [ -z $INCLUDE_TOOLS ]; then
+	cp "$FILES_DIR/files/README-noTools.rtf" "${TEMP_DMG_SRC}/README.rtf"
+else
+	cp "$FILES_DIR/files/README-withTools.rtf" "${TEMP_DMG_SRC}/README.rtf"
+	cp -R "$FILES_DIR/tools/External Tools.mpkg" "${TEMP_DMG_SRC}"
+fi
+
+# Repackage the application
+if [[ -z $QUIET ]]; then echo " - Repackaging the application bundle..."; fi
+if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
+${REPACK} "${SRC_DIR}" "${TEMP_DMG_SRC}/${APP_NAME}" | tee -a "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
+if [[ -z $VERBOSE ]]; then exec 1>&3; fi
+
+# Copy the bundled third-party tools
+if [[ -z $QUIET ]]; then echo " - Copying the bundled third-party tools..."; fi
+if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
+mkdir "${TEMP_DMG_SRC}/${APP_NAME}/Contents/Resources/Java/ext"
+cp "$INSTALL_SRC_DIR/macosx/tools/sox" "${TEMP_DMG_SRC}/${APP_NAME}/Contents/Resources/Java/ext"
+cp "$INSTALL_SRC_DIR/macosx/tools/sox-license.txt" "${TEMP_DMG_SRC}/${APP_NAME}/Contents/Resources/Java/ext"
+cp "$INSTALL_SRC_DIR/macosx/tools/lame" "${TEMP_DMG_SRC}/${APP_NAME}/Contents/Resources/Java/ext"
+cp "$INSTALL_SRC_DIR/macosx/tools/lame-license.txt" "${TEMP_DMG_SRC}/${APP_NAME}/Contents/Resources/Java/ext"
+if [[ -z $VERBOSE ]]; then exec 1>&3; fi
+
+# create dmg
+if [[ -z $QUIET ]]; then echo " - Creating the disk image..."; fi
+rm -f "${TEMP_DMG}"
+if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
+hdiutil create -srcfolder "${TEMP_DMG_SRC}" -volname "${VOL_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${TEMP_DMG}" | tee -a "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
+if [[ -z $VERBOSE ]]; then exec 1>&3; fi
+
+rm -Rf "${TEMP_DMG_SRC}"
+
+# mount it
+if [[ -z $QUIET ]]; then echo " - Mounting the disk image..."; fi
+DEV_NAME=`hdiutil attach -readwrite -noverify -noautoopen "${TEMP_DMG}" | egrep '^/dev/' | sed 1q | awk '{print $1}'`
+echo "dev name: ${DEV_NAME}"
+
+# customize the disk image
+if [[ -z $QUIET ]]; then echo " - Customizing the disk image..."; fi
+mkdir "/Volumes/${VOL_NAME}/.background"
+cp "$FILES_DIR/artwork/dmg-background.png" "/Volumes/${VOL_NAME}/.background/background.png"
+cp "$FILES_DIR/artwork/dmg-icon.icns" "/Volumes/${VOL_NAME}/.VolumeIcon.icns"
+osascript $FILES_DIR/customizeDMG.scpt
+/Developer/Tools/SetFile -a C "/Volumes/${VOL_NAME}"
+
+# unmount
+if [[ -z $QUIET ]]; then echo " - Unmounting the disk image..."; fi
+if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
+hdiutil detach "${DEV_NAME}"  | tee -a "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
+if [[ -z $VERBOSE ]]; then exec 1>&3; fi
+ 
+# compress image
+if [[ -z $QUIET ]]; then echo " - Compressing the disk image..."; fi
+rm -f "${FINAL_DIR}/${DMG_NAME}"
+if [[ -z $VERBOSE ]]; then exec 3>&1 && exec 1>/dev/null; fi
+hdiutil convert "${TEMP_DMG}" -format UDBZ -imagekey zlib-level=9 -o "${FINAL_DIR}/${DMG_NAME}" | tee -a "$FINAL_DIR/makedmg$INCLUDE_TOOLS.log"
+if [[ -z $VERBOSE ]]; then exec 1>&3; fi
+rm -f "${TEMP_DMG}"
+
+}
+	
+	INCLUDE_TOOLS=""
+	makedmg
+	
+	if [[ -z $QUIET ]]; then echo "Done."; fi
+fi
+
+
+
+makedmg ()
+{
+  echo "Making dmg with "
+}
+exit 0

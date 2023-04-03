@@ -495,9 +495,7 @@ public class Stylesheet {
      * <li>(optional) XSLT parameters.  A series of name=value pairs.</li>  
      * </ol>
      * <p>To use this to transform a DTBook document to XHTML, use:</p>
-     * <pre>
-     * <code>Stylesheet input.xml output.xhtml dtbook2xhtml.xsl
-     * </pre> 
+     * <code>Stylesheet input.xml output.xhtml dtbook2xhtml.xsl</code>
      */
 	public static void main(String[] args) {
 		String property = "javax.xml.transform.TransformerFactory";

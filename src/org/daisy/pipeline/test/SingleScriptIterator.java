@@ -188,7 +188,6 @@ public class SingleScriptIterator implements BusListener {
 	 * <li>2: Path to the script to use</li>
 	 * <li>3: Path to base output directory</li>
 	 * </ul>
-	 * @throws IOException 
 	 */
 	public static void main(String[] args) {
 		Directory inputFolder;
@@ -346,8 +345,7 @@ public class SingleScriptIterator implements BusListener {
     
     /**
      * Finds the pipeline home directory.
-     * 
-     * @param propertiesURL
+     *
      * @return
      * @throws DMFCConfigurationException
      */

@@ -85,7 +85,8 @@ public class OpfBuilder {
 	 * @param metadata The metadata items to use
 	 * @param manifest URLs of files to include in the manifest
 	 * @param spine URLs of files to include in the spine, in order
-	 * @throws FilesetFatalException, BuildException
+	 * @throws FilesetFatalException
+	 * @throws BuildException
 	 */
 	public OpfBuilder(OpfType type, MetadataList metadata, Set<URL> manifest, LinkedHashSet<URL> spine) throws FilesetFatalException, BuildException {
 		this(type);
@@ -322,7 +323,9 @@ public class OpfBuilder {
 	 * Render the OPF as an XML document
 	 * This does checking to insure that output file is valid to DTD and to referenced spec.
 	 * @param destination Output file URL
-	 * @throws IOException, XMLStreamException, BuildException
+	 * @throws IOException
+	 * @throws XMLStreamException
+	 * @throws BuildException
 	 * 
 	 * Much of this code shamelessly stolen from Markus' OPFBuilder
 	 */

@@ -56,7 +56,7 @@ public interface RenamingStrategy {
 	 * two output files with same path+name, or the case where a new name 
 	 * is created that happens to coincide with the old name of another member.
 	 * @return true if no naming collisions exist, false if they did exist. The validate method can attempt repair.
-	 * @throws FilesetFileFatalErrorException if collisions do exist
+	 * @throws FilesetRenamingException if collisions do exist
 	 */
 	public boolean validate() throws FilesetRenamingException;	
 	

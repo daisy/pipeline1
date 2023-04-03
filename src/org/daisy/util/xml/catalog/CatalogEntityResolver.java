@@ -63,7 +63,7 @@ import org.xml.sax.SAXException;
  * <p>
  * Use example within a SAX context:
  * </p>
- * <code><pre>
+ * <code>
  *  import org.daisy.util.xml.catalog.CatalogEntityResolver;
  *  import org.daisy.util.xml.catalog.CatalogException;
  *  [...]
@@ -76,7 +76,7 @@ import org.xml.sax.SAXException;
  *    }
  *  }
  *  [...]
- * </pre></code>
+ * </code>
  * 
  * <p>
  * The CatalogException is subclassed in recoverable and irrecoverable
@@ -84,7 +84,7 @@ import org.xml.sax.SAXException;
  * using for example
  * </p>
  * 
- * <code><pre>
+ * <code>
  *    } catch (CatalogException ce) {
  *      if (ce instanceof CatalogExceptionRecoverable) {
  *        System.err.println(ce.getMessage());                      
@@ -92,18 +92,18 @@ import org.xml.sax.SAXException;
  *        throw new IOException(ce.getMessage());
  *      }
  *    }
- * </pre></code>
+ * </code>
  * 
  * <p>
  * Use example within a (JAXP) DOM context:
  * </p>
- * <code><pre>
+ * <code>
  *   [...]
  *   builder = factory.newDocumentBuilder();
  *   builder.setEntityResolver(CatalogEntityResolver.getInstance());  
  *   Document doc = builder.parse(&quot;E:/file.xml&quot;);
  *   [...]
- * </pre></code>
+ * </code>
  * 
  * @author markusg
  */

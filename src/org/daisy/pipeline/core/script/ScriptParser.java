@@ -86,7 +86,6 @@ public class ScriptParser {
 	/**
 	 * Constructor.
 	 * 
-	 * @throws XMLStreamException
 	 */
 	public ScriptParser() {
 		mXifProperties = new HashMap<String, Object>();

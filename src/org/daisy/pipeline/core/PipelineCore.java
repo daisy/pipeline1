@@ -110,7 +110,7 @@ public class PipelineCore {
      * <code>pipelineProps</code>.
      * 
      * @param inListener a listener of (user) input events
-     * @param mHomeDir the directory considered the daisy pipeline home directory
+     * @param homeDir the directory considered the daisy pipeline home directory
      * @param userProps a set of user properties
      * @param pipelineProps a set of pipeline properties
      * @throws DMFCConfigurationException it the pipeline properties cannot
@@ -311,7 +311,6 @@ public class PipelineCore {
     /**
      * Finds the pipeline home directory.
      * 
-     * @param propertiesURL
      * @return
      * @throws DMFCConfigurationException
      */

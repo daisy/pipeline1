@@ -37,7 +37,8 @@ import org.xml.sax.SAXException;
 
 /**
  * Represents the catalog file (physically in
- * <code>org/daisy/util/xml/catalog/catalog.xml</code>)<br/> The physical
+ * <code>org/daisy/util/xml/catalog/catalog.xml</code>)
+ The physical
  * catalog file supports a subset of the Oasis 1.1 Catalog specification.
  * 
  * @author markusg
@@ -66,7 +67,8 @@ public final class CatalogFile implements Catalog {
      * @param url
      *            URL of the catalog file
      * @throws IOException 
-     * @throws XMLStreamException 
+     * @throws SAXException
+     * @throws URISyntaxException
      */
     @SuppressWarnings("unused")
 	public CatalogFile(URL url, Class<?> resourceBase) throws IOException, SAXException, URISyntaxException{

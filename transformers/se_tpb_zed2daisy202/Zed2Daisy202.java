@@ -259,7 +259,6 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @throws XMLStreamException
      * @throws IOException
      * @throws XSLTException
-     * @throws FilesetException
      * @throws TransformerAbortException
      * @throws SAXException 
      */
@@ -320,7 +319,6 @@ public class Zed2Daisy202 extends Transformer implements FilesetErrorHandler {
      * @throws CatalogExceptionNotRecoverable
      * @throws XSLTException
      * @throws IOException
-     * @throws FilesetException 
      */
     private void createXhtml(File dtbook, OpfFile opf, String hrefTarget, String smilPrefix) throws CatalogExceptionNotRecoverable, XSLTException, IOException {
     	String cssName = "default.css";

@@ -55,24 +55,24 @@ import com.ibm.icu.text.UCharacterIterator;
  * If you need a certain normalization form, normalize after the use of this class.</p>
  * 
  * <p>Usage example:</p>
- * <code><pre>
+ * <code>
  * 	UCharReplacer ucr = new UCharReplacer();
  *	ucr.addTranslationTable(fileURL);
  *  ucr.addTranslationTable(fileURL2);
  *  ucr.setExclusionRepertoire(Charset.forName("ASCII"));
  *	String ret = ucr.toReplacementString(input);
- * </pre></code>
+ * </code>
  *  
  * <p>The translation table file is using the same xml format as that of
  * java.util.Properties [1][2], using the HEX representation (without 
- * the characteristic 0x-prefix!) of a unicode character as the <tt>key</tt> 
- * attribute and the replacement string as value of the <tt>entry</tt> 
+ * the characteristic 0x-prefix!) of a unicode character as the <b>key</b> 
+ * attribute and the replacement string as value of the <b>entry</b> 
  * element.</p>
  * 
- * <p>If the <tt>key</tt> attribute contains exactly one unicode codepoint 
+ * <p>If the <b>key</b> attribute contains exactly one unicode codepoint 
  * (one character) it will be treated literally. It will not be interpreted 
  * as a HEX representation of another character, even if theoretically 
- * possible. E.g. if the <tt>key</tt> is "a", it will be
+ * possible. E.g. if the <b>key</b> is "a", it will be
  * treated as 0x0061 rather than as 0x000a</p>
  * 
  * <p>Note - there is a significant difference between a unicode codepoint (32 bit int)

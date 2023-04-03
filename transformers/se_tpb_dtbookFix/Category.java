@@ -33,7 +33,6 @@ class Category extends LinkedList<Executor> {
 	/**
 	 * Constructor
 	 * @param categoryName The name by which this category is referred to
-	 * @param tdl TransformerDelegateListener
 	 * @param supportedStates The input state(s) that this category is designed to deal with
 	 * @param executors The Executor instances to be bundled in this category
 	 */

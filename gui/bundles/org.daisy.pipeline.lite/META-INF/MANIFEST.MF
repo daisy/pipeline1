@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Dialog
+Bundle-SymbolicName: org.daisy.pipeline.lite
+Bundle-Version: 1.0.0
+Export-Package: org.daisy.pipeline.lite,
+ org.daisy.pipeline.lite.internal;x-internal:=true
+Require-Bundle: org.eclipse.swt;bundle-version="3.3.2",
+ org.eclipse.jface;bundle-version="3.3.1",
+ org.daisy.pipeline;bundle-version="1.0.3",
+ org.eclipse.equinox.common;bundle-version="3.3.0"
+Import-Package: org.daisy.pipeline.scripts.ui,
+ org.daisy.util.jface,
+ org.daisy.util.swt
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

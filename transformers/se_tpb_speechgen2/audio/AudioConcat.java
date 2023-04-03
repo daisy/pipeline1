@@ -54,7 +54,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 //TODO: the name AudioConcat is no longer appropriate. 
 //There should be a name that is neutral to concat/mix.
 
-/**	<titleabbrev>AudioConcat</titleabbrev>
+/*	<titleabbrev>AudioConcat</titleabbrev>
  <title>Concatenating or mixing audio files</title>
  
  <formalpara><title>Purpose</title>
@@ -123,8 +123,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  <ulink url="http://www.urbanophile.com/arenn/hacking/download.html">gnu.getopt.Getopt</ulink>
  </para>
  </formalpara>
- 
  */
+
 public class AudioConcat
 {
 	

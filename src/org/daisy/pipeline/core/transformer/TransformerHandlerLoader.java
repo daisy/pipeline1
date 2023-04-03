@@ -41,7 +41,7 @@ public enum TransformerHandlerLoader {
 	/**
 	 * Get the TransformerHandler for the transformer with the given name.
 	 * 
-	 * @param transformerName
+	 * @param name
 	 *            the name of the transformer
 	 * @return a TransfomerHandler, or null if a handler cannot be created.
 	 * @throws TransformerDisabledException

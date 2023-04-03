@@ -74,13 +74,13 @@ public class FileBunchCopy {
 	/**
 	 * Copy a collection of files from some place to some other place. Input 
 	 * to this method is basically a "from base directory" and a "to base directory",
-	 * and to complement those also a set<String> of paths relative to both
+	 * and to complement those also a Set&lt;String&gt; of paths relative to both
 	 * base directories.
 	 * 
 	 * @param inputBaseDir the input base directory
 	 * @param outputBaseDir the output base directory
 	 * @param paths set of paths relative the base directories
-	 * @param observer a progress observer used to report the copying progress. May be <tt>null</tt>.
+	 * @param observer a progress observer used to report the copying progress. May be <b>null</b>.
 	 * @param createDummies create dummy files for missing input files
 	 * @throws IOException
 	 */

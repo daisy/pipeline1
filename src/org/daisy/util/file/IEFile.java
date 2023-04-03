@@ -65,8 +65,7 @@ public abstract interface IEFile {
 	/**
 	 * An extension to java.io.File.
 	 * Sets a org.daisy.util.mime.MimeType object as an attribute of this File.
-	 * Note - no analysis of the relational validity of the MimeType object vis-a-vis the File is performed. 
-	 * @see #setMimeType()
+	 * Note - no analysis of the relational validity of the MimeType object vis-a-vis the File is performed.
 	 * @see #getMimeType()
 	 */
 	public void setMimeType(MIMEType mime);

@@ -35,17 +35,17 @@ public interface TTSInput {
 	
 	/**
 	 * Returns <code>true</code> if the object is an instance of TTSAnnouncement,
-	 * <code>false</false> otherwise.
+	 * <code>false</code> otherwise.
 	 * @return <code>true</code> if the object is an instance of TTSAnnouncement,
-	 * <code>false</false> otherwise.
+	 * <code>false</code> otherwise.
 	 */
 	public boolean isAnnouncement();
 	
 	/**
 	 * Returns <code>true</code> if the object is an instance of TTSSyncPoint,
-	 * <code>false</false> otherwise.
+	 * <code>false</code> otherwise.
 	 * @return <code>true</code> if the object is an instance of TTSSyncPoint,
-	 * <code>false</false> otherwise.
+	 * <code>false</code> otherwise.
 	 */
 	public boolean isSyncPoint();
 	

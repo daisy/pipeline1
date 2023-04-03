@@ -29,7 +29,8 @@ import org.mozilla.intl.chardet.nsICharsetDetectionObserver;
 import org.mozilla.intl.chardet.nsPSMDetector;
 
 /**
- * <p>A utility wrapper around the jchardet port of the Mozilla character set (encoding) detection library (http://jchardet.sourceforge.net).<br/>
+ * <p>A utility wrapper around the jchardet port of the Mozilla character set (encoding) detection library (http://jchardet.sourceforge.net).
+
  * Usage:</p>
  * <pre><code>
  * 	CharsetDetector det = new CharsetDetector();

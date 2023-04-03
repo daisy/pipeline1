@@ -1331,7 +1331,7 @@ public class SpeechGen2 extends Transformer {
 	 * Returns a substitute for <code>event</code> to be written to the output file.
 	 * The substitute has the correct smil:clipBegin and smil:clipEnd attributes.
 	 * @param event the event which to enrich with clipBegin, clipEnd and src.
-	 * @param startValue the value for the smil:clipBegin-attribute.
+	 * @param clipBeginTime the value for the smil:clipBegin-attribute.
 	 * @return a substitute for <code>event</code> to be written to the output file.
 	 */
 	private StartElement addSmilAttrs(XMLEvent event, SmilClock clipBeginTime, SmilClock clipEndTime) {

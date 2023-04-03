@@ -86,7 +86,7 @@ public abstract class ExternalTTS implements TTS {
 	
 	
 	/**
-	 * Generates audio for the contents of <tt>doc</tt>.
+	 * Generates audio for the contents of <b>doc</b>.
 	 * @param doc A document holding some xml content.
 	 * @param file a file representing the destination for the generated audio.
 	 * @return the duration of the audio in ms.
@@ -97,7 +97,7 @@ public abstract class ExternalTTS implements TTS {
 	protected abstract SmilClock sayImpl(Document doc, File file) throws IOException, UnsupportedAudioFileException, TransformerRunException;
 	
 	/**
-	 * Generates audio for the string <tt>str</tt>.
+	 * Generates audio for the string <b>str</b>.
 	 * @param str a text string.
 	 * @param file a file representing the destination for the generated audio.
 	 * @return the duration of the audio in ms.

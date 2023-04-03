@@ -52,8 +52,10 @@ public class DefaultSapiTTS extends AbstractTTSAdapter {
 		ISpeechFileStream stream = null;
 		try {
 			stream = ClassFactory.createSpFileStream();
-			stream.open(destination.getAbsolutePath(),
-					SpeechStreamFileMode.SSFMCreateForWrite, false);
+			stream.open(
+				destination.getAbsolutePath(),
+				SpeechStreamFileMode.SSFMCreateForWrite,
+				false);
 			voice.audioOutputStream(stream);
 			if (sapiVoiceSelection != null) {
 				line = "<voice optional=\"" + sapiVoiceSelection + "\">" + line

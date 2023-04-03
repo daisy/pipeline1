@@ -56,7 +56,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * A class making the <tt>.opf</tt> file for a z39.86 fileset.
+ * A class making the <b>.opf</b> file for a z39.86 fileset.
  * 
  * @author Martin Blomberg
  *
@@ -100,7 +100,7 @@ public class OPFMaker {
 	 * 
 	 * @param mimeTypes	the mapping between filename suffix and mime type.
 	 * @param dcElements a mapping between dc element name and a collection of values.
-	 * @param xMetadata package file x-metadata.
+	 * @param xMeta package file x-metadata.
 	 * @param smils the smil file names in proper sequence.
 	 * @param generatedFiles names of all files generated during file set creation.
 	 * @param referredFiles names of files referred from the dtbook.
@@ -316,7 +316,6 @@ public class OPFMaker {
 	
 	/**
 	 * Adds the metadata, such as total time, media content etc.
-	 * @param metaData
 	 */
 	private void makeXMetaElements() {
 		Element xMeta = (Element) XPathUtils.selectSingleNode(opf.getDocumentElement(), "//opf:x-metadata", mNsc);
@@ -426,8 +425,8 @@ public class OPFMaker {
 	
 	/**
 	 * Prints debug messages to System.out. The messages are prefixed with 
-	 * <tt>DEBUG:</tt>. Messages are printed out iff the system property
-	 * <tt>org.daisy.debug</tt> is defined.
+	 * <b>DEBUG:</b>. Messages are printed out iff the system property
+	 * <b>org.daisy.debug</b> is defined.
 	 * @param msg The message.
 	 */
 	private void DEBUG(String msg) {
@@ -439,8 +438,8 @@ public class OPFMaker {
 	
 	
 	/**
-	 * Prints the xml content of thge document <tt>d</tt> to System.out iff
-	 * the system property <tt>org.daisy.debug</tt> is defined.
+	 * Prints the xml content of thge document <b>d</b> to System.out iff
+	 * the system property <b>org.daisy.debug</b> is defined.
 	 * @param d the document.
 	 */
 	@SuppressWarnings("unused")

@@ -156,7 +156,6 @@ public class SpeechGenerator extends Transformer {
 	/**
 	 * The usual constructor.
 	 * @param inputListener
-	 * @param eventListeners
 	 * @param bool
 	 */
 	public SpeechGenerator(InputListener inputListener, Boolean bool) {

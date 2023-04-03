@@ -46,10 +46,9 @@ public class ListenersHolder<E> {
 	}
 
 	/**
-	 * Registers a new listener to this holder.
+	 * Registers new listeners to this holder.
 	 * 
-	 * @param listener
-	 *            a new listener.
+	 * @param listeners new listeners.
 	 */
 	public void setListeners(Set<E> listeners) {
 		if (listeners == null)

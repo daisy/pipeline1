@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Post Installation Steps</title>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="stylesheet" type="text/css" href="intro.css"/>
+</head>
+<body> 
+	<h1 class="page-title">Post Installation Steps</h1>
+	<div class="textBox">
+		<p>Upon first launch of the Pipeline, you may take a moment to look over <strong><a href="http://org.eclipse.ui.intro/runAction?pluginId=org.daisy.pipeline.gui&amp;class=org.daisy.pipeline.gui.OpenPathPrefAction">Paths entry in the Preferences dialog</a></strong>.</p>
+      	<p>The paths that <em>must</em> or <em>may</em> be set are:</p>
+      <dl>
+      <dt><code>Temporary Directory</code></dt><dd>Directory to store temporary files in. This directory <em>must</em> be set, and write access to it must be enabled.</dd>
+      <dt><code>LAME executable</code></dt><dd>Path to the <a href="http://lame.sourceforge.net/index.php">LAME</a> executable (Must be set if you intend to run a script that includes MP3 encoding).</dd>
+      <dt><code>ImageMagick convert executable</code></dt><dd>Path to the <a href="http://www.imagemagick.org/">ImageMagick</a> convert executable (Must be set if you intend to run a script that includes image conversions).</dd>
+      </dl>
+      <p>Information on how to install LAME and ImageMagick is available in <a id="lame-install" href="http://org.eclipse.ui.intro/openURL?pluginId=org.daisy.pipeline&amp;url=doc/enduser/installing-lame.html">Installing the Lame MP3 Encoder for use within the Daisy Pipeline</a> and <a href="http://org.eclipse.ui.intro/openURL?pluginId=org.daisy.pipeline&amp;url=doc/enduser/installing-imagemagick.html">Installing ImageMagick for use within the Daisy Pipeline</a>.</p>
+	  <p>Note: When starting the Pipeline, you may get warnings that certain scripts could not be loaded; this is most likely due to the fact that the settings discussed above have not been set.</p>
+	</div>
+
+  <a href="http://org.eclipse.ui.intro/switchToLaunchBar"><img id="switchToPipeline" src="images/workbench.gif" alt="Switch to the Pipeline"/></a>
+  <img id="daisyIcon" src="images/daisy.gif" alt="DAISY Logo"/>
+</body>
+</html>

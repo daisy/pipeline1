@@ -26,7 +26,7 @@ import org.daisy.pipeline.core.event.MessageEvent;
  * Listener to a remote Pipeline instance.
  * 
  * @author Romain Deltour
- * @See {@link RMIPipelineInstance}
+ * @see RMIPipelineInstance
  * 
  */
 public interface RMIPipelineListener extends Remote {
@@ -42,7 +42,7 @@ public interface RMIPipelineListener extends Remote {
 	 * 
 	 * @param message
 	 *            the message text.
-	 * @param string
+	 * @param type
 	 *            the message type (see {@link MessageEvent.Type})
 	 * @param path
 	 *            the path to the cause (possibly null).
@@ -57,7 +57,7 @@ public interface RMIPipelineListener extends Remote {
 	/**
 	 * Notifies that the Pipeline execution progressed.
 	 * 
-	 * @param name
+	 * @param taskName
 	 *            The name of the task that progressed.
 	 * @param progress
 	 *            The new progress value.

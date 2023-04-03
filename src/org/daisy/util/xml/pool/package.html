@@ -7,7 +7,7 @@
   Singleton pools of often-used XML processors. 
   <p>The sole reason for using these is performance optimization.</p>
   <p>The abstract use pattern is:</p>
-  <code><pre>
+  <code>
 
    //get the processor from the pool
    Processor proc = ProcessorPool.getInstance().acquire(featureMap,propertyMap);
@@ -17,6 +17,6 @@
    //and lastly release it (ideally using a finally clause)
    ProcessorPool.getInstance().release(proc,featureMap,propertyMap);
   
-  </pre></code>
+  </code>
 </body>
 </html>

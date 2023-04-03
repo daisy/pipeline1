@@ -89,7 +89,7 @@ import org.xml.sax.SAXException;
 
 
 /**
- * A class making <tt>.smil</tt> files given a dtbook document modified in a 
+ * A class making <b>.smil</b> files given a dtbook document modified in a 
  * certain way. 
  * 
  * Expected input is the dtbook document enriched with smil attributes on those 
@@ -97,7 +97,7 @@ import org.xml.sax.SAXException;
  * other sense, than as input the NCXMaker.
  * 
  * The class is only used internaly from the class 
- * <tt>se_tpb_filesetcreator.FileSetCreator</tt>, main class of the transformer
+ * <b>se_tpb_filesetcreator.FileSetCreator</b>, main class of the transformer
  * File Set Creator
  * 
  * @author Martin Blomberg
@@ -177,7 +177,6 @@ public class SmilMaker implements AbortListener, BusListener {
 	 * @param escapable	set of names of escapable elements
 	 * @param forceLink	set of names of elements supposed to be link to be their referrers
 	 * @param obs	a progress observer
-	 * @param fsc	a file set creator, used for polling the ui: did user interrupt?
 	 * @throws FileNotFoundException
 	 * @throws XMLStreamException
 	 * @throws ParserConfigurationException
@@ -1599,8 +1598,8 @@ public class SmilMaker implements AbortListener, BusListener {
 	
 	/**
 	 * Prints debug messages on System.out iff the system property 
-	 * represented by <tt>SmilMaker.DEBUG_PROPERTY</tt> is defined.
-	 * Debug messages are prefixed with "<tt>DEBUG: </tt>".
+	 * represented by <b>SmilMaker.DEBUG_PROPERTY</b> is defined.
+	 * Debug messages are prefixed with "<b>DEBUG: </b>".
 	 * @param msg the message.
 	 */
 	private void DEBUG(String msg) {

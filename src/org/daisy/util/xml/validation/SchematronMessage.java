@@ -34,7 +34,8 @@ import java.util.Map;
  * separated by two colons: name part and content part: <code>[name::content]</code></li> 
  * <li>Square bracket characters are not allowed inside messages, only as message delimiters.</li>
  * </ul>
- * <p>An example schematron message in its Schematron document representation:<br/>
+ * <p>An example schematron message in its Schematron document representation:
+
  * <code>[sch][id::anId][msg::a message]</code>
  * </p>
  * @author Markus Gylling

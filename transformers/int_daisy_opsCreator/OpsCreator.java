@@ -447,7 +447,7 @@ public class OpsCreator extends Transformer implements FilesetErrorHandler {
 	 * that manifest member has IDs on NCX target positions. The copied docs
 	 * satellite files are expected to already be in output dir
 	 * Add CSS if missing.
-	 * @param fileset Fileset to copy
+	 * @param inputManifestURL Fileset to copy
 	 * @param first Whether this is the first call to this method (in case of several input filesets)
 	 * @return the output fileset
 	 * @throws IOException 

@@ -147,7 +147,8 @@ public class OPFBuilder {
 
 	/**
 	 * Add the resource file to the output dir, add entries to manifest.
-	 * @param idg 
+	 * @param xef
+	 * @param writer
 	 */
 	private void addResourceFile(XMLEventFactory xef, XMLEventWriter writer) {
 		try{
