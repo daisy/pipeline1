@@ -60,21 +60,19 @@
     <xsl:sequence select="func:splitInternal(0, $wordsPerVolume, $paragraphSequence)"/>
   </xsl:function>
   
-  <!-- Given a p within a level1, level2, level3, linegroup, poem, sidebar or blockquote,
+  <!-- Given a p within a level1, level2, level3, linegroup, poem, sidebar, blockquote or list,
        move to the beginning/ending of that block if it's within a certain threshold of words -->
   <xsl:function name="func:replaceWithClosestBlock" as="element()">
     <xsl:param name="split_point" as="element()"/>
     <xsl:param name="allowed_stretch_in_words" as="xs:double"/>
-    <xsl:variable name="block_names" select="('level1', 'level2', 'level3', 'linegroup', 'poem', 'sidebar', 'blockquote')"/>
+    <xsl:variable name="block_names" select="('level1', 'level2', 'level3', 'linegroup', 'poem', 'sidebar', 'blockquote', 'list')"/>
     <xsl:variable name="blocks" select="$split_point/ancestor::dtb:*[local-name()=$block_names]"/>
     <xsl:choose>
       <xsl:when test="exists($blocks)">
         <xsl:variable name="moveBefore"
-          select="($blocks[sum(for $p in (descendant::dtb:p intersect $split_point/preceding::*) return func:wc($p))
-          &lt; $allowed_stretch_in_words])[1]"/>
+          select="($blocks[sum(for $p in (descendant::dtb:p intersect $split_point/preceding::*) return func:wc($p)) &lt; $allowed_stretch_in_words])[1]"/>
         <xsl:variable name="moveAfter"
-          select="($blocks[sum(for $p in (descendant::dtb:p intersect ($split_point,$split_point/following::*)) return func:wc($p))
-          &lt; $allowed_stretch_in_words])[1]"/>
+          select="($blocks[sum(for $p in (descendant::dtb:p intersect ($split_point,$split_point/following::*)) return func:wc($p)) &lt; $allowed_stretch_in_words])[1]"/>
         <xsl:choose>
           <xsl:when test="exists($moveBefore) and exists($moveAfter)">
             <xsl:sequence select="if (count($moveBefore/ancestor::*) le count($moveAfter/ancestor::*)) 
@@ -97,7 +95,7 @@
     </xsl:choose>
   </xsl:function>
   
-  <xsl:variable name="all_p" select="//dtb:p"/>
+  <xsl:variable name="all_p" select="//dtb:p|//dtb:li|//dtb:line"/>
   <xsl:variable name="total_words" select="sum(for $p in $all_p return func:wc($p))"/>
   <xsl:variable name="words_per_volume" select="ceiling($total_words div number($number_of_volumes)) + 1"/>
   <xsl:variable name="split_nodes" select="func:split($words_per_volume, $all_p)"/>
@@ -107,8 +105,8 @@
   <xsl:variable name="valid_split_nodes"
     select="for $split_point in $split_nodes 
     return func:replaceWithClosestBlock($split_point, $allowed_stretch_in_words)"/>
-  
-  <xsl:template match="dtb:level1|dtb:level2|dtb:level3|dtb:linegroup|dtb:poem|dtb:sidebar|dtb:blockquote|dtb:p">
+
+  <xsl:template match="dtb:level1|dtb:level2|dtb:level3|dtb:linegroup|dtb:poem|dtb:sidebar|dtb:blockquote|dtb:list|dtb:p">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <xsl:if test="some $node in $valid_split_nodes satisfies current() is $node">
