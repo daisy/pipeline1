@@ -28,7 +28,7 @@
   <!-- Count the words in a given paragraph -->
   <xsl:function name="func:wc" as="xs:integer">
     <xsl:param name="para" as="element()"/>
-    <xsl:value-of select="count(tokenize(normalize-space(string($para)), '\s+'))"/>
+    <xsl:sequence select="count(tokenize(normalize-space(string($para)), '\s+'))"/>
   </xsl:function>
 
   <!-- Determine paragraphs where a volume should be split, i.e.
