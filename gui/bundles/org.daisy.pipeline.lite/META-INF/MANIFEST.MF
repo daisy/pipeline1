@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dialog
 Bundle-SymbolicName: org.daisy.pipeline.lite
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Export-Package: org.daisy.pipeline.lite,
  org.daisy.pipeline.lite.internal;x-internal:=true
 Require-Bundle: org.eclipse.swt;bundle-version="3.3.2",
@@ -12,4 +12,4 @@ Require-Bundle: org.eclipse.swt;bundle-version="3.3.2",
 Import-Package: org.daisy.pipeline.scripts.ui,
  org.daisy.util.jface,
  org.daisy.util.swt
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
