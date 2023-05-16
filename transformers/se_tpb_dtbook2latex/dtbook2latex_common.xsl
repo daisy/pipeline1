@@ -1601,28 +1601,64 @@
     <xsl:value-of select="my:quoteSpecialChars(replace(normalize-space(string(current())), ' ', ' '))"/>
    </xsl:template>
 
-   <!-- If a given word is longer than a certain threshhold add hyphenation points ('\-') between
-        each character. This is a crude method to make sure long words (often nonsensical such as
-        "aaaarghhhhhhhhhhhh") do not run into the margin -->
+   <!-- add hyphenation points ('\-') between each character. This is a crude method to make sure
+        long words (often nonsensical such as "aaaarghhhhhhhhhhhh") do not run into the margin -->
   <xsl:function name="my:add-hyphenation-points" as="xs:string">
     <xsl:param name="word" as="xs:string"/>
     <xsl:variable name="margin" select="3"/>
-    <xsl:sequence select="if (string-length($word) > 40)
-                          then string-join((substring($word,1,$margin),
-			                    replace(substring($word,$margin+1,string-length($word)-(2*$margin+1)), '\w', '$0\\-'),
-                                            substring($word,string-length($word)-$margin)),'')
-                          else $word"/>
+    <xsl:choose>
+      <xsl:when test="string-length($word) > $margin*2">
+	<xsl:sequence select="string-join((substring($word,1,$margin),
+			                   replace(substring($word,$margin+1,string-length($word)-(2*$margin+1)), '\w', '$0\\-'),
+                                           substring($word,string-length($word)-$margin)),'')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:sequence select="$word"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
+  <xsl:function name="my:string-replace" as="xs:string">
+    <xsl:param name="input" as="xs:string"/>
+    <xsl:param name="substring" as="xs:string"/>
+    <xsl:param name="replacement" as="xs:string"/>
+    <xsl:variable name="before" select="substring-before($input,$substring)"/>
+    <xsl:variable name="after" select="substring-after($input,$substring)"/>
+    <xsl:choose>
+      <xsl:when test="$input">
+	<xsl:sequence select="string-join(($before,$replacement,$after),'')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:sequence select="string-join(($before,$replacement,my:string-replace($after,$substring,$replacement)),'')"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
+  <xsl:function name="my:hyphenate-long-words" as="xs:string">
+    <xsl:param name="wordSequence" as="xs:string*"/>
+    <xsl:param name="text" as="xs:string"/>
+    <xsl:variable name="word" select="$wordSequence[1]"/>
+    <xsl:variable name="rest" select="$wordSequence[position() gt 1]"/>
+    <xsl:choose>
+      <xsl:when test="empty($wordSequence)">
+	<xsl:sequence select="$text"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:sequence select="my:hyphenate-long-words($rest, my:string-replace($text, $word, my:add-hyphenation-points($word)))"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
 
   <xsl:template match="text()">
     <xsl:variable name="sanitized" select="my:quoteSpecialChars(current())"/>
-    <xsl:value-of select="string-join(for $word in tokenize(string($sanitized),' ') return my:add-hyphenation-points($word), ' ')"/>
+    <xsl:variable name="long-words" select="tokenize($sanitized,'\W+')[string-length(.) > 40]"/>
+    <xsl:value-of select="my:hyphenate-long-words($long-words, $sanitized)"/>
    </xsl:template>
 
    <xsl:template match="text()" mode="textOnly">
      <xsl:value-of select="my:quoteSpecialChars(string(current()))"/>
    </xsl:template>
-   
+
    <xsl:template match="dtb:*">
      <xsl:message>
   *****<xsl:value-of select="name(..)"/>/{<xsl:value-of select="namespace-uri()"/>}<xsl:value-of select="name()"/>******
