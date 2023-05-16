@@ -83,6 +83,12 @@
 
   <xsl:variable name="number_of_volumes" select="count(//*['volume-split-point'=tokenize(@class, '\s+')])+1"/>
 
+  <xsl:function name="my:max-line-width" as="xs:integer">
+    <xsl:sequence select="if ($fontsize='17pt') then 40 else
+			  if ($fontsize='20pt') then 35 else
+			  if ($fontsize='25pt') then 30 else 40"/>
+  </xsl:function>
+
   <xsl:function name="my:includegraphics-command" as="xs:string">
     <xsl:param name="src" as="xs:string"/>
     <xsl:param name="with_caption" as="xs:boolean"/>
@@ -1666,7 +1672,7 @@
 
   <xsl:template match="text()">
     <xsl:variable name="sanitized" select="my:quoteSpecialChars(current())"/>
-    <xsl:variable name="long-words" select="tokenize($sanitized,'\W+')[string-length(.) > 40]"/>
+    <xsl:variable name="long-words" select="tokenize($sanitized,'\W+')[string-length(.) > my:max-line-width()]"/>
     <xsl:variable name="long-dashed-words" select="tokenize($sanitized,'(\p{Pc}|\p{Ps}|\p{Pe}|\p{Pi}|\p{Pf}|\p{Po}|\p{Z}|\p{C})+')[string-length(.) > 20][contains(.,'-')]"/>
     <xsl:variable name="tmp" select="my:hyphenate-long-words($long-words, $sanitized)"/>
     <xsl:value-of select="my:hyphenate-dashed-words($long-dashed-words, $tmp)"/>
