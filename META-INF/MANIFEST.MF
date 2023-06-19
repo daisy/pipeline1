@@ -18,7 +18,7 @@ Bundle-ClassPath:
   lib/epubcheck-3.0.jar,
  lib/icu4j-3_8.jar,
  lib/jl1.0.jar,
- lib/log4j-1.2.15.jar,
+ lib/reload4j-1.2.25.jar,
  lib/louisFat.jar,
  lib/jing.jar,
  lib/xml-apis.jar,
