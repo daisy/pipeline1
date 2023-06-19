@@ -14,10 +14,8 @@ JAVA=`which java 2> /dev/null`
 # Test java version
 if [ -n "$JAVA" ]
 then
-  JAVAVERSION=`$JAVA -version 2>&1 | grep version | cut -d '"' -f 2 | cut -d '.' -f 1-2`
-  JAVAMAJOR=`echo $JAVAVERSION | cut -d '.' -f 1`
-  JAVAMINOR=`echo $JAVAVERSION | cut -d '.' -f 2`
-  if [ $JAVAMAJOR -lt 1 -o $JAVAMINOR -lt 5 ]
+  JAVA_MAJOR_VERSION=`$JAVA -version 2>&1 | head -1 | cut -d'"' -f2 | sed '/^1\./s///' | cut -d'.' -f1`
+  if [ $JAVA_MAJOR_VERSION -lt 5 ]
   then    
     echo
     echo "Error: This application requires Java 5 (or later) to run. Only" 
