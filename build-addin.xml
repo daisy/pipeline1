@@ -38,7 +38,7 @@
 			<include name="epubcheck-3.0.jar"/>
 			<include name="icu4j-72_1.jar"/>		
 			<include name="jl1.0.jar"/>
-			<include name="log4j-1.2.15.jar"/>
+			<include name="reload4j-1.2.25.jar"/>
 			<include name="jing.jar"/>
 			<include name="xml-apis.jar"/>
 			<include name="sac.jar"/>
