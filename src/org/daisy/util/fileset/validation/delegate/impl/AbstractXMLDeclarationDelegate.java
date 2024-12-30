@@ -148,7 +148,8 @@ public abstract class AbstractXMLDeclarationDelegate extends ValidatorDelegateIm
 	 * @throws CatalogExceptionNotRecoverable
 	 */
 	private void checkXMLDeclaration(URL url) throws URISyntaxException, XMLStreamException, IOException, CatalogExceptionNotRecoverable {		
-		XMLInputFactory inputFactory = XMLInputFactory.newInstance();        
+		XMLInputFactory inputFactory = XMLInputFactory.newFactory(
+			"javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         inputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
         inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);        
         inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);

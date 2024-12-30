@@ -101,7 +101,8 @@ public class NoDocTypeDeclarationDelegate extends ValidatorDelegateImplAbstract 
 	private void checkForDocTypeDeclaration(URL url) throws XMLStreamException, IOException,
 			URISyntaxException {
 		boolean foundDocTypeDecl = false;
-		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+		XMLInputFactory inputFactory = XMLInputFactory.newFactory(
+			"javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
 		
 		InputStream is = null;
         XMLEventReader eventReader = null;

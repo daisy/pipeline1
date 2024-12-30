@@ -155,7 +155,10 @@ abstract class ValidatorImplAbstract implements org.daisy.util.fileset.validatio
 								if(SchemaLanguageConstants.hasEntry(uri)) {
 									++nsURIsFound;
 									try{
-										SchemaFactory factory = SchemaFactory.newInstance(uri);
+										// SchemaFactoryFinder is not public in Java 8
+										SchemaFactory factory = /*new SchemaFactoryFinder(getClass().getClassLoader()).newFactory(uri);
+										if (factory == null)
+											throw new IllegalStateException("No SchemaFactory could be loaded for " + uri);*/SchemaFactory.newInstance(uri);
 										factory.setErrorHandler(this);
 										factory.setResourceResolver(CatalogEntityResolver.getInstance());
 										//go via StreamSource and explicitly set the system id to be safe

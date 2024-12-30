@@ -102,7 +102,8 @@ public class NoProcessingInstructionDelegate extends
 	 * @throws URISyntaxException
 	 */
 	public void checkForProcessingInstruction(URL url) throws CatalogExceptionNotRecoverable, XMLStreamException, IOException, URISyntaxException {
-		XMLInputFactory inputFactory = XMLInputFactory.newInstance();        
+        XMLInputFactory inputFactory = XMLInputFactory.newFactory(
+            "javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
         inputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);        
         inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);        
         inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, Boolean.TRUE);

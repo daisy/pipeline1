@@ -223,7 +223,10 @@ public class SimpleValidator implements ErrorHandler {
 				try{				
 					String schemaNsURI = mSchemaSources.get(source);				
 					if(!factoryMap.containsKey(schemaNsURI)) {
-						factoryMap.put(schemaNsURI,SchemaFactory.newInstance(schemaNsURI));
+						SchemaFactory f = /*new SchemaFactoryFinder(getClass().getClassLoader()).newFactory(schemaNsURI);
+						if (f == null)
+							throw new IllegalStateException("No SchemaFactory could be loaded for " + schemaNsURI);*/SchemaFactory.newInstance(schemaNsURI);
+						factoryMap.put(schemaNsURI, f);
 					}
 					anySchemaFactory = factoryMap.get(schemaNsURI);
 					anySchemaFactory.setErrorHandler(mErrorHandler);
