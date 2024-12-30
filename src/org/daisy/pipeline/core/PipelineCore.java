@@ -53,7 +53,7 @@ import org.daisy.util.runtime.RegistryQuery;
  */
 public class PipelineCore {
 
-    private Creator mCreator;
+    protected Creator mCreator;
     private Runner mRunner;
     private File mHomeDir;
 
@@ -166,10 +166,9 @@ public class PipelineCore {
         setUserProperties(userProps);
 
         // Load messages
-        ResourceBundle bundle = XMLPropertyResourceBundle.getBundle((this
-                .getClass().getPackage().getName()).replace('.', '/')
-                + "/messages.properties", Locale.getDefault(), this.getClass()
-                .getClassLoader());
+        ResourceBundle bundle = XMLPropertyResourceBundle.getBundle(
+            "org/daisy/pipeline/core/messages.properties", Locale.getDefault(),
+            this.getClass().getClassLoader());
         // ResourceBundle bundle =
         // XMLPropertyResourceBundle.getBundle(this.getClass().getPackage().getName()
         // + ".pipeline.messages", Locale.getDefault(),
