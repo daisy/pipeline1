@@ -41,7 +41,6 @@
 		<include name="junit-4.7.jar"/>
 		<include name="reload4j-1.2.25.jar"/>
 		<include name="jing.jar"/>
-		<include name="xml-apis.jar"/>
 		<include name="sac.jar"/>
 		<include name="saxon.jar"/>
 		<include name="saxon8.jar"/>
@@ -49,7 +48,6 @@
 		<include name="serializer.jar"/>
 		<include name="slf4j-api-1.5.6.jar"/>
 		<include name="slf4j-log4j12-1.5.6.jar"/>
-		<include name="stax-api-1.0.1.jar"/>
 		<include name="tagsoup-1.2.jar"/>	
 		<include name="tritonus_remaining-0.3.6.jar"/>			
 		<include name="tritonus_share-0.3.6.jar"/>
