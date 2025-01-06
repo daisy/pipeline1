@@ -95,7 +95,7 @@ public class Runner implements BusListener {
                 // Add hard-coded transformer parameters
                 this.addTransformerParameters(parameters, handler);
 
-                boolean success = handler.run(parameters, task.isInteractive(), task, null);
+                boolean success = handler.run(parameters, task.isInteractive(), task, job);
                 if (!success) {
                     throw new JobFailedException(i18n("TASK_FAILED", handler.getName()));
                 }
