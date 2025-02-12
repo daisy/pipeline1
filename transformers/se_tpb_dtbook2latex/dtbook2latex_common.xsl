@@ -1440,11 +1440,17 @@
 	<xsl:text>&#10;</xsl:text>
    </xsl:template>
 
-  <xsl:template match="dtb:linegroup/dtb:line">
-    <xsl:apply-templates/>
-    <xsl:if test="following-sibling::*"><xsl:text>\\</xsl:text></xsl:if>
-    <xsl:text>&#10;</xsl:text>
-  </xsl:template>
+   <xsl:template match="dtb:linegroup/dtb:line">
+     <xsl:apply-templates/>
+     <xsl:if test="following-sibling::*"><xsl:text>\\</xsl:text></xsl:if>
+     <xsl:text>&#10;</xsl:text>
+   </xsl:template>
+
+   <!-- Ignore lines that contain only whitespace -->
+   <!-- Otherwise we will end up with a line only containing whitespace and a trailing '\\', which
+        will result in the error "! LaTeX Error: There's no line here to end", see
+        https://texfaq.org/FAQ-noline -->
+   <xsl:template match="dtb:line[normalize-space()='']" priority="1"/>
 
    <xsl:template match="dtb:line">
    	<xsl:apply-templates/>
