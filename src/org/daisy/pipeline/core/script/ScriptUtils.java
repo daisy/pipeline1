@@ -220,7 +220,8 @@ public final class ScriptUtils {
 			throw new ScriptValidationException(e.getMessage(), e);
 		} finally {
 			try {
-				PeekerPool.getInstance().release(peeker);
+				if (peeker != null)
+					PeekerPool.getInstance().release(peeker);
 			} catch (PoolException e) {}
 		}
 
