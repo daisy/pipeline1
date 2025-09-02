@@ -43,6 +43,26 @@
     <entry key="28">achtundzwanzig</entry>
     <entry key="29">neunundzwanzig</entry>
     <entry key="30">dreissig</entry>
+    <entry key="31">einunddreissig</entry>
+    <entry key="32">zweiunddreissig</entry>
+    <entry key="33">dreiunddreissig</entry>
+    <entry key="34">vierunddreissig</entry>
+    <entry key="35">fünfunddreissig</entry>
+    <entry key="36">sechsunddreissig</entry>
+    <entry key="37">siebenunddreissig</entry>
+    <entry key="38">achtunddreissig</entry>
+    <entry key="39">neununddreissig</entry>
+    <entry key="40">vierzig</entry>
+    <entry key="41">einundvierzig</entry>
+    <entry key="42">zweiundvierzig</entry>
+    <entry key="43">dreiundvierzig</entry>
+    <entry key="44">vierundvierzig</entry>
+    <entry key="45">fünfundvierzig</entry>
+    <entry key="46">sechsundvierzig</entry>
+    <entry key="47">siebenundvierzig</entry>
+    <entry key="48">achtundvierzig</entry>
+    <entry key="49">neunundvierzig</entry>
+    <entry key="50">fünfzig</entry>
   </xsl:variable>
 
   <xsl:template name="current_volume_string">
