@@ -20,8 +20,8 @@ then
     # Old format: "1.8.0_xxx" -> extract second number
     JAVA_MAJOR_VERSION=`echo "$JAVA_VERSION_OUTPUT" | cut -d'"' -f2 | cut -d'.' -f2`
   else
-    # New format: "11.0.x" or "17.0.x" -> extract first number
-    JAVA_MAJOR_VERSION=`echo "$JAVA_VERSION_OUTPUT" | cut -d'"' -f2 | cut -d'.' -f1`
+    # New format: "11.0.x" or "17.0.x" or "25-ea" -> extract first number
+    JAVA_MAJOR_VERSION=`echo "$JAVA_VERSION_OUTPUT" | cut -d'"' -f2 | cut -d'.' -f1 | cut -d'-' -f1`
   fi
 
   echo "$JAVA_MAJOR_VERSION"
