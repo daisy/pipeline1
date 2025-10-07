@@ -43,6 +43,26 @@
     <entry key="28">achtundzwanzig</entry>
     <entry key="29">neunundzwanzig</entry>
     <entry key="30">dreissig</entry>
+    <entry key="31">einunddreissig</entry>
+    <entry key="32">zweiunddreissig</entry>
+    <entry key="33">dreiunddreissig</entry>
+    <entry key="34">vierunddreissig</entry>
+    <entry key="35">fünfunddreissig</entry>
+    <entry key="36">sechsunddreissig</entry>
+    <entry key="37">siebenunddreissig</entry>
+    <entry key="38">achtunddreissig</entry>
+    <entry key="39">neununddreissig</entry>
+    <entry key="40">vierzig</entry>
+    <entry key="41">einundvierzig</entry>
+    <entry key="42">zweiundvierzig</entry>
+    <entry key="43">dreiundvierzig</entry>
+    <entry key="44">vierundvierzig</entry>
+    <entry key="45">fünfundvierzig</entry>
+    <entry key="46">sechsundvierzig</entry>
+    <entry key="47">siebenundvierzig</entry>
+    <entry key="48">achtundvierzig</entry>
+    <entry key="49">neunundvierzig</entry>
+    <entry key="50">fünfzig</entry>
   </xsl:variable>
 
   <xsl:template name="current_volume_string">
@@ -145,47 +165,6 @@
      <xsl:text>\cleartorecto&#10;</xsl:text>
      <xsl:call-template name="restore_pagestyle"/>
      <xsl:text>\restorepagenumber&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h1">
-   	<xsl:text>\chapter*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h2">
-   	<xsl:text>\section*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h3">
-   	<xsl:text>\subsection*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h4">
-   	<xsl:text>\subsubsection*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h5">
-   	<xsl:text>\paragraph*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <xsl:template match="dtb:frontmatter//dtb:h6">
-   	<xsl:text>\subparagraph*{</xsl:text>
-   	<xsl:apply-templates/>
-   	<xsl:text>}&#10;</xsl:text>   
-   </xsl:template>
-
-   <!-- Do not fake an empty chapter if the only children are level2 -->
-   <xsl:template match="dtb:frontmatter/dtb:level1[not(child::*[not(self::dtb:level2)])]">
-     <xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template match="dtb:level1[@class='titlepage']" priority="100">

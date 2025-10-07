@@ -83,6 +83,12 @@
 
   <xsl:variable name="number_of_volumes" select="count(//*['volume-split-point'=tokenize(@class, '\s+')])+1"/>
 
+  <xsl:function name="my:max-line-width" as="xs:integer">
+    <xsl:sequence select="if ($fontsize='17pt') then 40 else
+			  if ($fontsize='20pt') then 35 else
+			  if ($fontsize='25pt') then 30 else 40"/>
+  </xsl:function>
+
   <xsl:function name="my:includegraphics-command" as="xs:string">
     <xsl:param name="src" as="xs:string"/>
     <xsl:param name="with_caption" as="xs:boolean"/>
@@ -332,6 +338,14 @@
        <xsl:text>\sideparmargin{left}&#10;</xsl:text>
      </xsl:if>
 
+     <!-- Use the enumitem class to avoid overflowing description labels -->
+     <xsl:text>\usepackage{enumitem}&#10;</xsl:text>
+
+     <!-- to break long urls across lines -->
+     <xsl:text>\usepackage[hyphens]{url}&#10;</xsl:text>
+     <!-- Use the same font for urls as for the rest -->
+     <xsl:text>\urlstyle{same}&#10;</xsl:text>
+
      <xsl:text>\usepackage{hyperref}&#10;</xsl:text>
      <xsl:text>\hypersetup{&#10;</xsl:text>
      <xsl:text>pdfinfo={&#10;</xsl:text>
@@ -354,7 +368,7 @@
      <xsl:text>}&#10;</xsl:text>
 
 	<xsl:text>\usepackage{float}&#10;</xsl:text>
-	<xsl:text>\usepackage{alphalph}&#10;&#10;</xsl:text>
+	<xsl:text>\usepackage{alphalph}&#10;</xsl:text>
 
 	<!-- avoid overfull \hbox (which is a serious problem with large fonts) -->
 	<xsl:text>\sloppy&#10;</xsl:text>
@@ -468,9 +482,17 @@
 	  </xsl:otherwise>
 	</xsl:choose>
 
-	<!-- Redefine the second enumerate level so it can handle more than 26 items -->
-	<xsl:text>\renewcommand{\theenumii}{\AlphAlph{\value{enumii}}}&#10;</xsl:text>
-	<xsl:text>\renewcommand{\labelenumii}{\theenumii}&#10;&#10;</xsl:text>
+	<!-- Make sure enumerations (such as 'a)') can handle more that 26 items. This is done using the
+	     enumitem and the alphalph packages. See https://tex.stackexchange.com/a/269559 -->
+	<xsl:text>&#10;</xsl:text>
+	<xsl:text>\makeatletter&#10;</xsl:text>
+	<xsl:text>\newcommand{\AlphUpper}[1]{\@AlphUpper{#1}} % Define the \AlphAlph wrapper for enumitem&#10;</xsl:text>
+	<xsl:text>\newcommand{\AlphLower}[1]{\@AlphLower{#1}} % Define the \alphalph wrapper for enumitem&#10;</xsl:text>
+	<xsl:text>\newcommand{\@AlphUpper}[1]{\AlphAlph{\value{#1}}} % Internal representation&#10;</xsl:text>
+	<xsl:text>\newcommand{\@AlphLower}[1]{\alphalph{\value{#1}}} % Internal representation&#10;</xsl:text>
+	<xsl:text>\AddEnumerateCounter{\AlphUpper}{\@AlphUpper}{A} % Register this new format&#10;</xsl:text>
+	<xsl:text>\AddEnumerateCounter{\AlphLower}{\@AlphLower}{a} % Register this new format&#10;</xsl:text>
+	<xsl:text>\makeatother&#10;&#10;</xsl:text>
 
         <!-- Monkey patch the memoir plainbreak command as it results
              in weird page breaks -->
@@ -500,19 +522,18 @@
 	<xsl:text>\setlength{\vindent}{0em}&#10;</xsl:text>
 
 	<!-- Poem titles should be left aligned (instead of centered) -->
-	<xsl:if test="//dtb:poem/dtb:title">
+	<xsl:if test="//dtb:poem/dtb:title|//dtb:poem/dtb:hd">
 	  <xsl:text>\renewcommand*{\PoemTitlefont}{\normalfont\large}&#10;</xsl:text>
 	</xsl:if>
 
-    <!-- New environment for nested pl-type lists -->
-    <xsl:text>\newenvironment{indentedlist}%&#10;</xsl:text>
-    <xsl:text>  {\begin{list}{}{%&#10;</xsl:text>
-    <xsl:text>    \setlength{\leftmargin}{1.5em}%&#10;</xsl:text>
-    <xsl:text>    \setlength{\rightmargin}{0pt}%&#10;</xsl:text>
-    <xsl:text>    \setlength{\labelwidth}{0pt}%&#10;</xsl:text>
-    <xsl:text>    \setlength{\itemindent}{0pt}}}%&#10;</xsl:text>
-    <xsl:text>  {\end{list}}&#10;</xsl:text>
-    
+    <xsl:if test="//dtb:dl">
+      <!-- New environment for description lists (with potentially long description labels) -->
+      <!-- see https://tex.stackexchange.com/a/35494 -->
+      <xsl:text>\newenvironment{longdescription}&#10;</xsl:text>
+      <xsl:text>  {\begin{description}[style=unboxed]}&#10;</xsl:text>
+      <xsl:text>  {\end{description}}&#10;</xsl:text>
+    </xsl:if>
+
     <xsl:apply-templates select="." mode="localizeWords"/>
     <xsl:apply-templates/>
    </xsl:template>
@@ -856,9 +877,18 @@
    <xsl:template match="dtb:h1|dtb:h2|dtb:h3|dtb:h4|dtb:h5|dtb:h6">
      <xsl:variable name="level" select="local-name(ancestor::dtb:*[matches(local-name(),'^level[1-6]$')][1])"/>
      <xsl:value-of select="$level_to_section_map/entry[@key=$level]"/>
-     <xsl:text>[</xsl:text>
-     <xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
-     <xsl:text>]{</xsl:text>
+     <xsl:choose>
+       <xsl:when test="ancestor::dtb:frontmatter">
+	 <!-- do not add the title to the toc if we are in the frontmatter -->
+	 <xsl:text>*</xsl:text>
+       </xsl:when>
+       <xsl:otherwise>
+	 <xsl:text>[</xsl:text>
+	 <xsl:value-of select="normalize-space(my:quoteSpecialChars(string()))"/>
+	 <xsl:text>]</xsl:text>
+       </xsl:otherwise>
+     </xsl:choose>
+     <xsl:text>{</xsl:text>
      <xsl:apply-templates/>
      <xsl:text>}&#10;</xsl:text>
      <xsl:apply-templates select="my:first-pagenum-anchor-before-headline(.)" mode="inside-headline"/>
@@ -886,6 +916,11 @@
    	<xsl:if test="not(preceding-sibling::dtb:lic) and (following-sibling::dtb:lic or normalize-space(following-sibling::text())!='')">
 	   	<xsl:text>\dotfill </xsl:text>
    	</xsl:if>
+   </xsl:template>
+
+   <!-- Older versions of memoir really do not like linebreaks in the form of '\\' inside headings. So we use '\newline' instead -->
+   <xsl:template match="dtb:h1/dtb:br|dtb:h2/dtb:br|dtb:h3/dtb:br|dtb:h4/dtb:br|dtb:h5/dtb:br|dtb:h6/dtb:br|dtb:bridgehead/dtb:br">
+   	<xsl:text>\newline </xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:br">
@@ -1141,52 +1176,91 @@
    <!-- Headings inside lists aren't real headings in the sense that
         they contribute to the hierarchy and need to be in the toc.
         Simply make them stand out by making them bold -->
-   <xsl:template match="dtb:list/dtb:hd">
-	<xsl:text>\item \textbf{</xsl:text>
+   <xsl:template match="dtb:list/dtb:hd" mode="insert-heading">
+	<xsl:text>\paragraph{</xsl:text>
 	<xsl:apply-templates/>
 	<xsl:text>}&#10;</xsl:text>
    </xsl:template>
 
-   <xsl:template match="dtb:list[@type='ol']">
-    <xsl:text>\begin{enumerate}</xsl:text>
-    <xsl:value-of select="concat('[', if (index-of(('1','a','A','i', 'I'), string(@enum))) then string(@enum) else '1', '.]')"/>
-    <xsl:text>&#10;</xsl:text>
-	<xsl:apply-templates/>
-	<xsl:text>\end{enumerate}&#10;</xsl:text>
+   <!-- Ignore heading inside lists as they already have been dealt with -->
+   <xsl:template match="dtb:list/dtb:hd">
    </xsl:template>
-   
+
+   <xsl:template match="dtb:list[@type='ol']">
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
+     <xsl:text>\begin{enumerate}</xsl:text>
+     <xsl:text>[</xsl:text>
+     <!-- Set the number of the first item -->
+     <xsl:choose>
+       <xsl:when test="@start"><xsl:text>start=</xsl:text><xsl:value-of select="@start"/></xsl:when>
+       <xsl:otherwise><xsl:text>start=1</xsl:text></xsl:otherwise>
+     </xsl:choose>
+     <!-- Make sure the list is not indented unless it is a nested list -->
+     <xsl:if test="not(parent::dtb:li)">
+       <xsl:text>,leftmargin=*</xsl:text>
+     </xsl:if>
+     <!-- Set the label to be used -->
+       <xsl:choose>
+	 <xsl:when test="index-of(('1'), string(@enum))"><xsl:text>,label=\arabic*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('a'), string(@enum))"><xsl:text>,label=\AlphLower*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('A'), string(@enum))"><xsl:text>,label=\AlphUpper*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('i'), string(@enum))"><xsl:text>,label=\roman*.</xsl:text></xsl:when>
+	 <xsl:when test="index-of(('I'), string(@enum))"><xsl:text>,label=\Roman*.</xsl:text></xsl:when>
+       </xsl:choose>
+     <xsl:text>]&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{enumerate}&#10;</xsl:text>
+   </xsl:template>
+
    <xsl:template match="dtb:list[@type='ul']">
-   	<xsl:text>\begin{itemize}&#10;</xsl:text>
-	<xsl:apply-templates/>
-	<xsl:text>\end{itemize}&#10;</xsl:text>
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
+     <!-- Make sure the list is not indented -->
+     <xsl:text>\begin{itemize}[leftmargin=*]&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{itemize}&#10;</xsl:text>
+   </xsl:template>
+
+   <xsl:template match="dtb:list//dtb:list[@type='ul']" priority="10">
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
+     <xsl:text>\begin{itemize}&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{itemize}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:list[@type='pl']">
-   	<xsl:text>\begin{trivlist}&#10;</xsl:text>
-	<xsl:apply-templates/>
-	<xsl:text>\end{trivlist}&#10;</xsl:text>
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
+     <!-- Use a plain old trivlist for root lists of pl style -->
+     <xsl:text>\begin{trivlist}&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{trivlist}&#10;</xsl:text>
    </xsl:template>
 
-  <xsl:template match="dtb:list//dtb:list[@type='pl']" priority="10">
-    <xsl:text>\begin{indentedlist}&#10;</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>\end{indentedlist}&#10;</xsl:text>
+   <xsl:template match="dtb:list//dtb:list[@type='pl']" priority="10">
+     <xsl:apply-templates select="dtb:hd" mode="insert-heading"/>
+     <!-- use a normal indent for nested list -->
+     <xsl:text>\begin{enumerate}[label=,leftmargin=*,labelsep=*]&#10;</xsl:text>
+     <xsl:apply-templates/>
+     <xsl:text>\end{enumerate}&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:li">
      <xsl:variable name="itemContent">
 	<xsl:apply-templates/>
      </xsl:variable>
-     <xsl:text>\item </xsl:text>
+     <!-- if the item contains a sublist and no text for the actual
+          item itself drop the '\item' -->
+     <xsl:if test="not(./dtb:list) or ./text()[1][normalize-space() != '']">
+       <xsl:text>\item </xsl:text>
+     </xsl:if>
      <!-- quote [] right after an \item with {} -->
      <xsl:value-of select="replace($itemContent,'^(\s*)(\[.*\])','$1{$2}')"/>
      <xsl:text>&#10;</xsl:text>
    </xsl:template>
 
    <xsl:template match="dtb:dl">
-   	<xsl:text>\begin{description}</xsl:text>
+   	<xsl:text>\begin{longdescription}&#10;</xsl:text>
    	<xsl:apply-templates/>
-   	<xsl:text>\end{description}</xsl:text>
+   	<xsl:text>\end{longdescription}&#10;</xsl:text>
    </xsl:template>
 
   <xsl:template match="dtb:dt">
@@ -1366,11 +1440,17 @@
 	<xsl:text>&#10;</xsl:text>
    </xsl:template>
 
-  <xsl:template match="dtb:linegroup/dtb:line">
-    <xsl:apply-templates/>
-    <xsl:if test="following-sibling::*"><xsl:text>\\</xsl:text></xsl:if>
-    <xsl:text>&#10;</xsl:text>
-  </xsl:template>
+   <xsl:template match="dtb:linegroup/dtb:line">
+     <xsl:apply-templates/>
+     <xsl:if test="following-sibling::*"><xsl:text>\\</xsl:text></xsl:if>
+     <xsl:text>&#10;</xsl:text>
+   </xsl:template>
+
+   <!-- Ignore lines that contain only whitespace -->
+   <!-- Otherwise we will end up with a line only containing whitespace and a trailing '\\', which
+        will result in the error "! LaTeX Error: There's no line here to end", see
+        https://texfaq.org/FAQ-noline -->
+   <xsl:template match="dtb:line[normalize-space()='']" priority="1"/>
 
    <xsl:template match="dtb:line">
    	<xsl:apply-templates/>
@@ -1410,6 +1490,13 @@
 
    <xsl:template match="dtb:a">
      <xsl:apply-templates/>
+   </xsl:template>
+
+   <!-- Render external links as URLs -->
+   <xsl:template match="dtb:a[@external='true']">
+     <!-- Drop { and } as they might lead to unbalanced braces which the url packacke really doesn't
+          like. Also drop '\' if it happens to be the last character. Escape the rest so LaTeX doesn't fall over -->
+     <xsl:text>\url{</xsl:text><xsl:value-of select="my:quoteSpecialChars(replace(normalize-space(replace(string(), '(\{|\})', '')), '\\$', ''))"/><xsl:text>}</xsl:text>
    </xsl:template>
 
    <!-- cross references that contain only original page numbers -->
@@ -1526,14 +1613,81 @@
     <xsl:value-of select="my:quoteSpecialChars(replace(normalize-space(string(current())), ' ', ' '))"/>
    </xsl:template>
 
-   <xsl:template match="text()">
-     <xsl:value-of select="my:quoteSpecialChars(string(current()))"/>
+   <!-- add hyphenation points ('\-') between each character. This is a crude method to make sure
+        long words (often nonsensical such as "aaaarghhhhhhhhhhhh") do not run into the margin -->
+  <xsl:function name="my:add-hyphenation-points" as="xs:string">
+    <xsl:param name="word" as="xs:string"/>
+    <xsl:variable name="margin" select="3"/>
+    <xsl:choose>
+      <xsl:when test="string-length($word) > $margin*2">
+	<xsl:sequence select="string-join((substring($word,1,$margin),
+			                   replace(substring($word,$margin+1,string-length($word)-(2*$margin+1)), '\w', '$0\\-'),
+                                           substring($word,string-length($word)-$margin)),'')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:sequence select="$word"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
+  <xsl:function name="my:string-replace" as="xs:string">
+    <xsl:param name="input" as="xs:string"/>
+    <xsl:param name="substring" as="xs:string"/>
+    <xsl:param name="replacement" as="xs:string"/>
+    <xsl:variable name="before" select="substring-before($input,$substring)"/>
+    <xsl:variable name="after" select="substring-after($input,$substring)"/>
+    <xsl:choose>
+      <xsl:when test="$input">
+	<xsl:sequence select="string-join(($before,$replacement,$after),'')"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:sequence select="string-join(($before,$replacement,my:string-replace($after,$substring,$replacement)),'')"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
+  <xsl:function name="my:hyphenate-long-words" as="xs:string">
+    <xsl:param name="wordSequence" as="xs:string*"/>
+    <xsl:param name="text" as="xs:string"/>
+    <xsl:variable name="word" select="$wordSequence[1]"/>
+    <xsl:variable name="rest" select="$wordSequence[position() gt 1]"/>
+    <xsl:choose>
+      <xsl:when test="empty($wordSequence)">
+	<xsl:sequence select="$text"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:sequence select="my:hyphenate-long-words($rest, my:string-replace($text, $word, my:add-hyphenation-points($word)))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
+  <xsl:function name="my:hyphenate-dashed-words" as="xs:string">
+    <xsl:param name="wordSequence" as="xs:string*"/>
+    <xsl:param name="text" as="xs:string"/>
+    <xsl:variable name="word" select="$wordSequence[1]"/>
+    <xsl:variable name="rest" select="$wordSequence[position() gt 1]"/>
+    <xsl:choose>
+      <xsl:when test="empty($wordSequence)">
+	<xsl:sequence select="$text"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:sequence select="my:hyphenate-dashed-words($rest, my:string-replace($text, $word, replace($word,'(\w)-(\w)','$1-\\hspace{0pt}$2')))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
+  <xsl:template match="text()">
+    <xsl:variable name="sanitized" select="my:quoteSpecialChars(current())"/>
+    <xsl:variable name="long-words" select="tokenize($sanitized,'\W+')[string-length(.) > my:max-line-width()]"/>
+    <xsl:variable name="long-dashed-words" select="tokenize($sanitized,'(\p{Pc}|\p{Ps}|\p{Pe}|\p{Pi}|\p{Pf}|\p{Po}|\p{Z}|\p{C})+')[string-length(.) > 20][contains(.,'-')]"/>
+    <xsl:variable name="tmp" select="my:hyphenate-long-words($long-words, $sanitized)"/>
+    <xsl:value-of select="my:hyphenate-dashed-words($long-dashed-words, $tmp)"/>
    </xsl:template>
-   	
+
    <xsl:template match="text()" mode="textOnly">
      <xsl:value-of select="my:quoteSpecialChars(string(current()))"/>
    </xsl:template>
-   
+
    <xsl:template match="dtb:*">
      <xsl:message>
   *****<xsl:value-of select="name(..)"/>/{<xsl:value-of select="namespace-uri()"/>}<xsl:value-of select="name()"/>******
