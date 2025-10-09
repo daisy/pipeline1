@@ -23,6 +23,11 @@
   <xsl:output method="xml" encoding="utf-8" indent="no"/>
 
   <xsl:param name="number_of_volumes" select="1"/>
+  <!-- Generally the volumes do not seem to be filled to capacity with
+       the consequence that the last volume is overly full. So
+       increase the number of words per volume by some magic
+       percentage -->
+  <xsl:param name="words_per_volume_increase" select="0.04"/>
   <xsl:param name="allowed_stretch" select="0.15"/>
 
   <!-- Count the words in a given paragraph -->
@@ -97,7 +102,7 @@
   
   <xsl:variable name="all_p" select="//dtb:p|//dtb:li|//dtb:line"/>
   <xsl:variable name="total_words" select="sum(for $p in $all_p return func:wc($p))"/>
-  <xsl:variable name="words_per_volume" select="ceiling($total_words div number($number_of_volumes)) + 1"/>
+  <xsl:variable name="words_per_volume" select="ceiling($total_words div number($number_of_volumes)) * (1 + $words_per_volume_increase)"/>
   <xsl:variable name="split_nodes" select="func:split($words_per_volume, $all_p)"/>
   
   <xsl:param name="allowed_stretch_in_words" select="ceiling($words_per_volume * number($allowed_stretch))"/>
