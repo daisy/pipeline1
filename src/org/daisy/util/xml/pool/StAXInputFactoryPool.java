@@ -79,7 +79,8 @@ public class StAXInputFactoryPool extends AbstractPool {
 	 * @throws PoolException 
 	 */
 	private XMLInputFactory create(Map<String,Object> properties) throws PoolException {
-		XMLInputFactory xif = XMLInputFactory.newInstance();	    	    
+		XMLInputFactory xif = XMLInputFactory.newFactory(
+			"javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
 	    return setProperties(xif,properties);		
 	}
 	

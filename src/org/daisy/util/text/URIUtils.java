@@ -754,7 +754,16 @@ public final class URIUtils {
 				throw new IllegalStateException("shouldn't happen: "
 						+ e.getMessage(), e);
 			}
-
+		} else if (reference.toString().startsWith("jar:") && !uri.isAbsolute()) {
+			try {
+				reference = new URI(reference.toASCIIString().substring(4));
+				uri = reference.resolve(uri);
+				uri = new URI("jar:" + uri.toASCIIString());
+				return uri;
+			} catch (URISyntaxException e) {
+				throw new IllegalStateException("shouldn't happen: "
+						+ e.getMessage(), e);
+			}
 		} else {
 			return reference.resolve(uri);
 		}

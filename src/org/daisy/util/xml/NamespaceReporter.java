@@ -94,7 +94,8 @@ public class NamespaceReporter {
 				}
 			}
 		} finally {
-			reader.close();
+			if (reader != null)
+				reader.close();
 			pool.release(xif, mProperties, null);
 		}
 			

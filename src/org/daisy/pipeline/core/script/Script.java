@@ -18,6 +18,7 @@
 package org.daisy.pipeline.core.script;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URL;
@@ -173,8 +174,9 @@ public class Script {
 	 * @param uri
 	 */
 	void setDocumentation(URI uri) {
-		File test = new File(uri);
-		if(!test.exists()||!test.canRead()) {
+		try {
+			uri.toURL().openStream();
+		} catch (IllegalArgumentException|IOException e) {
 			System.out.println("Warning [in Script#setDocumentation]: Script documentation URI " + uri.toString() + " seems not to resolve");
 		}
 		this.mDocumentation = uri;

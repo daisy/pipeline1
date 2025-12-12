@@ -255,7 +255,8 @@ public class PeekerImpl
             throws XMLStreamException {
         try {
             if (xif == null) {
-                xif = XMLInputFactory.newInstance();
+                xif = XMLInputFactory.newFactory(
+                    "javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
                 xif.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
                 xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.TRUE);
                 xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, Boolean.FALSE);

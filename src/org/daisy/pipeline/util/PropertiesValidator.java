@@ -59,7 +59,8 @@ public class PropertiesValidator implements XMLReporter {
         
 		for (File inputFile : files) {
 	        try {
-	            XMLInputFactory2 ifact = (XMLInputFactory2)XMLInputFactory.newInstance();
+	            XMLInputFactory2 ifact = (XMLInputFactory2)XMLInputFactory.newFactory(
+	                "javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
 	            ifact.setXMLResolver(new StaxEntityResolver(CatalogEntityResolver.getInstance()));
 	            XMLStreamReader2 sr = ifact.createXMLStreamReader(inputFile);	
 	            try {

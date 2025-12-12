@@ -43,7 +43,7 @@ public class DirClassLoader extends URLClassLoader {
 	 *            directory for resource files
 	 */
 	public DirClassLoader(File clsDir, File resDir) {
-		super(new URL[] { fileToURL(clsDir) });
+		super(new URL[] { fileToURL(clsDir) }, DirClassLoader.class.getClassLoader());
 		classDir = clsDir;
 		resourceDir = resDir;
 	}

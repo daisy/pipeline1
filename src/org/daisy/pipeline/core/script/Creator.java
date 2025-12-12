@@ -102,8 +102,7 @@ public class Creator {
             throws ScriptValidationException {
         for (Task task : script.getTasks()) {
             try {
-                TransformerHandler handler = TransformerHandlerLoader.INSTANCE
-                        .getTransformerHandler(task.getName());
+                TransformerHandler handler = getTransformerHandler(task.getName());
                 if (handler != null) {
                     task.setTransformerHandler(handler);
                 } else {
@@ -117,5 +116,10 @@ public class Creator {
                                 + " is disabled", e);
             }
         }
+    }
+
+    protected TransformerHandler getTransformerHandler(String name)
+            throws TransformerDisabledException {
+        return TransformerHandlerLoader.INSTANCE.getTransformerHandler(name);
     }
 }
