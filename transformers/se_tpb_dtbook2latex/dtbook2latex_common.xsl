@@ -889,7 +889,10 @@
        </xsl:otherwise>
      </xsl:choose>
      <xsl:text>{</xsl:text>
-     <xsl:apply-templates/>
+     <xsl:variable name="headline-content">
+       <xsl:apply-templates/>
+     </xsl:variable>
+     <xsl:value-of select="normalize-space($headline-content)"/>
      <xsl:text>}&#10;</xsl:text>
      <xsl:apply-templates select="my:first-pagenum-anchor-before-headline(.)" mode="inside-headline"/>
    </xsl:template>
