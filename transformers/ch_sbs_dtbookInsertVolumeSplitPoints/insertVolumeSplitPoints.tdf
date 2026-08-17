@@ -99,12 +99,24 @@
 		  <default>0.1</default>
 		</parameter>
 
+		<parameter type="enum" direction="in" required="false">
+		  <name>endnotes</name>
+		  <description>When set to "document" all notes are expected to have already been moved to the end of the document (e.g. by ch_sbs_dtbookMoveNotesToEnd), and are left out of the split-point word count accordingly. Must match the endnotes setting that will later be used for the DTBook to LaTeX conversion.</description>
+		  <example>document</example>
+		  <enum>
+		    <value>none</value>
+		    <value>document</value>
+		    <value>chapter</value>
+		  </enum>
+		  <default>none</default>
+		</parameter>
+
 		<parameter required="true" direction="out" type="application/x-dtbook+xml">
 			<name>out</name>
 			<description>The output DTBook document with split points</description>
 			<example>file:///path/to/outFile.xml</example>
-		</parameter>		
-				
-	</parameters>	
+		</parameter>
+
+	</parameters>
 
 </transformer>

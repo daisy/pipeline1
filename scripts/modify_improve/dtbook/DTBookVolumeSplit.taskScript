@@ -92,27 +92,54 @@
 		</datatype>
 	</parameter>
 
+	<parameter name="endnotes" value="none" required="false">
+		<nicename>Endnotes</nicename>
+		<description>When set to "document" all notes are moved to the end of the document before splitting into volumes, since that is where they will end up in the rendered output. Must match the endnotes setting that will later be used for the DTBook to LaTeX conversion.</description>
+		<datatype>
+			<enum>
+			  <item nicename="Footnotes on the same page" value="none" />
+			  <item nicename="Notes at the end of each chapter" value="chapter" />
+			  <item nicename="Notes at the end of the document" value="document" />
+			</enum>
+		</datatype>
+	</parameter>
+
 	<task name="int_daisy_validator" interactive="false">
 		<parameter>
 			<name>input</name>
 			<value>${input}</value>
 		</parameter>
-		
+
 		<parameter>
 			<name>abortThreshold</name>
 			<value>NONE</value>
 		</parameter>
-		
+
 		<parameter>
 			<name>generateContextInfo</name>
 			<value>false</value>
 		</parameter>
 	</task>
 
-	<task name="ch_sbs_dtbookInsertVolumeSplitPoints" interactive="false">
+	<task name="ch_sbs_dtbookMoveNotesToEnd" interactive="false">
 		<parameter>
 			<name>xml</name>
 			<value>${input}</value>
+		</parameter>
+		<parameter>
+			<name>out</name>
+			<value>$parent{output}/pipeline__temp/temp.xml</value>
+		</parameter>
+		<parameter>
+			<name>endnotes</name>
+			<value>${endnotes}</value>
+		</parameter>
+	</task>
+
+	<task name="ch_sbs_dtbookInsertVolumeSplitPoints" interactive="false">
+		<parameter>
+			<name>xml</name>
+			<value>$parent{output}/pipeline__temp/temp.xml</value>
 		</parameter>
 		<parameter>
 			<name>out</name>
@@ -121,7 +148,11 @@
 		<parameter>
 			<name>number_of_volumes</name>
 			<value>${number_of_volumes}</value>
-		</parameter>		
+		</parameter>
+		<parameter>
+			<name>endnotes</name>
+			<value>${endnotes}</value>
+		</parameter>
 	</task>
 	
 	<task name="int_daisy_validator" interactive="false">

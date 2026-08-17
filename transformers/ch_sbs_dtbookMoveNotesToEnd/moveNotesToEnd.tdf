@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transformer version="1.0">
+  <name>DTBook Move Notes To End</name>
+  <description>Move all notes/annotations to the end of the document, matching where dtbook2latex's
+  endnotes=document will render them, so that word-count based volume splitting stays
+  accurate</description>
+  <classname>org.daisy.pipeline.transformers.XSLTRunner</classname>
+  <license>LGPL</license>
+  <author>Christian Egli</author>
+  <support>https://lists.sourceforge.net/lists/listinfo/daisymfc-support</support>
+
+  <parameters>
+    <parameter required="true" direction="in" type="application/x-dtbook+xml">
+      <name>xml</name>
+      <description>The DTBook 2005 XML file</description>
+      <example>file:///path/to/file.xml</example>
+    </parameter>
+
+    <parameter type="application/xml">
+      <name>xslt</name>
+      <value>${transformer_dir}/moveNotesToEnd.xsl</value>
+    </parameter>
+
+    <parameter type="string">
+      <name>factory</name>
+      <value>net.sf.saxon.TransformerFactoryImpl</value>
+    </parameter>
+
+    <parameter type="enum" direction="in" required="false">
+      <name>endnotes</name>
+      <description>When set to 'document' notes are moved to the end of the document. Must
+      match the endnotes setting that will later be used for the DTBook to LaTeX
+      conversion.</description>
+      <example>document</example>
+      <enum>
+	<value>none</value>
+	<value>document</value>
+	<value>chapter</value>
+      </enum>
+      <default>none</default>
+    </parameter>
+
+    <parameter required="true" direction="out" type="application/x-dtbook+xml">
+      <name>out</name>
+      <description>The output DTBook document with notes moved to the end (if endnotes=document)</description>
+      <example>file:///path/to/outFile.xml</example>
+    </parameter>
+  </parameters>
+
+</transformer>
