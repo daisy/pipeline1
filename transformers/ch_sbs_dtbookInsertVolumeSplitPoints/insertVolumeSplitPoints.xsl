@@ -28,7 +28,16 @@
      real content just short of a full last share, leaving a remainder
      that combines with the notes into a last volume of about the
      right size. If the requested number of volumes turns out not to
-     be reachable this way, fewer volumes are produced silently. -->
+     be reachable this way, fewer volumes are produced silently.
+
+     endnotes=chapter is deliberately handled the same as endnotes=none here,
+     i.e. notes are still counted in place. Chapter notes are rendered locally
+     (at the end of their own level1), so a mismatch can only shift one
+     chapter's own notes across a nearby volume boundary. Measured against the
+     sample book this produces well balanced volumes as is even though most
+     split points land mid-chapter, so the added complexity of relocating notes
+     per chapter wasn't worth it.
+     -->
 
   <xsl:output method="xml" encoding="utf-8" indent="no"/>
 
